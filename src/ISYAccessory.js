@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const isy_js_1 = require("isy-js");
 const hap_nodejs_1 = require("hap-nodejs");
+const isy_js_1 = require("isy-js");
 const plugin_1 = require("./plugin");
 class ISYAccessory extends hap_nodejs_1.Accessory {
     constructor(log, device) {
@@ -15,14 +15,14 @@ class ISYAccessory extends hap_nodejs_1.Accessory {
         };
         this.device = device;
         this.address = device.address;
-        device.onPropertyChanged(null, this.handleExternalChange.bind(this));
+        device.onPropertyChanged(null, this.handleExternalChange);
     }
     getServices() {
         const informationService = new plugin_1.Service.AccessoryInformation();
         informationService
-            .setCharacteristic(plugin_1.Characteristic.Manufacturer, 'Insteon')
-            .setCharacteristic(plugin_1.Characteristic.Model, this.device.productName === undefined ? this.device.name : this.device.productName)
-            .setCharacteristic(plugin_1.Characteristic.SerialNumber, this.device.address);
+            .setCharacteristic(hap_nodejs_1.Characteristic.Manufacturer, 'Insteon')
+            .setCharacteristic(hap_nodejs_1.Characteristic.Model, this.device.productName === undefined ? this.device.name : this.device.productName)
+            .setCharacteristic(hap_nodejs_1.Characteristic.SerialNumber, this.device.address);
         this.informationService = informationService;
         return [this.informationService];
     }

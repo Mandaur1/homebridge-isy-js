@@ -1,6 +1,9 @@
+import { Characteristic } from 'homebridge';
 import { InsteonRelayDevice } from 'isy-js';
-import { Characteristic, Service } from "./plugin";
-import { ISYAccessory } from "./ISYAccessory";
+
+import { ISYAccessory } from './ISYAccessory';
+import { Service } from './plugin';
+
 export class ISYGarageDoorAccessory extends ISYAccessory<InsteonRelayDevice> {
 	public timeToOpen: any;
 	public relayDevice: any;
@@ -17,8 +20,7 @@ export class ISYGarageDoorAccessory extends ISYAccessory<InsteonRelayDevice> {
 			this.logger(`GARAGE: ${this.name} Initial set during startup the sensor is open so defaulting states to open`);
 			this.targetGarageState = Characteristic.TargetDoorState.OPEN;
 			this.currentGarageState = Characteristic.CurrentDoorState.OPEN;
-		}
-		else {
+		} else {
 			this.logger(`GARAGE: ${this.name} Initial set during startup the sensor is closed so defaulting states to closed`);
 			this.targetGarageState = Characteristic.TargetDoorState.CLOSED;
 			this.currentGarageState = Characteristic.CurrentDoorState.CLOSED;
@@ -27,8 +29,7 @@ export class ISYGarageDoorAccessory extends ISYAccessory<InsteonRelayDevice> {
 	public getSensorState() {
 		if (this.alternate) {
 			return !this.device.getCurrentDoorWindowState();
-		}
-		else {
+		} else {
 			return this.device.getCurrentDoorWindowState();
 		}
 	}
@@ -37,7 +38,7 @@ export class ISYGarageDoorAccessory extends ISYAccessory<InsteonRelayDevice> {
 		callback();
 	}
 	public sendGarageDoorCommand(callback) {
-		this.relayDevice.sendLightCommand(true, function () {
+		this.relayDevice.sendLightCommand(true, function() {
 			callback();
 		});
 	}
@@ -56,31 +57,28 @@ export class ISYGarageDoorAccessory extends ISYAccessory<InsteonRelayDevice> {
 				this.garageDoorService.setCharacteristic(Characteristic.CurrentDoorState, Characteristic.CurrentDoorState.CLOSING);
 				this.sendGarageDoorCommand(callback);
 			}
-		}
-		else if (this.currentGarageState === Characteristic.CurrentDoorState.CLOSED) {
+		} else if (this.currentGarageState === Characteristic.CurrentDoorState.CLOSED) {
 			if (targetState === Characteristic.TargetDoorState.OPEN) {
 				this.logger(`GARAGE: Current state is closed and target is open. Waiting for sensor change to trigger opening state`);
 				this.sendGarageDoorCommand(callback);
 				return;
 			}
-		}
-		else if (this.currentGarageState === Characteristic.CurrentDoorState.OPENING) {
+		} else if (this.currentGarageState === Characteristic.CurrentDoorState.OPENING) {
 			if (targetState === Characteristic.TargetDoorState.CLOSED) {
 				this.logger('GARAGE: ' + this.device.name + ' Current state is opening and target is closed. Sending command and changing state to closing');
 				this.garageDoorService.setCharacteristic(Characteristic.CurrentDoorState, Characteristic.CurrentDoorState.CLOSING);
-				this.sendGarageDoorCommand(function () {
-					setTimeout(function () {
+				this.sendGarageDoorCommand(function() {
+					setTimeout(function() {
 						that.sendGarageDoorCommand(callback);
 					}, 3000);
 				});
 				return;
 			}
-		}
-		else if (this.currentGarageState === Characteristic.CurrentDoorState.CLOSING) {
+		} else if (this.currentGarageState === Characteristic.CurrentDoorState.CLOSING) {
 			if (targetState === Characteristic.TargetDoorState.OPEN) {
 				this.logger('GARAGE: ' + this.device.name + ' Current state is closing and target is open. Sending command and setting timeout to complete');
 				this.garageDoorService.setCharacteristic(Characteristic.CurrentDoorState, Characteristic.CurrentDoorState.OPENING);
-				this.sendGarageDoorCommand(function () {
+				this.sendGarageDoorCommand(function() {
 					that.sendGarageDoorCommand(callback);
 					setTimeout(that.completeOpen.bind(that), that.timeToOpen);
 				});
@@ -103,8 +101,7 @@ export class ISYGarageDoorAccessory extends ISYAccessory<InsteonRelayDevice> {
 		if (this.currentGarageState === Characteristic.CurrentDoorState.OPENING) {
 			this.logger('Current door has bee opening long enough, marking open');
 			this.garageDoorService.setCharacteristic(Characteristic.CurrentDoorState, Characteristic.CurrentDoorState.OPEN);
-		}
-		else {
+		} else {
 			this.logger('Opening aborted so not setting opened state automatically');
 		}
 	}
@@ -114,38 +111,31 @@ export class ISYGarageDoorAccessory extends ISYAccessory<InsteonRelayDevice> {
 		if (this.getSensorState()) {
 			if (this.currentGarageState === Characteristic.CurrentDoorState.OPEN) {
 				this.logger('GARAGE:  ' + this.device.name + 'Current state of door is open and now sensor matches. No action to take');
-			}
-			else if (this.currentGarageState === Characteristic.CurrentDoorState.CLOSED) {
+			} else if (this.currentGarageState === Characteristic.CurrentDoorState.CLOSED) {
 				this.logger('GARAGE:  ' + this.device.name + 'Current state of door is closed and now sensor says open. Setting state to opening');
 				this.garageDoorService.setCharacteristic(Characteristic.CurrentDoorState, Characteristic.CurrentDoorState.OPENING);
 				this.targetGarageState = Characteristic.TargetDoorState.OPEN;
 				this.garageDoorService.setCharacteristic(Characteristic.TargetDoorState, Characteristic.CurrentDoorState.OPEN);
 				setTimeout(this.completeOpen.bind(this), this.timeToOpen);
-			}
-			else if (this.currentGarageState === Characteristic.CurrentDoorState.OPENING) {
+			} else if (this.currentGarageState === Characteristic.CurrentDoorState.OPENING) {
 				this.logger('GARAGE:  ' + this.device.name + 'Current state of door is opening and now sensor matches. No action to take');
-			}
-			else if (this.currentGarageState === Characteristic.CurrentDoorState.CLOSING) {
+			} else if (this.currentGarageState === Characteristic.CurrentDoorState.CLOSING) {
 				this.logger('GARAGE: C ' + this.device.name + 'Current state of door is closing and now sensor matches. No action to take');
 			}
-		}
-		else {
+		} else {
 			if (this.currentGarageState === Characteristic.CurrentDoorState.OPEN) {
 				this.logger('GARAGE:  ' + this.device.name + 'Current state of door is open and now sensor shows closed. Setting current state to closed');
 				this.garageDoorService.setCharacteristic(Characteristic.CurrentDoorState, Characteristic.CurrentDoorState.CLOSED);
 				this.targetGarageState = Characteristic.TargetDoorState.CLOSED;
 				this.garageDoorService.setCharacteristic(Characteristic.TargetDoorState, Characteristic.TargetDoorState.CLOSED);
-			}
-			else if (this.currentGarageState === Characteristic.CurrentDoorState.CLOSED) {
+			} else if (this.currentGarageState === Characteristic.CurrentDoorState.CLOSED) {
 				this.logger('GARAGE:  ' + this.device.name + 'Current state of door is closed and now sensor shows closed. No action to take');
-			}
-			else if (this.currentGarageState === Characteristic.CurrentDoorState.OPENING) {
+			} else if (this.currentGarageState === Characteristic.CurrentDoorState.OPENING) {
 				this.logger('GARAGE:  ' + this.device.name + 'Current state of door is opening and now sensor shows closed. Setting current state to closed');
 				this.garageDoorService.setCharacteristic(Characteristic.CurrentDoorState, Characteristic.CurrentDoorState.CLOSED);
 				this.targetGarageState = Characteristic.TargetDoorState.CLOSED;
 				this.garageDoorService.setCharacteristic(Characteristic.TargetDoorState, Characteristic.TargetDoorState.CLOSED);
-			}
-			else if (this.currentGarageState === Characteristic.CurrentDoorState.CLOSING) {
+			} else if (this.currentGarageState === Characteristic.CurrentDoorState.CLOSING) {
 				this.logger(`GARAGE:  ${this.device.name}Current state of door is closing and now sensor shows closed. Setting current state to closed`);
 				this.garageDoorService.setCharacteristic(Characteristic.CurrentDoorState, Characteristic.CurrentDoorState.CLOSED);
 				this.targetGarageState = Characteristic.TargetDoorState.CLOSED;

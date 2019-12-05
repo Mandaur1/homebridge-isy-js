@@ -37,10 +37,10 @@ declare namespace HAPNodeJS {
 
         addCharacteristic(characteristic: Characteristic | Function): Characteristic;
         removeCharacteristic(characteristic: Characteristic): void;
-        getCharacteristic(name: string | Function): Characteristic;
-        testCharacteristic(name: string): boolean;
-        setCharacteristic(name: string | Function, value: any): Service;
-        updateCharacteristic(name: string, value: any): Service; 
+        getCharacteristic(name: string | Characteristic | Function): Characteristic;
+        testCharacteristic(name: string | Characteristic): boolean;
+        setCharacteristic(name: string | Characteristic | Function, value: any): Service;
+        updateCharacteristic(name: string | Characteristic, value: any): Service; 
         addOptionalCharacteristic(characteristic: Characteristic | Function): void;
         getCharacteristicByIID(iid: string): Characteristic;
 
@@ -120,6 +120,7 @@ declare namespace HAPNodeJS {
     export interface IEventEmitterCharacteristic {
         addListener(event: EventCharacteristic, listener: Function): this;
         on(event: EventCharacteristic, listener: Function): this;
+        onSet<T>(func: (...args:any[]) => Promise<T>): this;
         once(event: EventCharacteristic, listener: Function): this;
         removeListener(event: EventCharacteristic, listener: Function): this;
         removeAllListeners(event?: EventCharacteristic): this;
@@ -263,6 +264,8 @@ declare namespace HAPNodeJS {
         VOCDensity: Characteristic;
         Volume: Characteristic;
         WaterLevel: Characteristic;
+
+        
     }
 
 

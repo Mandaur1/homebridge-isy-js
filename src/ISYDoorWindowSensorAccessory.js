@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const homebridge_1 = require("homebridge");
 const ISYDeviceAccessory_1 = require("./ISYDeviceAccessory");
 const plugin_1 = require("./plugin");
 class ISYDoorWindowSensorAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
@@ -10,7 +11,7 @@ class ISYDoorWindowSensorAccessory extends ISYDeviceAccessory_1.ISYDeviceAccesso
     // Handles the identify command.
     // Translates the state of the underlying device object into the corresponding homekit compatible state
     translateCurrentDoorWindowState() {
-        return this.device.isOpen ? plugin_1.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED : plugin_1.Characteristic.ContactSensorState.CONTACT_DETECTED;
+        return this.device.isOpen ? homebridge_1.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED : homebridge_1.Characteristic.ContactSensorState.CONTACT_DETECTED;
     }
     // Handles the request to get he current door window state.
     getCurrentDoorWindowState(callback) {
@@ -19,14 +20,14 @@ class ISYDoorWindowSensorAccessory extends ISYDeviceAccessory_1.ISYDeviceAccesso
     // Mirrors change in the state of the underlying isj-js device object.
     handleExternalChange(propertyName, value, formattedValue) {
         super.handleExternalChange(propertyName, value, formattedValue);
-        this.sensorService.setCharacteristic(plugin_1.Characteristic.ContactSensorState, this.translateCurrentDoorWindowState());
+        this.sensorService.setCharacteristic(homebridge_1.Characteristic.ContactSensorState, this.translateCurrentDoorWindowState());
     }
     // Returns the set of services supported by this object.
     getServices() {
         super.getServices();
         const sensorService = new plugin_1.Service.ContactSensor();
         this.sensorService = sensorService;
-        sensorService.getCharacteristic(plugin_1.Characteristic.ContactSensorState).on('get', this.getCurrentDoorWindowState.bind(this));
+        sensorService.getCharacteristic(homebridge_1.Characteristic.ContactSensorState).on('get', this.getCurrentDoorWindowState.bind(this));
         return [this.informationService, sensorService];
     }
 }

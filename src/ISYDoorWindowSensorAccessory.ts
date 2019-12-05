@@ -1,11 +1,13 @@
+import { Characteristic } from 'homebridge';
 import { InsteonDoorWindowSensorDevice } from 'isy-js';
+
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
-import { Characteristic, Service } from './plugin';
+import { Service } from './plugin';
 
 export class ISYDoorWindowSensorAccessory extends ISYDeviceAccessory<InsteonDoorWindowSensorDevice> {
 	public doorWindowState: boolean;
 	public sensorService: any;
-	constructor(log, device) {
+	constructor(log: (msg: any) => void, device: InsteonDoorWindowSensorDevice) {
 		super(log, device);
 		this.doorWindowState = false;
 	}
@@ -19,7 +21,7 @@ export class ISYDoorWindowSensorAccessory extends ISYDeviceAccessory<InsteonDoor
 		callback(null, this.translateCurrentDoorWindowState());
 	}
 	// Mirrors change in the state of the underlying isj-js device object.
-	public handleExternalChange(propertyName, value, formattedValue) {
+	public handleExternalChange(propertyName: string, value: any, formattedValue: string) {
 		super.handleExternalChange(propertyName, value, formattedValue);
 		this.sensorService.setCharacteristic(Characteristic.ContactSensorState, this.translateCurrentDoorWindowState());
 	}

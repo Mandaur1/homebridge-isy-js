@@ -1,23 +1,21 @@
+import './ISYPlatform';
 import 'hap-nodejs';
 
 import { InsteonFanDevice } from 'isy-js';
 
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
-
 import { Characteristic, Service } from './plugin';
-
-import './ISYPlatform';
 
 export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice> {
 	public fanService: HAPNodeJS.Service;
 	public lightService: HAPNodeJS.Service;
-	constructor(log, device) {
+	constructor(log: (msg: any) => void, device: InsteonFanDevice) {
 		super(log, device);
 		// this.logger(JSON.stringify(this.device.scenes[0]));
 	}
 	// Translates the fan level from homebridge into the isy-js level. Maps from the 0-100
 	// to the four isy-js fan speed levels.
-	public translateHKToFanSpeed(fanStateHK) {
+	public translateHKToFanSpeed(fanStateHK: number) {
 		if (fanStateHK === 0) {
 			return 0;
 		} else if (fanStateHK > 0 && fanStateHK <= 25) {
@@ -33,12 +31,12 @@ export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice> {
 		}
 	}
 	// Returns the current state of the fan from the isy-js level to the 0-100 level of HK.
-	public getFanRotationSpeed(callback) {
+	public getFanRotationSpeed(callback: (...any: any[]) => void){
 		this.logger(`Getting fan rotation speed. Device says: ${this.device.fanSpeed} translation says: ${this.device.fanSpeed}`);
 		callback(null, this.device.fanSpeed);
 	}
 	// Sets the current state of the fan from the 0-100 level of HK to the isy-js level.
-	public setFanRotationSpeed(fanStateHK, callback) {
+	public setFanRotationSpeed(fanStateHK, callback: (...any: any[]) => void){
 		this.logger(`Sending command to set fan state (pre-translate) to: ${fanStateHK}`);
 		const newFanState = this.translateHKToFanSpeed(fanStateHK);
 		this.logger(`Sending command to set fan state to: ${fanStateHK}`);
@@ -65,7 +63,7 @@ export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice> {
 		this.logger(`Setting fan on state to: ${onState} Device says: ${this.device.isOn}`);
 		if (onState !== this.device.isOn) {
 			if (onState) {
-				this.logger(`Turning fan on. Setting fan speed to high.`);
+				this.logger('Turning fan on. Setting fan speed to high.');
 				this.device
 					.updateIsOn(onState).handleWith(callback);
 			} else {
@@ -78,7 +76,7 @@ export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice> {
 			callback();
 		}
 	}
-	public setPowerState(powerOn, callback) {
+	public setPowerState(powerOn: boolean, callback: (...any: any[]) => void){
 		this.logger(`Setting powerstate to ${powerOn}`);
 		if (powerOn !== this.device.isOn) {
 			this.logger(`Changing powerstate to ${powerOn}`);
@@ -90,11 +88,11 @@ export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice> {
 		}
 	}
 	// Handles request to get the current on state
-	public getPowerState(callback) {
+	public getPowerState(callback: (...any: any[]) => void){
 		callback(null, this.device.isOn);
 	}
 	// Handles request to set the brightness level of dimmable lights. Ignore redundant commands.
-	public setBrightness(level, callback) {
+	public setBrightness(level, callback: (...any: any[]) => void) {
 		this.logger(`Setting brightness to ${level}`);
 		if (level !== this.device.brightnessLevel) {
 			this.device.updateBrightnessLevel(level);
@@ -104,11 +102,11 @@ export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice> {
 		}
 	}
 	// Handles a request to get the current brightness level for dimmable lights.
-	public getBrightness(callback) {
+	public getBrightness(callback: (...any: any[]) => void) {
 		callback(null, this.device.brightnessLevel);
 	}
 	// Mirrors change in the state of the underlying isj-js device object.
-	public handleExternalChange(propertyName, value, formattedValue) {
+	public handleExternalChange(propertyName: string, value: any, formattedValue: string) {
 		super.handleExternalChange(propertyName, value, formattedValue);
 		this.fanService.updateCharacteristic(Characteristic.On, this.device.isOn);
 		this.fanService.updateCharacteristic(Characteristic.RotationSpeed, this.device.fanSpeed);
@@ -125,7 +123,7 @@ export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice> {
 		const s = super.getServices();
 		const fanService = new Service.Fan();
 		this.fanService = fanService;
-		const lightService = new Service.Lightbulb(this.device.name + " - Light");
+		const lightService = new Service.Lightbulb(this.device.name + ' - Light');
 		this.lightService = lightService;
 		fanService.getCharacteristic(Characteristic.On).on('set', this.setFanOnState.bind(this));
 		fanService.getCharacteristic(Characteristic.On).on('get', this.getFanOnState.bind(this));

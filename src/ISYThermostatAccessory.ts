@@ -1,49 +1,51 @@
 import { InsteonThermostatDevice, Props } from 'isy-js';
+
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
 import { Characteristic, Service } from './plugin';
+
 export class ISYThermostatAccessory extends ISYDeviceAccessory<InsteonThermostatDevice> {
 	public targetTemperature: number;
 	public thermostatService: HAPNodeJS.Service;
-	constructor(log, device: InsteonThermostatDevice) {
+	constructor(log: (msg: any) => void, device: InsteonThermostatDevice) {
 		super(log, device);
 	}
-	public toCelsius(temp): any {
+	public toCelsius(temp: number): any {
 		return ((temp - 32.0) * 5.0) / 9.0;
 	}
-	public toFahrenheit(temp): any {
+	public toFahrenheit(temp: number): any {
 		return Math.round((temp * 9.0) / 5.0 + 32.0);
 	}
-	public getCurrentTemperature(callback) {
+	public getCurrentTemperature(callback: (...any: any[]) => void) {
 		this.logger(`Getting Current Temperature - Device says: ${this.device.currentTemperature} says: ${this.toCelsius(this.device.currentTemperature)}`);
 		callback(null, this.toCelsius(this.device.currentTemperature));
 	}
 
-	public getCoolSetPoint(callback) {
+	public getCoolSetPoint(callback: (...any: any[]) => void)  {
 		this.logger(`Getting Cooling Set Point - Device says: ${this.device.coolSetPoint} translation says: ${this.toCelsius(this.device.coolSetPoint)}`);
 		callback(null, this.toCelsius(this.device.coolSetPoint));
 	}
-	public getHeatSetPoint(callback) {
+	public getHeatSetPoint(callback: (...any: any[]) => void)  {
 		this.logger(`Getting Heating Set Point - Device says: ${this.device.heatSetPoint} translation says: ${this.toCelsius(this.device.heatSetPoint)}`);
 		callback(null, this.toCelsius(this.device.heatSetPoint));
 	}
-	public getMode(callback) {
+	public getMode(callback: (...any: any[]) => void) {
 		this.logger(`Getting Heating Cooling Mode - Device says: ${this.device.mode}`);
 		callback(null, this.device.mode);
 	}
-	public getOperatingMode(callback) {
+	public getOperatingMode(callback: (...any: any[]) => void)  {
 		this.logger(`Getting Heating Cooling State - Device says: ${this.device.operatingMode}`);
 		callback(null, this.device.operatingMode);
 	}
-	public getFanMode(callback) {
+	public getFanMode(callback: (...any: any[]) => void) {
 		this.logger(`Getting Fan State - Device says: ${this.device.fanMode}`);
 		callback(null, this.device.fanMode);
 	}
-	public getHumidity(callback) {
+	public getHumidity(callback: (...any: any[]) => void) {
 		this.logger(`Getting Current Rel. Humidity - Device says: ${this.device.humidity}`);
 		callback(null, this.device.humidity);
 	}
 	// Mirrors change in the state of the underlying isy-js device object.
-	public handleExternalChange(propertyName, value, formattedValue) {
+	public handleExternalChange(propertyName: string, value: any, formattedValue: string) {
 		super.handleExternalChange(propertyName, value, formattedValue);
 		switch (propertyName) {
 			case Props.Status:
@@ -95,7 +97,7 @@ export class ISYThermostatAccessory extends ISYDeviceAccessory<InsteonThermostat
 		//   .on('set', this.setThermostatRotationSpeed.bind(this));
 		return svcs;
 	}
-	public setCoolSetPoint(temp, callback) {
+	public setCoolSetPoint(temp: number, callback: (...any: any[]) => void) {
 		this.logger(`Sending command to set cool set point (pre-translate) to: ${temp}`);
 		const newSetPoint = this.toFahrenheit(temp);
 		this.logger(`Sending command to set cool set point to: ${newSetPoint}`);
@@ -106,7 +108,7 @@ export class ISYThermostatAccessory extends ISYDeviceAccessory<InsteonThermostat
 			callback();
 		}
 	}
-	public setHeatSetPoint(temp, callback) {
+	public setHeatSetPoint(temp: number, callback: (...any: any[]) => void) {
 		this.logger(`Sending command to set heat set point (pre-translate) to: ${temp}`);
 		const newSetPoint = this.toFahrenheit(temp);
 		this.logger(`Sending command to set heat set point to: ${newSetPoint}`);
@@ -118,7 +120,7 @@ export class ISYThermostatAccessory extends ISYDeviceAccessory<InsteonThermostat
 			callback();
 		}
 	}
-	public setHeatingCoolingMode(mode, callback) {
+	public setHeatingCoolingMode(mode: any, callback: (...any: any[]) => void) {
 		this.logger(`Sending command to set heating/cooling mode (pre-translate) to: ${mode}`);
 		// this.logger("THERM: " + this.device.name + " Sending command to set cool set point to: " + newSetPoint);
 		if (mode !== this.device.mode) {

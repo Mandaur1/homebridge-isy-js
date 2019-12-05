@@ -1,6 +1,9 @@
+import { Characteristic } from 'homebridge';
 import { ElkAlarmSensorDevice } from 'isy-js';
-import { Characteristic, Service } from "./plugin";
-import { ISYAccessory } from "./ISYAccessory";
+
+import { ISYAccessory } from './ISYAccessory';
+import { Service } from './plugin';
+
 export class ISYElkAlarmPanelAccessory extends ISYAccessory<ElkAlarmSensorDevice> {
 	public alarmPanelService: any;
 	constructor(log, device) {
@@ -16,11 +19,10 @@ export class ISYElkAlarmPanelAccessory extends ISYAccessory<ElkAlarmSensorDevice
 		const targetState = this.translateHKToAlarmTargetState(targetStateHK);
 		this.logger('ALARMSYSTEM: ' + this.device.name + ' Would send the target state of: ' + targetState);
 		if (this.device.getAlarmMode() !== targetState) {
-			this.device.sendSetAlarmModeCommand(targetState, function (result) {
+			this.device.sendSetAlarmModeCommand(targetState, function(result) {
 				callback();
 			});
-		}
-		else {
+		} else {
 			this.logger('ALARMSYSTEM: ' + this.device.name + ' Redundant command, already in that state.');
 			callback();
 		}
@@ -35,21 +37,16 @@ export class ISYElkAlarmPanelAccessory extends ISYAccessory<ElkAlarmSensorDevice
 		const sourceAlarmMode = this.device.getAlarmMode();
 		if (tripState >= this.device.ALARM_TRIP_STATE_TRIPPED) {
 			return Characteristic.SecuritySystemCurrentState.ALARM_TRIGGERED;
-		}
-		else if (sourceAlarmState === this.device.ALARM_STATE_NOT_READY_TO_ARM || sourceAlarmState === this.device.ALARM_STATE_READY_TO_ARM || sourceAlarmState === this.device.ALARM_STATE_READY_TO_ARM_VIOLATION) {
+		} else if (sourceAlarmState === this.device.ALARM_STATE_NOT_READY_TO_ARM || sourceAlarmState === this.device.ALARM_STATE_READY_TO_ARM || sourceAlarmState === this.device.ALARM_STATE_READY_TO_ARM_VIOLATION) {
 			return Characteristic.SecuritySystemCurrentState.DISARMED;
-		}
-		else {
+		} else {
 			if (sourceAlarmMode === this.device.ALARM_MODE_STAY || sourceAlarmMode === this.device.ALARM_MODE_STAY_INSTANT) {
 				return Characteristic.SecuritySystemCurrentState.STAY_ARM;
-			}
-			else if (sourceAlarmMode === this.device.ALARM_MODE_AWAY || sourceAlarmMode === this.device.ALARM_MODE_VACATION) {
+			} else if (sourceAlarmMode === this.device.ALARM_MODE_AWAY || sourceAlarmMode === this.device.ALARM_MODE_VACATION) {
 				return Characteristic.SecuritySystemCurrentState.AWAY_ARM;
-			}
-			else if (sourceAlarmMode === this.device.ALARM_MODE_NIGHT || sourceAlarmMode === this.device.ALARM_MODE_NIGHT_INSTANT) {
+			} else if (sourceAlarmMode === this.device.ALARM_MODE_NIGHT || sourceAlarmMode === this.device.ALARM_MODE_NIGHT_INSTANT) {
 				return Characteristic.SecuritySystemCurrentState.NIGHT_ARM;
-			}
-			else {
+			} else {
 				this.logger('ALARMSYSTEM: ' + this.device.name + ' Setting to disarmed because sourceAlarmMode is ' + sourceAlarmMode);
 				return Characteristic.SecuritySystemCurrentState.DISARMED;
 			}
@@ -60,14 +57,11 @@ export class ISYElkAlarmPanelAccessory extends ISYAccessory<ElkAlarmSensorDevice
 		const sourceAlarmState = this.device.getAlarmMode();
 		if (sourceAlarmState === this.device.ALARM_MODE_STAY || sourceAlarmState === this.device.ALARM_MODE_STAY_INSTANT) {
 			return Characteristic.SecuritySystemTargetState.STAY_ARM;
-		}
-		else if (sourceAlarmState === this.device.ALARM_MODE_AWAY || sourceAlarmState === this.device.ALARM_MODE_VACATION) {
+		} else if (sourceAlarmState === this.device.ALARM_MODE_AWAY || sourceAlarmState === this.device.ALARM_MODE_VACATION) {
 			return Characteristic.SecuritySystemTargetState.AWAY_ARM;
-		}
-		else if (sourceAlarmState === this.device.ALARM_MODE_NIGHT || sourceAlarmState === this.device.ALARM_MODE_NIGHT_INSTANT) {
+		} else if (sourceAlarmState === this.device.ALARM_MODE_NIGHT || sourceAlarmState === this.device.ALARM_MODE_NIGHT_INSTANT) {
 			return Characteristic.SecuritySystemTargetState.NIGHT_ARM;
-		}
-		else {
+		} else {
 			return Characteristic.SecuritySystemTargetState.DISARM;
 		}
 	}
@@ -75,14 +69,11 @@ export class ISYElkAlarmPanelAccessory extends ISYAccessory<ElkAlarmSensorDevice
 	public translateHKToAlarmTargetState(state) {
 		if (state === Characteristic.SecuritySystemTargetState.STAY_ARM) {
 			return this.device.ALARM_MODE_STAY;
-		}
-		else if (state === Characteristic.SecuritySystemTargetState.AWAY_ARM) {
+		} else if (state === Characteristic.SecuritySystemTargetState.AWAY_ARM) {
 			return this.device.ALARM_MODE_AWAY;
-		}
-		else if (state === Characteristic.SecuritySystemTargetState.NIGHT_ARM) {
+		} else if (state === Characteristic.SecuritySystemTargetState.NIGHT_ARM) {
 			return this.device.ALARM_MODE_NIGHT;
-		}
-		else {
+		} else {
 			return this.device.ALARM_MODE_DISARMED;
 		}
 	}

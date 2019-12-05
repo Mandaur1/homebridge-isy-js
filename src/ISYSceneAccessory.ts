@@ -1,33 +1,34 @@
 import { ISYScene } from 'isy-js';
+
 import { ISYAccessory } from './ISYAccessory';
-import { Characteristic, Service } from './plugin';
+import { Characteristic, onSet, Service } from './plugin';
 
 export class ISYSceneAccessory extends ISYAccessory<ISYScene> {
 	public dimmable: boolean;
 	public lightService: HAPNodeJS.Service;
 	public scene: ISYScene;
-	constructor(log, scene) {
+	constructor(log: (msg: any) => void, scene: ISYScene) {
 		super(log, scene);
 		this.scene = scene;
 		this.dimmable = scene.isDimmable;
 		// this.logger = function(msg) {log("Scene Accessory: " + scene.name + ": " + msg); };
 	}
 	// Handles the identify command
-	public identify(callback) {
+	public identify(callback: (...any: any[]) => void)  {
 		const that = this;
 	}
 	// Handles request to set the current powerstate from homekit. Will ignore redundant commands.
-	public setPowerState(powerOn, callback) {
+	public setPowerState(powerOn: boolean, callback: (...any) => void) {
 		this.logger(`Setting powerstate to ${powerOn}`);
 		if (this.scene.isOn !== powerOn) {
 			this.logger(`Changing powerstate to ${powerOn}`);
-			this.scene.updateIsOn(powerOn).handleWith(callback);
+			this.scene.updateBrightnessLevel(powerOn).handleWith(callback);
 		} else {
 			this.logger(`Ignoring redundant setPowerState`);
 			callback();
 		}
 	}
-	public setBrightness(level, callback) {
+	public setBrightness(level: number, callback: (...any) => void) {
 		this.logger(`Setting brightness to ${level}`);
 		if (level !== this.scene.brightnessLevel) {
 			this.scene.updateBrightnessLevel(level).handleWith(callback);
@@ -37,18 +38,18 @@ export class ISYSceneAccessory extends ISYAccessory<ISYScene> {
 		}
 	}
 	// Handles a request to get the current brightness level for dimmable lights.
-	public getBrightness(callback) {
+	public getBrightness(callback: (...any) => void) {
 		callback(null, this.scene.brightnessLevel);
 	}
 	// Mirrors change in the state of the underlying isj-js device object.
-	public handleExternalChange(propertyName, value, formattedValue) {
+	public handleExternalChange(propertyName: string, value: any, formattedValue: string) {
 		this.lightService.updateCharacteristic(Characteristic.On, this.scene.isOn);
 		if (this.dimmable) {
 			this.lightService.updateCharacteristic(Characteristic.Brightness, this.scene.brightnessLevel);
 		}
 	}
 	// Handles request to get the current on state
-	public getPowerState(callback) {
+	public getPowerState(callback: (...any: any[]) => void)  {
 		callback(null, this.scene.isOn);
 	}
 	// Returns the set of services supported by this object.
@@ -58,7 +59,7 @@ export class ISYSceneAccessory extends ISYAccessory<ISYScene> {
 		if (this.dimmable) {
 			this.lightService = new Service.Lightbulb();
 
-			this.lightService.addCharacteristic(Characteristic.Brightness).on('get', (f) => this.getBrightness(f)).on('set', (l, f) => this.setBrightness(l, f));
+			onSet(this.lightService.addCharacteristic(Characteristic.Brightness).on('get', (f) => this.getBrightness(f)), (this.device.updateBrightnessLevel));
 		} else {
 			this.lightService = new Service.Switch();
 		}

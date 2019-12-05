@@ -18,7 +18,7 @@ class ISYSceneAccessory extends ISYAccessory_1.ISYAccessory {
         this.logger(`Setting powerstate to ${powerOn}`);
         if (this.scene.isOn !== powerOn) {
             this.logger(`Changing powerstate to ${powerOn}`);
-            this.scene.updateIsOn(powerOn).handleWith(callback);
+            this.scene.updateBrightnessLevel(powerOn).handleWith(callback);
         }
         else {
             this.logger(`Ignoring redundant setPowerState`);
@@ -55,7 +55,7 @@ class ISYSceneAccessory extends ISYAccessory_1.ISYAccessory {
         super.getServices();
         if (this.dimmable) {
             this.lightService = new plugin_1.Service.Lightbulb();
-            this.lightService.addCharacteristic(plugin_1.Characteristic.Brightness).on('get', (f) => this.getBrightness(f)).on('set', (l, f) => this.setBrightness(l, f));
+            plugin_1.onSet(this.lightService.addCharacteristic(plugin_1.Characteristic.Brightness).on('get', (f) => this.getBrightness(f)), (this.device.updateBrightnessLevel));
         }
         else {
             this.lightService = new plugin_1.Service.Switch();

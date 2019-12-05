@@ -1,6 +1,7 @@
 import { IgnoreDeviceRule } from 'config';
 import { API } from 'homebridge';
 import { ElkAlarmSensorDevice, InsteonDoorWindowSensorDevice, InsteonFanDevice, InsteonLockDevice, InsteonMotionSensorDevice, InsteonOutletDevice, InsteonRelayDevice, InsteonThermostatDevice, ISY, ISYNode, NodeTypes } from 'isy-js';
+
 import { ISYDoorWindowSensorAccessory } from './ISYDoorWindowSensorAccessory';
 import { ISYElkAlarmPanelAccessory } from './ISYElkAlarmPanelAccessory';
 import { ISYFanAccessory } from './ISYFanAccessory';
@@ -11,6 +12,7 @@ import { ISYOutletAccessory } from './ISYOutletAccessory';
 import { ISYRelayAccessory } from './ISYRelayAccessory';
 import { ISYSceneAccessory } from './ISYSceneAccessory';
 import { ISYThermostatAccessory } from './ISYThermostatAccessory';
+
 export class ISYPlatform {
 	public log: any;
 	public config: any;
@@ -34,6 +36,7 @@ export class ISYPlatform {
 		this.includeAllScenes = config.includeAllScenes === undefined ? false : config.includeAllScenes;
 		this.includedScenes = config.includedScenes === undefined ? [] : config.includedScenes;
 		this.ignoreRules = config.ignoreDevices;
+
 		this.isy = new ISY(this.host, this.username, this.password, config.elkEnabled, null, config.useHttps, true, this.debugLoggingEnabled, null, log);
 	}
 	public logger(msg: string) {

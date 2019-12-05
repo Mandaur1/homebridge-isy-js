@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+require("./ISYPlatform");
 require("hap-nodejs");
 const ISYDeviceAccessory_1 = require("./ISYDeviceAccessory");
 const plugin_1 = require("./plugin");
-require("./ISYPlatform");
 class ISYFanAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
     constructor(log, device) {
         super(log, device);
@@ -63,7 +63,7 @@ class ISYFanAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
         this.logger(`Setting fan on state to: ${onState} Device says: ${this.device.isOn}`);
         if (onState !== this.device.isOn) {
             if (onState) {
-                this.logger(`Turning fan on. Setting fan speed to high.`);
+                this.logger('Turning fan on. Setting fan speed to high.');
                 this.device
                     .updateIsOn(onState).handleWith(callback);
             }
@@ -127,7 +127,7 @@ class ISYFanAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
         const s = super.getServices();
         const fanService = new plugin_1.Service.Fan();
         this.fanService = fanService;
-        const lightService = new plugin_1.Service.Lightbulb(this.device.name + " - Light");
+        const lightService = new plugin_1.Service.Lightbulb(this.device.name + ' - Light');
         this.lightService = lightService;
         fanService.getCharacteristic(plugin_1.Characteristic.On).on('set', this.setFanOnState.bind(this));
         fanService.getCharacteristic(plugin_1.Characteristic.On).on('get', this.getFanOnState.bind(this));

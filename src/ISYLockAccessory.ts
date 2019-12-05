@@ -1,10 +1,12 @@
+import { Characteristic } from 'hap-nodejs';
 import { InsteonLockDevice } from 'isy-js';
-import { Characteristic, Service } from "./plugin";
+
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
+import { Service } from './plugin';
 
 export class ISYLockAccessory extends ISYDeviceAccessory<InsteonLockDevice> {
 	public lockService: any;
-	constructor(log, device) {
+	constructor(log: (msg: any) => void, device: InsteonLockDevice) {
 		super(log, device);
 	}
 	// Handles an identify request
@@ -12,11 +14,12 @@ export class ISYLockAccessory extends ISYDeviceAccessory<InsteonLockDevice> {
 		callback();
 	}
 	// Handles a set to the target lock state. Will ignore redundant commands.
-	public setTargetLockState(lockState, callback) {
+	public setTargetLockState(lockState: number, callback: (...any: any[]) => void) {
 		this.logger(`Sending command to set lock state to: ${lockState}`);
 		if (lockState !== this.getDeviceCurrentStateAsHK()) {
 			const targetLockValue = lockState === 0 ? false : true;
 			this.device.sendLockCommand(targetLockValue, callback);
+
 		} else {
 			callback();
 		}

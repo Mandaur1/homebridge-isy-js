@@ -4,3 +4,5 @@ node_modules/*
 .jshintrc
 .vscode
 .vscode/*
+ISYNodesDump.json
+ISYConfigDump.json

@@ -1,36 +1,37 @@
 import { InsteonOutletDevice } from 'isy-js';
-import { Characteristic, Service } from "./plugin";
-import { ISYDeviceAccessory } from "./ISYDeviceAccessory";
+
+import { ISYDeviceAccessory } from './ISYDeviceAccessory';
+import { Characteristic, Service } from './plugin';
+
 export class ISYOutletAccessory extends ISYDeviceAccessory<InsteonOutletDevice> {
 	public outletService: any;
-	constructor(log, device) {
+	constructor(log: (msg: any) => void, device: InsteonOutletDevice) {
 		super(log, device);
 	}
 	// Handles the identify command
 	// Handles a request to set the outlet state. Ignores redundant sets based on current states.
-	public setOutletState(outletState, callback) {
+	public setOutletState(outletState: boolean, callback: (...any: any[]) => any) {
 		this.logger(`OUTLET: Sending command to set outlet state to: ${outletState}`);
 		if (outletState !== this.device.isOn) {
 			this.device
 				.updateIsOn(outletState)
 				.then(callback(true))
 				.catch(callback(false));
-		}
-		else {
+		} else {
 			callback();
 		}
 	}
 	// Handles a request to get the current outlet state based on underlying isy-js device object.
-	public getOutletState(callback) {
+	public getOutletState(callback: (...any: any[]) => void){
 		callback(null, this.device.isOn);
 	}
 	// Handles a request to get the current in use state of the outlet. We set this to true always as
 	// there is no way to deterine this through the isy.
-	public getOutletInUseState(callback) {
+	public getOutletInUseState(callback: (...any: any[]) => void){
 		callback(null, true);
 	}
 	// Mirrors change in the state of the underlying isj-js device object.
-	public handleExternalChange(propertyName, value, formattedValue) {
+	public handleExternalChange(propertyName: string, value: any, formattedValue: string) {
 		super.handleExternalChange(propertyName, value, formattedValue);
 		this.outletService.updateCharacteristic(Characteristic.On, this.device.isOn);
 	}

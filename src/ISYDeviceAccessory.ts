@@ -1,4 +1,5 @@
 import { InsteonBaseDevice } from 'isy-js';
+
 import { ISYAccessory } from './ISYAccessory';
 
 export class ISYDeviceAccessory<T extends InsteonBaseDevice> extends ISYAccessory<T> {

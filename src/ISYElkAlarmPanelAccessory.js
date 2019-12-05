@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const plugin_1 = require("./plugin");
+const homebridge_1 = require("homebridge");
 const ISYAccessory_1 = require("./ISYAccessory");
+const plugin_1 = require("./plugin");
 class ISYElkAlarmPanelAccessory extends ISYAccessory_1.ISYAccessory {
     constructor(log, device) {
         super(log, device);
@@ -34,24 +35,24 @@ class ISYElkAlarmPanelAccessory extends ISYAccessory_1.ISYAccessory {
         const sourceAlarmState = this.device.getAlarmState();
         const sourceAlarmMode = this.device.getAlarmMode();
         if (tripState >= this.device.ALARM_TRIP_STATE_TRIPPED) {
-            return plugin_1.Characteristic.SecuritySystemCurrentState.ALARM_TRIGGERED;
+            return homebridge_1.Characteristic.SecuritySystemCurrentState.ALARM_TRIGGERED;
         }
         else if (sourceAlarmState === this.device.ALARM_STATE_NOT_READY_TO_ARM || sourceAlarmState === this.device.ALARM_STATE_READY_TO_ARM || sourceAlarmState === this.device.ALARM_STATE_READY_TO_ARM_VIOLATION) {
-            return plugin_1.Characteristic.SecuritySystemCurrentState.DISARMED;
+            return homebridge_1.Characteristic.SecuritySystemCurrentState.DISARMED;
         }
         else {
             if (sourceAlarmMode === this.device.ALARM_MODE_STAY || sourceAlarmMode === this.device.ALARM_MODE_STAY_INSTANT) {
-                return plugin_1.Characteristic.SecuritySystemCurrentState.STAY_ARM;
+                return homebridge_1.Characteristic.SecuritySystemCurrentState.STAY_ARM;
             }
             else if (sourceAlarmMode === this.device.ALARM_MODE_AWAY || sourceAlarmMode === this.device.ALARM_MODE_VACATION) {
-                return plugin_1.Characteristic.SecuritySystemCurrentState.AWAY_ARM;
+                return homebridge_1.Characteristic.SecuritySystemCurrentState.AWAY_ARM;
             }
             else if (sourceAlarmMode === this.device.ALARM_MODE_NIGHT || sourceAlarmMode === this.device.ALARM_MODE_NIGHT_INSTANT) {
-                return plugin_1.Characteristic.SecuritySystemCurrentState.NIGHT_ARM;
+                return homebridge_1.Characteristic.SecuritySystemCurrentState.NIGHT_ARM;
             }
             else {
                 this.logger('ALARMSYSTEM: ' + this.device.name + ' Setting to disarmed because sourceAlarmMode is ' + sourceAlarmMode);
-                return plugin_1.Characteristic.SecuritySystemCurrentState.DISARMED;
+                return homebridge_1.Characteristic.SecuritySystemCurrentState.DISARMED;
             }
         }
     }
@@ -59,27 +60,27 @@ class ISYElkAlarmPanelAccessory extends ISYAccessory_1.ISYAccessory {
     translateAlarmTargetStateToHK() {
         const sourceAlarmState = this.device.getAlarmMode();
         if (sourceAlarmState === this.device.ALARM_MODE_STAY || sourceAlarmState === this.device.ALARM_MODE_STAY_INSTANT) {
-            return plugin_1.Characteristic.SecuritySystemTargetState.STAY_ARM;
+            return homebridge_1.Characteristic.SecuritySystemTargetState.STAY_ARM;
         }
         else if (sourceAlarmState === this.device.ALARM_MODE_AWAY || sourceAlarmState === this.device.ALARM_MODE_VACATION) {
-            return plugin_1.Characteristic.SecuritySystemTargetState.AWAY_ARM;
+            return homebridge_1.Characteristic.SecuritySystemTargetState.AWAY_ARM;
         }
         else if (sourceAlarmState === this.device.ALARM_MODE_NIGHT || sourceAlarmState === this.device.ALARM_MODE_NIGHT_INSTANT) {
-            return plugin_1.Characteristic.SecuritySystemTargetState.NIGHT_ARM;
+            return homebridge_1.Characteristic.SecuritySystemTargetState.NIGHT_ARM;
         }
         else {
-            return plugin_1.Characteristic.SecuritySystemTargetState.DISARM;
+            return homebridge_1.Characteristic.SecuritySystemTargetState.DISARM;
         }
     }
     // Translates the homekit version of the alarm target state into the appropriate elk alarm panel state
     translateHKToAlarmTargetState(state) {
-        if (state === plugin_1.Characteristic.SecuritySystemTargetState.STAY_ARM) {
+        if (state === homebridge_1.Characteristic.SecuritySystemTargetState.STAY_ARM) {
             return this.device.ALARM_MODE_STAY;
         }
-        else if (state === plugin_1.Characteristic.SecuritySystemTargetState.AWAY_ARM) {
+        else if (state === homebridge_1.Characteristic.SecuritySystemTargetState.AWAY_ARM) {
             return this.device.ALARM_MODE_AWAY;
         }
-        else if (state === plugin_1.Characteristic.SecuritySystemTargetState.NIGHT_ARM) {
+        else if (state === homebridge_1.Characteristic.SecuritySystemTargetState.NIGHT_ARM) {
             return this.device.ALARM_MODE_NIGHT;
         }
         else {
@@ -99,17 +100,17 @@ class ISYElkAlarmPanelAccessory extends ISYAccessory_1.ISYAccessory {
         super.handleExternalChange(propertyName, value, formattedValue);
         this.logger('ALARMPANEL: ' + this.device.name + ' Source device. Currenty state locally -' + this.device.getAlarmStatusAsText());
         this.logger('ALARMPANEL: ' + this.device.name + ' Got alarm change notification. Setting HK target state to: ' + this.translateAlarmTargetStateToHK() + ' Setting HK Current state to: ' + this.translateAlarmCurrentStateToHK());
-        this.alarmPanelService.setCharacteristic(plugin_1.Characteristic.SecuritySystemTargetState, this.translateAlarmTargetStateToHK());
-        this.alarmPanelService.setCharacteristic(plugin_1.Characteristic.SecuritySystemCurrentState, this.translateAlarmCurrentStateToHK());
+        this.alarmPanelService.setCharacteristic(homebridge_1.Characteristic.SecuritySystemTargetState, this.translateAlarmTargetStateToHK());
+        this.alarmPanelService.setCharacteristic(homebridge_1.Characteristic.SecuritySystemCurrentState, this.translateAlarmCurrentStateToHK());
     }
     // Returns the set of services supported by this object.
     getServices() {
         super.getServices();
         const alarmPanelService = new plugin_1.Service.SecuritySystem();
         this.alarmPanelService = alarmPanelService;
-        alarmPanelService.getCharacteristic(plugin_1.Characteristic.SecuritySystemTargetState).on('set', this.setAlarmTargetState.bind(this));
-        alarmPanelService.getCharacteristic(plugin_1.Characteristic.SecuritySystemTargetState).on('get', this.getAlarmTargetState.bind(this));
-        alarmPanelService.getCharacteristic(plugin_1.Characteristic.SecuritySystemCurrentState).on('get', this.getAlarmCurrentState.bind(this));
+        alarmPanelService.getCharacteristic(homebridge_1.Characteristic.SecuritySystemTargetState).on('set', this.setAlarmTargetState.bind(this));
+        alarmPanelService.getCharacteristic(homebridge_1.Characteristic.SecuritySystemTargetState).on('get', this.getAlarmTargetState.bind(this));
+        alarmPanelService.getCharacteristic(homebridge_1.Characteristic.SecuritySystemCurrentState).on('get', this.getAlarmCurrentState.bind(this));
         return [this.informationService, alarmPanelService];
     }
 }

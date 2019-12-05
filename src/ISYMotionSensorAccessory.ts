@@ -1,18 +1,20 @@
 import { InsteonMotionSensorDevice } from 'isy-js';
-import { Characteristic, Service } from "./plugin";
-import { ISYDeviceAccessory } from "./ISYDeviceAccessory";
+
+import { ISYDeviceAccessory } from './ISYDeviceAccessory';
+import { Characteristic, Service } from './plugin';
+
 export class ISYMotionSensorAccessory extends ISYDeviceAccessory<InsteonMotionSensorDevice> {
 	public sensorService: any;
-	constructor(log, device) {
+	constructor(log: (msg: any) => void, device: InsteonMotionSensorDevice) {
 		super(log, device);
 	}
 	// Handles the identify command.
 	// Handles the request to get he current motion sensor state.
-	public getCurrentMotionSensorState(callback) {
+	public getCurrentMotionSensorState(callback: (...any: any[]) => void)  {
 		callback(null, this.device.isMotionDetected);
 	}
 	// Mirrors change in the state of the underlying isj-js device object.
-	public handleExternalChange(propertyName, value, formattedValue) {
+	public handleExternalChange(propertyName: string, value: any, formattedValue: string) {
 		super.handleExternalChange(propertyName, value, formattedValue);
 		this.sensorService.setCharacteristic(Characteristic.MotionDetected, this.device.isMotionDetected);
 	}

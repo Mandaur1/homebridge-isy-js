@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const hap_nodejs_1 = require("hap-nodejs");
 const ISYRelayAccessory_1 = require("ISYRelayAccessory");
 const plugin_1 = require("./plugin");
 class ISYDimmableAccessory extends ISYRelayAccessory_1.ISYRelayAccessory {
@@ -12,7 +13,7 @@ class ISYDimmableAccessory extends ISYRelayAccessory_1.ISYRelayAccessory {
     handleExternalChange(propertyName, value, formattedValue) {
         super.handleExternalChange(propertyName, value, formattedValue);
         // this.lightService.updateCharacteristic(Characteristic.On, this.device.isOn);
-        this.primaryService.updateCharacteristic(plugin_1.Characteristic.Brightness, this.device.brightnessLevel);
+        this.primaryService.updateCharacteristic(hap_nodejs_1.Characteristic.Brightness.name, this.device.brightnessLevel);
     }
     // Handles request to get the current on state
     // Handles request to get the current on state
@@ -36,11 +37,11 @@ class ISYDimmableAccessory extends ISYRelayAccessory_1.ISYRelayAccessory {
     getServices() {
         super.getServices();
         this.primaryService = new plugin_1.Service.Lightbulb();
-        this.primaryService.getCharacteristic(plugin_1.Characteristic.On).on('set', this.setPowerState.bind(this));
-        this.primaryService.getCharacteristic(plugin_1.Characteristic.On).on('get', this.getPowerState.bind(this));
+        this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.On).onSet(this.device.updateIsOn);
+        this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.On).on('get', this.getPowerState.bind(this));
         // lightBulbService.getCharacteristic(Characteristic.On).on('get', this.getPowerState.bind(this));
-        this.primaryService.addCharacteristic(plugin_1.Characteristic.Brightness).on('get', this.getBrightness.bind(this));
-        this.primaryService.getCharacteristic(plugin_1.Characteristic.Brightness).on('set', this.setBrightness.bind(this));
+        this.primaryService.addCharacteristic(hap_nodejs_1.Characteristic.Brightness).on('get', this.getBrightness.bind(this));
+        plugin_1.onSet(this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.Brightness), this.device.updateBrightnessLevel);
         return [this.informationService, this.primaryService];
     }
 }
