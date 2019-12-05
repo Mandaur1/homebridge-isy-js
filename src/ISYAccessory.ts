@@ -1,6 +1,8 @@
+import { Accessory } from 'hap-nodejs';
 import { Controls, ISYNode } from 'isy-js';
-import {Accessory} from 'hap-nodejs';
-import { UUIDGen, Service, Characteristic } from "./plugin";
+
+import { Characteristic, Service, UUIDGen } from './plugin';
+
 export class ISYAccessory<T extends ISYNode> extends Accessory {
 	[x: string]: any;
 	public logger: (msg: any) => void;
@@ -20,7 +22,7 @@ export class ISYAccessory<T extends ISYNode> extends Accessory {
 		};
 		this.device = device;
 		this.address = device.address;
-		device.onPropertyChanged(null, this.handleExternalChange.bind(this));
+		device.onPropertyChanged(null, this.handleExternalChange);
 	}
 	public getServices(): HAPNodeJS.Service[] {
 		const informationService = new Service.AccessoryInformation();
@@ -32,7 +34,7 @@ export class ISYAccessory<T extends ISYNode> extends Accessory {
 		this.informationService = informationService;
 		return [this.informationService];
 	}
-	public handleExternalChange(propertyName, value, formattedValue) {
+	public handleExternalChange(propertyName: string, value: any, formattedValue: string) {
 		const name = propertyName in Controls ? Controls[propertyName].label : propertyName;
 		this.logger(`Incoming external change to ${name}. Device says: ${value} (${formattedValue})`);
 	}
