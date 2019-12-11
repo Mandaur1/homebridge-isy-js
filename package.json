@@ -10,7 +10,7 @@
     "start": "homebridge -D -P ./"
   },
   "engines": {
-    "node": ">8.0.0",
+    "node": ">12.0.0",
     "homebridge": ">=0.4.5"
   },
   "repository": {
@@ -31,12 +31,12 @@
     "babel-preset-typescript": "",
     "fake-isy-994i": "",
     "mocha": "",
-    "@types/node": "^10.11.0",
+    "@types/node": "",
     "@types/restler": ""
   },
   "dependencies": {
     "faye-websocket": "",
-    "hap-nodejs": "",
+    "hap-nodejs": "^0.5.3",
     "homebridge": "^0.4.50",
     "homebridge-lib": "^4.4.8",
     "isy-js": "git+https://github.com/pradeepmouli/isy-js.git#v5",
