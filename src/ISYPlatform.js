@@ -1,18 +1,31 @@
 "use strict";
+var __values = (this && this.__values) || function(o) {
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const isy_js_1 = require("isy-js");
-const ISYDoorWindowSensorAccessory_1 = require("./ISYDoorWindowSensorAccessory");
-const ISYElkAlarmPanelAccessory_1 = require("./ISYElkAlarmPanelAccessory");
-const ISYFanAccessory_1 = require("./ISYFanAccessory");
-const ISYGarageDoorAccessory_1 = require("./ISYGarageDoorAccessory");
-const ISYLockAccessory_1 = require("./ISYLockAccessory");
-const ISYMotionSensorAccessory_1 = require("./ISYMotionSensorAccessory");
-const ISYOutletAccessory_1 = require("./ISYOutletAccessory");
-const ISYRelayAccessory_1 = require("./ISYRelayAccessory");
-const ISYSceneAccessory_1 = require("./ISYSceneAccessory");
-const ISYThermostatAccessory_1 = require("./ISYThermostatAccessory");
-class ISYPlatform {
-    constructor(log, config, homebridge) {
+var isy_js_1 = require("isy-js");
+var ISYDimmerAccessory_1 = require("./ISYDimmerAccessory");
+var ISYDoorWindowSensorAccessory_1 = require("./ISYDoorWindowSensorAccessory");
+var ISYElkAlarmPanelAccessory_1 = require("./ISYElkAlarmPanelAccessory");
+var ISYFanAccessory_1 = require("./ISYFanAccessory");
+var ISYGarageDoorAccessory_1 = require("./ISYGarageDoorAccessory");
+var ISYLockAccessory_1 = require("./ISYLockAccessory");
+var ISYMotionSensorAccessory_1 = require("./ISYMotionSensorAccessory");
+var ISYOutletAccessory_1 = require("./ISYOutletAccessory");
+var ISYRelayAccessory_1 = require("./ISYRelayAccessory");
+var ISYSceneAccessory_1 = require("./ISYSceneAccessory");
+var ISYThermostatAccessory_1 = require("./ISYThermostatAccessory");
+// tslint:disable-next-line: ordered-imports
+var ISYPlatform = /** @class */ (function () {
+    function ISYPlatform(log, config, homebridge) {
         this.log = log;
         this.config = config;
         this.host = config.host;
@@ -23,156 +36,246 @@ class ISYPlatform {
         this.includeAllScenes = config.includeAllScenes === undefined ? false : config.includeAllScenes;
         this.includedScenes = config.includedScenes === undefined ? [] : config.includedScenes;
         this.ignoreRules = config.ignoreDevices;
+        this.homebridge = homebridge;
         this.isy = new isy_js_1.ISY(this.host, this.username, this.password, config.elkEnabled, null, config.useHttps, true, this.debugLoggingEnabled, null, log);
     }
-    logger(msg) {
+    ISYPlatform.prototype.logger = function (msg) {
         if (this.debugLoggingEnabled || (process.env.ISYJSDEBUG !== undefined && process.env.IYJSDEBUG !== null)) {
             // var timeStamp = new Date();
-            this.log(`Platform: ${msg}`);
+            this.log("Platform: " + msg);
         }
-    }
+    };
     // Checks the device against the configuration to see if it should be ignored.
-    shouldIgnore(device) {
-        const deviceAddress = device.address;
-        if (device.nodeType === isy_js_1.NodeTypes.Scene && this.includeAllScenes === false) {
-            for (const sceneAddress of this.includedScenes) {
-                if (sceneAddress === deviceAddress) {
-                    return false;
+    ISYPlatform.prototype.shouldIgnore = function (device) {
+        var e_1, _a, e_2, _b;
+        var deviceAddress = device.address;
+        var returnValue = true;
+        if (device instanceof isy_js_1.ISYScene && this.includeAllScenes === false) {
+            try {
+                for (var _c = __values(this.includedScenes), _d = _c.next(); !_d.done; _d = _c.next()) {
+                    var sceneAddress = _d.value;
+                    if (sceneAddress === deviceAddress) {
+                        return false;
+                    }
                 }
             }
-            return true;
+            catch (e_1_1) { e_1 = { error: e_1_1 }; }
+            finally {
+                try {
+                    if (_d && !_d.done && (_a = _c.return)) _a.call(_c);
+                }
+                finally { if (e_1) throw e_1.error; }
+            }
         }
-        else {
-            if (this.config.ignoreDevices === undefined) {
-                return false;
+        if (this.config.ignoreDevices === undefined) {
+            return false;
+        }
+        if (this.includeAllScenes || device instanceof isy_js_1.ISYDevice) {
+            var deviceName = device.name;
+            try {
+                for (var _e = __values(this.ignoreRules), _f = _e.next(); !_f.done; _f = _e.next()) {
+                    var rule = _f.value;
+                    if (rule.nameContains !== undefined && rule.nameContains !== '') {
+                        if (deviceName.indexOf(rule.nameContains) === -1) {
+                            continue;
+                        }
+                    }
+                    if (rule.lastAddressDigit !== undefined && rule.lastAddressDigit !== null) {
+                        if (deviceAddress.indexOf(String(rule.lastAddressDigit), deviceAddress.length - 2) === -1) {
+                            continue;
+                        }
+                    }
+                    if (rule.address !== undefined && rule.address !== '') {
+                        if (deviceAddress !== rule.address) {
+                            continue;
+                        }
+                    }
+                    if (rule.nodeDef !== undefined) {
+                        if (device.nodeDefId !== rule.nodeDef) {
+                            continue;
+                        }
+                    }
+                    if (rule.folder !== undefined) {
+                        if (device.folder !== rule.folder) {
+                            continue;
+                        }
+                    }
+                    this.logger('Ignoring device: ' + deviceName + ' (' + deviceAddress + ') because of rule: ' + JSON.stringify(rule));
+                    return true;
+                }
             }
-            const deviceName = device.name;
-            for (const rule of this.ignoreRules) {
-                if (rule.nameContains !== undefined && rule.nameContains !== '') {
-                    if (deviceName.indexOf(rule.nameContains) === -1) {
-                        continue;
-                    }
+            catch (e_2_1) { e_2 = { error: e_2_1 }; }
+            finally {
+                try {
+                    if (_f && !_f.done && (_b = _e.return)) _b.call(_e);
                 }
-                if (rule.lastAddressDigit !== undefined && rule.lastAddressDigit !== null) {
-                    if (deviceAddress.indexOf(String(rule.lastAddressDigit), deviceAddress.length - 2) === -1) {
-                        continue;
-                    }
-                }
-                if (rule.address !== undefined && rule.address !== '') {
-                    if (deviceAddress !== rule.address) {
-                        continue;
-                    }
-                }
-                if (rule.nodeDef !== undefined) {
-                    if (device.nodeDefId !== rule.nodeDef) {
-                        continue;
-                    }
-                }
-                this.logger('Ignoring device: ' + deviceName + ' (' + deviceAddress + ') because of rule: ' + JSON.stringify(rule));
-                return true;
+                finally { if (e_2) throw e_2.error; }
             }
         }
         return false;
-    }
-    getGarageEntry(address) {
-        const garageDoorList = this.config.garageDoors;
+    };
+    ISYPlatform.prototype.getGarageEntry = function (address) {
+        var garageDoorList = this.config.garageDoors;
         if (garageDoorList !== undefined) {
-            for (let index = 0; index < garageDoorList.length; index++) {
-                const garageEntry = garageDoorList[index];
+            for (var index = 0; index < garageDoorList.length; index++) {
+                var garageEntry = garageDoorList[index];
                 if (garageEntry.address === address) {
                     return garageEntry;
                 }
             }
         }
         return null;
-    }
-    renameDeviceIfNeeded(device) {
-        const deviceAddress = device.address;
-        const deviceName = device.name;
-        if (this.config.renameDevices === undefined) {
-            return deviceName;
+    };
+    ISYPlatform.prototype.renameDeviceIfNeeded = function (device) {
+        var e_3, _a, e_4, _b, e_5, _c;
+        var deviceAddress = device.address;
+        var deviceName = device.name;
+        //if (this.config.renameDevices === undefined) {
+        //return deviceName;
+        //}
+        if (this.config.transformNames !== undefined) {
+            if (this.config.transformNames.remove !== undefined)
+                try {
+                    for (var _d = __values(this.config.transformNames.remove), _e = _d.next(); !_e.done; _e = _d.next()) {
+                        var removeText = _e.value;
+                        deviceName.replace(removeText, '');
+                    }
+                }
+                catch (e_3_1) { e_3 = { error: e_3_1 }; }
+                finally {
+                    try {
+                        if (_e && !_e.done && (_a = _d.return)) _a.call(_d);
+                    }
+                    finally { if (e_3) throw e_3.error; }
+                }
+            if (this.config.transformNames.replace !== undefined)
+                try {
+                    for (var _f = __values(this.config.transformNames.replace), _g = _f.next(); !_g.done; _g = _f.next()) {
+                        var replaceRule = _g.value;
+                        deviceName.replace(replaceRule.replace, replaceRule.with);
+                    }
+                }
+                catch (e_4_1) { e_4 = { error: e_4_1 }; }
+                finally {
+                    try {
+                        if (_g && !_g.done && (_b = _f.return)) _b.call(_f);
+                    }
+                    finally { if (e_4) throw e_4.error; }
+                }
         }
-        for (const rule of this.config.renameDevices) {
-            if (rule.nameContains !== undefined && rule.nameContains !== '') {
-                if (deviceName.indexOf(rule.nameContains) === -1) {
-                    continue;
+        if (this.config.renameDevices !== undefined) {
+            try {
+                for (var _h = __values(this.config.renameDevices), _j = _h.next(); !_j.done; _j = _h.next()) {
+                    var rule = _j.value;
+                    if (rule.name !== undefined && rule.name !== '') {
+                        if (deviceName.indexOf(rule.name) === -1) {
+                            continue;
+                        }
+                    }
+                    if (rule.address !== undefined && rule.address !== '') {
+                        if (deviceAddress !== rule.address) {
+                            continue;
+                        }
+                    }
+                    if (rule.newName === undefined) {
+                        this.logger("Rule to rename device is present but no new name specified. Impacting device: " + deviceName);
+                        return deviceName;
+                    }
+                    else {
+                        this.logger("Renaming device: " + deviceName + "[" + deviceAddress + "] to [" + rule.newName + "] because of rule [" + rule.name + "] [" + rule.newName + "] [" + rule.address + "]");
+                        return rule.newName;
+                    }
                 }
             }
-            if (rule.lastAddressDigit !== undefined && rule.lastAddressDigit !== '') {
-                if (deviceAddress.indexOf(rule.lastAddressDigit, deviceAddress.length - 2) === -1) {
-                    continue;
+            catch (e_5_1) { e_5 = { error: e_5_1 }; }
+            finally {
+                try {
+                    if (_j && !_j.done && (_c = _h.return)) _c.call(_h);
                 }
-            }
-            if (rule.address !== undefined && rule.address !== '') {
-                if (deviceAddress !== rule.address) {
-                    continue;
-                }
-            }
-            if (rule.newName === undefined) {
-                this.logger(`Rule to rename device is present but no new name specified. Impacting device: ${deviceName}`);
-                return deviceName;
-            }
-            else {
-                this.logger(`Renaming device: ${deviceName}[${deviceAddress}] to [${rule.newName}] because of rule [${rule.nameContains}] [${rule.lastAddressDigit}] [${rule.address}]`);
-                return rule.newName;
+                finally { if (e_5) throw e_5.error; }
             }
         }
         return deviceName;
-    }
+    };
     // Calls the isy-js library, retrieves the list of devices, and maps them to appropriate ISYXXXXAccessory devices.
-    accessories(callback) {
-        const that = this;
-        this.isy.initialize(() => {
-            const results = [];
-            const deviceList = this.isy.deviceList;
-            for (const device of deviceList.values()) {
-                let homeKitDevice = null;
-                const garageInfo = that.getGarageEntry(device.address);
-                if (!that.shouldIgnore(device)) {
-                    if (results.length >= 100) {
-                        that.logger('Skipping any further devices as 100 limit has been reached');
-                        break;
-                    }
-                    device.name = that.renameDeviceIfNeeded(device);
-                    if (garageInfo !== null) {
-                        let relayAddress = device.address.substr(0, device.address.length - 1);
-                        relayAddress += `2`;
-                        const relayDevice = that.isy.getDevice(relayAddress);
-                        homeKitDevice = new ISYGarageDoorAccessory_1.ISYGarageDoorAccessory(that.logger.bind(that), device, relayDevice, garageInfo.name, garageInfo.timeToOpen, garageInfo.alternate);
-                    }
-                    else {
-                        homeKitDevice = this.createAccessory(device);
-                    }
-                    if (homeKitDevice !== null) {
-                        // Make sure the device is address to the global map
-                        // deviceMap[device.address] = homeKitDevice;
-                        results.push(homeKitDevice);
+    ISYPlatform.prototype.accessories = function (callback) {
+        var _this = this;
+        var that = this;
+        this.isy.initialize(function () {
+            var e_6, _a, e_7, _b;
+            var results = [];
+            var deviceList = _this.isy.deviceList;
+            try {
+                for (var _c = __values(deviceList.values()), _d = _c.next(); !_d.done; _d = _c.next()) {
+                    var device = _d.value;
+                    var homeKitDevice = null;
+                    var garageInfo = that.getGarageEntry(device.address);
+                    if (!that.shouldIgnore(device)) {
+                        if (results.length >= 100) {
+                            that.logger('Skipping any further devices as 100 limit has been reached');
+                            break;
+                        }
+                        device.name = that.renameDeviceIfNeeded(device);
+                        if (garageInfo !== null) {
+                            var relayAddress = device.address.substr(0, device.address.length - 1);
+                            relayAddress += "2";
+                            var relayDevice = that.isy.getDevice(relayAddress);
+                            homeKitDevice = new ISYGarageDoorAccessory_1.ISYGarageDoorAccessory(that.logger.bind(that), device, relayDevice, garageInfo.name, garageInfo.timeToOpen, garageInfo.alternate);
+                        }
+                        else {
+                            homeKitDevice = that.createAccessory(device);
+                        }
+                        if (homeKitDevice !== null) {
+                            // Make sure the device is address to the global map
+                            // deviceMap[device.address] = homeKitDevice;
+                            results.push(homeKitDevice);
+                        }
                     }
                 }
             }
-            for (const scene of this.isy.sceneList.values()) {
-                if (!this.shouldIgnore(scene)) {
-                    results.push(new ISYSceneAccessory_1.ISYSceneAccessory(this.logger.bind(this), scene));
+            catch (e_6_1) { e_6 = { error: e_6_1 }; }
+            finally {
+                try {
+                    if (_d && !_d.done && (_a = _c.return)) _a.call(_c);
                 }
+                finally { if (e_6) throw e_6.error; }
+            }
+            try {
+                for (var _e = __values(_this.isy.sceneList.values()), _f = _e.next(); !_f.done; _f = _e.next()) {
+                    var scene = _f.value;
+                    if (!_this.shouldIgnore(scene)) {
+                        results.push(new ISYSceneAccessory_1.ISYSceneAccessory(_this.logger.bind(_this), scene));
+                    }
+                }
+            }
+            catch (e_7_1) { e_7 = { error: e_7_1 }; }
+            finally {
+                try {
+                    if (_f && !_f.done && (_b = _e.return)) _b.call(_e);
+                }
+                finally { if (e_7) throw e_7.error; }
             }
             if (that.isy.elkEnabled) {
                 if (results.length >= 100) {
                     that.logger('Skipping adding Elk Alarm panel as device count already at maximum');
                 }
                 else {
-                    const panelDevice = that.isy.getElkAlarmPanel();
+                    var panelDevice = that.isy.getElkAlarmPanel();
                     panelDevice.name = that.renameDeviceIfNeeded(panelDevice);
-                    const panelDeviceHK = new ISYElkAlarmPanelAccessory_1.ISYElkAlarmPanelAccessory(that.log, panelDevice);
+                    var panelDeviceHK = new ISYElkAlarmPanelAccessory_1.ISYElkAlarmPanelAccessory(that.log, panelDevice);
                     // deviceMap[panelDevice.address] = panelDeviceHK;
                     results.push(panelDeviceHK);
                 }
             }
-            that.logger(`Filtered device list has: ${results.length} devices`);
+            that.logger("Filtered device list has: " + results.length + " devices");
             callback(results);
         });
-    }
-    createAccessory(device) {
-        if (device instanceof isy_js_1.InsteonRelayDevice) {
+    };
+    ISYPlatform.prototype.createAccessory = function (device) {
+        if (device instanceof isy_js_1.InsteonDimmableDevice) {
+            return new ISYDimmerAccessory_1.ISYDimmableAccessory(this.logger.bind(this), device);
+        }
+        else if (device instanceof isy_js_1.InsteonRelayDevice) {
             return new ISYRelayAccessory_1.ISYRelayAccessory(this.logger.bind(this), device);
         }
         else if (device instanceof isy_js_1.InsteonLockDevice) {
@@ -197,6 +300,7 @@ class ISYPlatform {
             return new ISYThermostatAccessory_1.ISYThermostatAccessory(this.logger.bind(this), device);
         }
         return null;
-    }
-}
+    };
+    return ISYPlatform;
+}());
 exports.ISYPlatform = ISYPlatform;

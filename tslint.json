@@ -13,7 +13,7 @@
         "max-classes-per-file":false,
         "max-line-length":false,
         "quotemark":[true,"single"],
-       //"prefer-template": true,
+       "prefer-template": true,
         "interface-name": false
     },
     

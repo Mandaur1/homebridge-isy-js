@@ -1,12 +1,13 @@
-import { Characteristic } from 'homebridge';
+
 import { ElkAlarmSensorDevice } from 'isy-js';
 
 import { ISYAccessory } from './ISYAccessory';
-import { Service } from './plugin';
+import './utils';
+import { Characteristic, Service } from 'homebridge/node_modules/hap-nodejs';
 
 export class ISYElkAlarmPanelAccessory extends ISYAccessory<ElkAlarmSensorDevice> {
 	public alarmPanelService: any;
-	constructor(log, device) {
+	constructor (log, device) {
 		super(log, device);
 	}
 	// Handles the identify command
@@ -19,7 +20,7 @@ export class ISYElkAlarmPanelAccessory extends ISYAccessory<ElkAlarmSensorDevice
 		const targetState = this.translateHKToAlarmTargetState(targetStateHK);
 		this.logger('ALARMSYSTEM: ' + this.device.name + ' Would send the target state of: ' + targetState);
 		if (this.device.getAlarmMode() !== targetState) {
-			this.device.sendSetAlarmModeCommand(targetState, function(result) {
+			this.device.sendSetAlarmModeCommand(targetState, function (result) {
 				callback();
 			});
 		} else {
@@ -88,19 +89,20 @@ export class ISYElkAlarmPanelAccessory extends ISYAccessory<ElkAlarmSensorDevice
 	// Mirrors change in the state of the underlying isj-js device object.
 	public handleExternalChange(propertyName, value, formattedValue) {
 		super.handleExternalChange(propertyName, value, formattedValue);
-		this.logger('ALARMPANEL: ' + this.device.name + ' Source device. Currenty state locally -' + this.device.getAlarmStatusAsText());
-		this.logger('ALARMPANEL: ' + this.device.name + ' Got alarm change notification. Setting HK target state to: ' + this.translateAlarmTargetStateToHK() + ' Setting HK Current state to: ' + this.translateAlarmCurrentStateToHK());
+		this.logger(`ALARMPANEL: ${this.device.name} Source device. Currenty state locally -${this.device.getAlarmStatusAsText()}`);
+		this.logger(`ALARMPANEL: ${this.device.name} Got alarm change notification. Setting HK target state to: ${this.translateAlarmTargetStateToHK()} Setting HK Current state to: ${this.translateAlarmCurrentStateToHK()}`);
 		this.alarmPanelService.setCharacteristic(Characteristic.SecuritySystemTargetState, this.translateAlarmTargetStateToHK());
 		this.alarmPanelService.setCharacteristic(Characteristic.SecuritySystemCurrentState, this.translateAlarmCurrentStateToHK());
 	}
 	// Returns the set of services supported by this object.
 	public getServices() {
-		super.getServices();
-		const alarmPanelService = new Service.SecuritySystem();
-		this.alarmPanelService = alarmPanelService;
-		alarmPanelService.getCharacteristic(Characteristic.SecuritySystemTargetState).on('set', this.setAlarmTargetState.bind(this));
-		alarmPanelService.getCharacteristic(Characteristic.SecuritySystemTargetState).on('get', this.getAlarmTargetState.bind(this));
-		alarmPanelService.getCharacteristic(Characteristic.SecuritySystemCurrentState).on('get', this.getAlarmCurrentState.bind(this));
-		return [this.informationService, alarmPanelService];
+		const s = super.getServices();
+		
+		this.alarmPanelService = this.addService(Service.SecuritySystem);
+		this.alarmPanelService.getCharacteristic(Characteristic.SecuritySystemTargetState).on('set', this.setAlarmTargetState.bind(this));
+		this.alarmPanelService.getCharacteristic(Characteristic.SecuritySystemTargetState).on('get', this.getAlarmTargetState.bind(this));
+		this.alarmPanelService.getCharacteristic(Characteristic.SecuritySystemCurrentState).on('get', this.getAlarmCurrentState.bind(this));
+		s.push(this.alarmPanelService);
+		return s;
 	}
 }

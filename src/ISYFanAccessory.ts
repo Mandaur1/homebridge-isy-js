@@ -1,14 +1,13 @@
 import './ISYPlatform';
-import 'hap-nodejs';
 
+import { Characteristic, Service, CharacteristicEventTypes } from 'homebridge/node_modules/hap-nodejs';
 import { InsteonFanDevice } from 'isy-js';
 
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
-import { Characteristic, Service } from './plugin';
 
 export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice> {
-	public fanService: HAPNodeJS.Service;
-	public lightService: HAPNodeJS.Service;
+	public fanService: Service;
+	public lightService: Service;
 	constructor(log: (msg: any) => void, device: InsteonFanDevice) {
 		super(log, device);
 		// this.logger(JSON.stringify(this.device.scenes[0]));
@@ -108,27 +107,26 @@ export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice> {
 	// Mirrors change in the state of the underlying isj-js device object.
 	public handleExternalChange(propertyName: string, value: any, formattedValue: string) {
 		super.handleExternalChange(propertyName, value, formattedValue);
-		this.fanService.updateCharacteristic(Characteristic.On, this.device.isOn);
-		this.fanService.updateCharacteristic(Characteristic.RotationSpeed, this.device.fanSpeed);
-		// this.logger("" + this.device.name + " Handling external change for light");
-		// this.lightService
-		// 	.updateCharacteristic(Characteristic.On, this.device.getCurrentLightState());
-		// if (this.dimmable) {
-		// 	this.lightService
-		// 		.updateCharacteristic(Characteristic.Brightness, this.device.getCurrentLightDimState());
-		// }
+		this.fanService.getCharacteristic(Characteristic.On).updateValue(this.device.isOn);
+		this.fanService.getCharacteristic(Characteristic.RotationSpeed).updateValue(this.device.fanSpeed);
+		this.logger("" + this.device.name + " Handling external change for light");
+		this.lightService
+			.getCharacteristic(Characteristic.On).updateValue(this.device.lightIsOn);
+		if (this.dimmable) {
+			this.lightService
+				.getCharacteristic(Characteristic.Brightness).updateValue(this.device.lightLevel);
+		}
 	}
 	// Returns the services supported by the fan device.
 	public getServices() {
 		const s = super.getServices();
-		const fanService = new Service.Fan();
+		const fanService = this.addService(Service.Fan);
 		this.fanService = fanService;
-		const lightService = new Service.Lightbulb(this.device.name + ' - Light');
+		const lightService = this.addService(Service.Lightbulb);
 		this.lightService = lightService;
-		fanService.getCharacteristic(Characteristic.On).on('set', this.setFanOnState.bind(this));
-		fanService.getCharacteristic(Characteristic.On).on('get', this.getFanOnState.bind(this));
-		fanService.addCharacteristic(Characteristic.RotationSpeed).on('get', this.getFanRotationSpeed.bind(this));
-		fanService.getCharacteristic(Characteristic.RotationSpeed).on('set', this.setFanRotationSpeed.bind(this));
+		fanService.getCharacteristic(Characteristic.On).on(CharacteristicEventTypes.SET, this.setFanOnState.bind(this)).on(CharacteristicEventTypes.GET, this.getFanOnState.bind(this));
+		fanService.getCharacteristic(Characteristic.RotationSpeed).on(CharacteristicEventTypes.GET, this.getFanRotationSpeed.bind(this));
+		fanService.getCharacteristic(Characteristic.RotationSpeed).on(CharacteristicEventTypes.SET, this.setFanRotationSpeed.bind(this));
 		s.push(fanService, lightService);
 		return s;
 	}

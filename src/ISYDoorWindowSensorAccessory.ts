@@ -1,8 +1,9 @@
-import { Characteristic } from 'homebridge';
+
 import { InsteonDoorWindowSensorDevice } from 'isy-js';
 
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
-import { Service } from './plugin';
+import './utils';
+import { Characteristic, Service, CharacteristicEventTypes } from 'homebridge/node_modules/hap-nodejs'
 
 export class ISYDoorWindowSensorAccessory extends ISYDeviceAccessory<InsteonDoorWindowSensorDevice> {
 	public doorWindowState: boolean;
@@ -28,9 +29,9 @@ export class ISYDoorWindowSensorAccessory extends ISYDeviceAccessory<InsteonDoor
 	// Returns the set of services supported by this object.
 	public getServices() {
 		super.getServices();
-		const sensorService = new Service.ContactSensor();
+		const sensorService = this.addService(Service.ContactSensor)
 		this.sensorService = sensorService;
-		sensorService.getCharacteristic(Characteristic.ContactSensorState).on('get', this.getCurrentDoorWindowState.bind(this));
+		sensorService.getCharacteristic(Characteristic.ContactSensorState).on(CharacteristicEventTypes.GET, this.getCurrentDoorWindowState.bind(this));
 		return [this.informationService, sensorService];
 	}
 }

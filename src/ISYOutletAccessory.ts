@@ -1,7 +1,8 @@
 import { InsteonOutletDevice } from 'isy-js';
 
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
-import { Characteristic, Service } from './plugin';
+import  './utils';
+import { Characteristic, Service, CharacteristicEventTypes } from 'homebridge/node_modules/hap-nodejs'
 
 export class ISYOutletAccessory extends ISYDeviceAccessory<InsteonOutletDevice> {
 	public outletService: any;
@@ -38,11 +39,11 @@ export class ISYOutletAccessory extends ISYDeviceAccessory<InsteonOutletDevice> 
 	// Returns the set of services supported by this object.
 	public getServices() {
 		super.getServices();
-		const outletService = new Service.Outlet();
+		const outletService = this.addService(Service.Outlet);
 		this.outletService = outletService;
-		outletService.getCharacteristic(Characteristic.On).on('set', this.setOutletState.bind(this));
-		outletService.getCharacteristic(Characteristic.On).on('get', this.getOutletState.bind(this));
-		outletService.getCharacteristic(Characteristic.OutletInUse).on('get', this.getOutletInUseState.bind(this));
+		outletService.getCharacteristic(Characteristic.On).on(CharacteristicEventTypes.SET, this.setOutletState.bind(this));
+		outletService.getCharacteristic(Characteristic.On).on(CharacteristicEventTypes.GET, this.getOutletState.bind(this));
+		outletService.getCharacteristic(Characteristic.OutletInUse).on(CharacteristicEventTypes.GET, this.getOutletInUseState.bind(this));
 		return [this.informationService, outletService];
 	}
 }

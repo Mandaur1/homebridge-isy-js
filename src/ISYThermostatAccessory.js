@@ -1,134 +1,154 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-const isy_js_1 = require("isy-js");
-const ISYDeviceAccessory_1 = require("./ISYDeviceAccessory");
-const plugin_1 = require("./plugin");
-class ISYThermostatAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
-    constructor(log, device) {
-        super(log, device);
+var hap_nodejs_1 = require("homebridge/node_modules/hap-nodejs");
+var Service_1 = require("homebridge/node_modules/hap-nodejs/dist/lib/Service");
+require("./utils");
+var isy_js_1 = require("isy-js");
+var ISYDeviceAccessory_1 = require("./ISYDeviceAccessory");
+//import { Service } from 'homebridge/node_modules/hap-nodejs/dist/lib/Service';
+//import { Characteristic } from 'homebridge/node_modules/hap-nodejs/dist/lib/Characteristic';
+var ISYThermostatAccessory = /** @class */ (function (_super) {
+    __extends(ISYThermostatAccessory, _super);
+    function ISYThermostatAccessory(log, device) {
+        return _super.call(this, log, device) || this;
     }
-    toCelsius(temp) {
+    ISYThermostatAccessory.prototype.toCelsius = function (temp) {
         return ((temp - 32.0) * 5.0) / 9.0;
-    }
-    toFahrenheit(temp) {
+    };
+    ISYThermostatAccessory.prototype.toFahrenheit = function (temp) {
         return Math.round((temp * 9.0) / 5.0 + 32.0);
-    }
-    getCurrentTemperature(callback) {
-        this.logger(`Getting Current Temperature - Device says: ${this.device.currentTemperature} says: ${this.toCelsius(this.device.currentTemperature)}`);
+    };
+    ISYThermostatAccessory.prototype.getCurrentTemperature = function (callback) {
+        this.logger("Getting Current Temperature - Device says: " + this.device.currentTemperature + " says: " + this.toCelsius(this.device.currentTemperature));
         callback(null, this.toCelsius(this.device.currentTemperature));
-    }
-    getCoolSetPoint(callback) {
-        this.logger(`Getting Cooling Set Point - Device says: ${this.device.coolSetPoint} translation says: ${this.toCelsius(this.device.coolSetPoint)}`);
+    };
+    ISYThermostatAccessory.prototype.getCoolSetPoint = function (callback) {
+        this.logger("Getting Cooling Set Point - Device says: " + this.device.coolSetPoint + " translation says: " + this.toCelsius(this.device.coolSetPoint));
         callback(null, this.toCelsius(this.device.coolSetPoint));
-    }
-    getHeatSetPoint(callback) {
-        this.logger(`Getting Heating Set Point - Device says: ${this.device.heatSetPoint} translation says: ${this.toCelsius(this.device.heatSetPoint)}`);
+    };
+    ISYThermostatAccessory.prototype.getHeatSetPoint = function (callback) {
+        this.logger("Getting Heating Set Point - Device says: " + this.device.heatSetPoint + " translation says: " + this.toCelsius(this.device.heatSetPoint));
         callback(null, this.toCelsius(this.device.heatSetPoint));
-    }
-    getMode(callback) {
-        this.logger(`Getting Heating Cooling Mode - Device says: ${this.device.mode}`);
+    };
+    ISYThermostatAccessory.prototype.getMode = function (callback) {
+        this.logger("Getting Heating Cooling Mode - Device says: " + this.device.mode);
         callback(null, this.device.mode);
-    }
-    getOperatingMode(callback) {
-        this.logger(`Getting Heating Cooling State - Device says: ${this.device.operatingMode}`);
+    };
+    ISYThermostatAccessory.prototype.getOperatingMode = function (callback) {
+        this.logger("Getting Heating Cooling State - Device says: " + this.device.operatingMode);
         callback(null, this.device.operatingMode);
-    }
-    getFanMode(callback) {
-        this.logger(`Getting Fan State - Device says: ${this.device.fanMode}`);
+    };
+    ISYThermostatAccessory.prototype.getFanMode = function (callback) {
+        this.logger("Getting Fan State - Device says: " + this.device.fanMode);
         callback(null, this.device.fanMode);
-    }
-    getHumidity(callback) {
-        this.logger(`Getting Current Rel. Humidity - Device says: ${this.device.humidity}`);
+    };
+    ISYThermostatAccessory.prototype.getHumidity = function (callback) {
+        this.logger("Getting Current Rel. Humidity - Device says: " + this.device.humidity);
         callback(null, this.device.humidity);
-    }
+    };
     // Mirrors change in the state of the underlying isy-js device object.
-    handleExternalChange(propertyName, value, formattedValue) {
-        super.handleExternalChange(propertyName, value, formattedValue);
+    ISYThermostatAccessory.prototype.handleExternalChange = function (propertyName, value, formattedValue) {
+        _super.prototype.handleExternalChange.call(this, propertyName, value, formattedValue);
         switch (propertyName) {
             case isy_js_1.Props.Status:
-                this.thermostatService.updateCharacteristic(plugin_1.Characteristic.CurrentTemperature, this.toCelsius(this.device.currentTemperature));
+                this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentTemperature).updateValue(this.toCelsius(this.device.currentTemperature));
                 break;
             case isy_js_1.Props.Climate.CoolSetPoint:
-                this.thermostatService.updateCharacteristic(plugin_1.Characteristic.CoolingThresholdTemperature, this.toCelsius(this.device.coolSetPoint));
+                this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CoolingThresholdTemperature).updateValue(this.toCelsius(this.device.coolSetPoint));
                 break;
             case isy_js_1.Props.Climate.HeatSetPoint:
-                this.thermostatService.updateCharacteristic(plugin_1.Characteristic.CoolingThresholdTemperature, this.toCelsius(this.device.heatSetPoint));
+                this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CoolingThresholdTemperature).updateValue(this.toCelsius(this.device.heatSetPoint));
                 break;
             case isy_js_1.Props.Climate.OperatingMode:
-                this.thermostatService.updateCharacteristic(plugin_1.Characteristic.CurrentHeatingCoolingState, this.device.operatingMode);
+                this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentHeatingCoolingState).updateValue(this.device.operatingMode);
                 break;
             case isy_js_1.Props.Climate.Mode:
-                this.thermostatService.updateCharacteristic(plugin_1.Characteristic.TargetHeatingCoolingState, this.device.mode);
+                this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.TargetHeatingCoolingState).updateValue(this.device.mode);
                 break;
             case isy_js_1.Props.Climate.FanMode:
-                this.thermostatService.updateCharacteristic(plugin_1.Characteristic.CurrentFanState, this.device.fanMode);
+                this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentFanState).updateValue(this.device.fanMode);
                 break;
             case isy_js_1.Props.Climate.Humidity:
-                this.thermostatService.updateCharacteristic(plugin_1.Characteristic.CurrentRelativeHumidity, this.device.humidity);
+                this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentRelativeHumidity).updateValue(this.device.humidity);
                 break;
             default:
                 break;
         }
-    }
-    getServices() {
-        const svcs = super.getServices();
-        this.thermostatService = new plugin_1.Service.Thermostat();
+    };
+    ISYThermostatAccessory.prototype.getServices = function () {
+        var _this = this;
+        var svcs = _super.prototype.getServices.call(this);
+        this.thermostatService = this.addService(Service_1.Service.Thermostat);
         // thermostatService.getCharacteristic(Characteristic.TargetTemperature).on("get", this.getTargetTemperature.bind(this));
         // thermostatService.getCharacteristic(Characteristic.TargetTemperature).on("set", this.setTargetTemperature.bind(this));
-        this.thermostatService.setCharacteristic(plugin_1.Characteristic.TemperatureDisplayUnits, 1);
-        this.thermostatService.addCharacteristic(plugin_1.Characteristic.CurrentFanState);
-        this.thermostatService.getCharacteristic(plugin_1.Characteristic.CurrentFanState).on('get', (f) => this.getFanMode(f));
-        this.thermostatService.getCharacteristic(plugin_1.Characteristic.CurrentTemperature).on('get', this.getCurrentTemperature.bind(this));
-        this.thermostatService.getCharacteristic(plugin_1.Characteristic.CoolingThresholdTemperature).on('get', this.getCoolSetPoint.bind(this));
-        this.thermostatService.getCharacteristic(plugin_1.Characteristic.CoolingThresholdTemperature).on('set', this.setCoolSetPoint.bind(this));
-        this.thermostatService.getCharacteristic(plugin_1.Characteristic.HeatingThresholdTemperature).on('get', this.getHeatSetPoint.bind(this));
-        this.thermostatService.getCharacteristic(plugin_1.Characteristic.HeatingThresholdTemperature).on('set', this.setHeatSetPoint.bind(this));
-        this.thermostatService.getCharacteristic(plugin_1.Characteristic.CurrentHeatingCoolingState).on('get', this.getOperatingMode.bind(this));
-        this.thermostatService.getCharacteristic(plugin_1.Characteristic.TargetHeatingCoolingState).on('get', this.getMode.bind(this));
-        this.thermostatService.getCharacteristic(plugin_1.Characteristic.TargetHeatingCoolingState).on('set', this.setHeatingCoolingMode.bind(this));
-        this.thermostatService.getCharacteristic(plugin_1.Characteristic.CurrentRelativeHumidity).on('get', this.getHumidity.bind(this));
+        this.thermostatService.setCharacteristic(hap_nodejs_1.Characteristic.TemperatureDisplayUnits, 1);
+        this.thermostatService.addCharacteristic(hap_nodejs_1.Characteristic.CurrentFanState);
+        this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentFanState).on(hap_nodejs_1.CharacteristicEventTypes.GET, function (f) { return _this.getFanMode(f); });
+        this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentTemperature).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getCurrentTemperature.bind(this));
+        this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CoolingThresholdTemperature).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getCoolSetPoint.bind(this));
+        this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CoolingThresholdTemperature).on(hap_nodejs_1.CharacteristicEventTypes.SET, this.setCoolSetPoint.bind(this));
+        this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.HeatingThresholdTemperature).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getHeatSetPoint.bind(this));
+        this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.HeatingThresholdTemperature).on(hap_nodejs_1.CharacteristicEventTypes.SET, this.setHeatSetPoint.bind(this));
+        this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentHeatingCoolingState).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getOperatingMode.bind(this));
+        this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.TargetHeatingCoolingState).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getMode.bind(this));
+        this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.TargetHeatingCoolingState).on(hap_nodejs_1.CharacteristicEventTypes.SET, this.setHeatingCoolingMode.bind(this));
+        this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentRelativeHumidity).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getHumidity.bind(this));
         svcs.push(this.thermostatService);
         // ThermostatService
         //   .getCharacteristic(Characteristic.RotationSpeed)
-        //   .on('set', this.setThermostatRotationSpeed.bind(this));
+        //   .on(CharacteristicEventTypes.SET, this.setThermostatRotationSpeed.bind(this));
         return svcs;
-    }
-    setCoolSetPoint(temp, callback) {
-        this.logger(`Sending command to set cool set point (pre-translate) to: ${temp}`);
-        const newSetPoint = this.toFahrenheit(temp);
-        this.logger(`Sending command to set cool set point to: ${newSetPoint}`);
+    };
+    ISYThermostatAccessory.prototype.setCoolSetPoint = function (temp, callback) {
+        this.logger("Sending command to set cool set point (pre-translate) to: " + temp);
+        var newSetPoint = this.toFahrenheit(temp);
+        this.logger("Sending command to set cool set point to: " + newSetPoint);
         if (Math.abs(newSetPoint - this.device.coolSetPoint) >= 1) {
             this.device.updateCoolSetPoint(newSetPoint).handleWith(callback);
         }
         else {
-            this.logger(`Command does not change actual set point`);
+            this.logger("Command does not change actual set point");
             callback();
         }
-    }
-    setHeatSetPoint(temp, callback) {
-        this.logger(`Sending command to set heat set point (pre-translate) to: ${temp}`);
-        const newSetPoint = this.toFahrenheit(temp);
-        this.logger(`Sending command to set heat set point to: ${newSetPoint}`);
+    };
+    ISYThermostatAccessory.prototype.setHeatSetPoint = function (temp, callback) {
+        this.logger("Sending command to set heat set point (pre-translate) to: " + temp);
+        var newSetPoint = this.toFahrenheit(temp);
+        this.logger("Sending command to set heat set point to: " + newSetPoint);
         if (Math.abs(newSetPoint - this.device.heatSetPoint) >= 1) {
             this.device
                 .updateHeatSetPoint(newSetPoint).handleWith(callback);
         }
         else {
-            this.logger(`Command does not change actual set point`);
+            this.logger("Command does not change actual set point");
             callback();
         }
-    }
-    setHeatingCoolingMode(mode, callback) {
-        this.logger(`Sending command to set heating/cooling mode (pre-translate) to: ${mode}`);
+    };
+    ISYThermostatAccessory.prototype.setHeatingCoolingMode = function (mode, callback) {
+        this.logger("Sending command to set heating/cooling mode (pre-translate) to: " + mode);
         // this.logger("THERM: " + this.device.name + " Sending command to set cool set point to: " + newSetPoint);
         if (mode !== this.device.mode) {
             this.device
                 .updateMode(mode).handleWith(callback);
         }
         else {
-            this.logger(`Command does not change actual mode`);
+            this.logger("Command does not change actual mode");
             callback();
         }
-    }
-}
+    };
+    return ISYThermostatAccessory;
+}(ISYDeviceAccessory_1.ISYDeviceAccessory));
 exports.ISYThermostatAccessory = ISYThermostatAccessory;

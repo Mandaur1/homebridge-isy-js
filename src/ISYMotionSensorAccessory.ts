@@ -1,10 +1,11 @@
 import { InsteonMotionSensorDevice } from 'isy-js';
 
+import { Characteristic, CharacteristicEventTypes } from 'homebridge/node_modules/hap-nodejs';
+import { MotionSensor } from 'homebridge/node_modules/hap-nodejs/dist/lib/gen/HomeKit';
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
-import { Characteristic, Service } from './plugin';
 
 export class ISYMotionSensorAccessory extends ISYDeviceAccessory<InsteonMotionSensorDevice> {
-	public sensorService: any;
+	public sensorService: MotionSensor;
 	constructor(log: (msg: any) => void, device: InsteonMotionSensorDevice) {
 		super(log, device);
 	}
@@ -21,9 +22,9 @@ export class ISYMotionSensorAccessory extends ISYDeviceAccessory<InsteonMotionSe
 	// Returns the set of services supported by this object.
 	public getServices() {
 		super.getServices();
-		const sensorService = new Service.MotionSensor();
+		const sensorService = this.addService(MotionSensor);
 		this.sensorService = sensorService;
-		sensorService.getCharacteristic(Characteristic.MotionDetected).on('get', this.getCurrentMotionSensorState.bind(this));
+		sensorService.getCharacteristic(Characteristic.MotionDetected).on(CharacteristicEventTypes.GET, this.getCurrentMotionSensorState.bind(this));
 		return [this.informationService, sensorService];
 	}
 }

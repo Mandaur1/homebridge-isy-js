@@ -1,10 +1,11 @@
+import { Service, Characteristic, CharacteristicEventTypes } from 'homebridge/node_modules/hap-nodejs';
 import { InsteonDimmableDevice, InsteonRelayDevice } from 'isy-js';
 
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
-import { Characteristic, Service } from './plugin';
+import './utils';
 
 export class ISYRelayAccessory<T extends InsteonRelayDevice> extends ISYDeviceAccessory<T> {
-	public primaryService: HAPNodeJS.Service;
+	public primaryService: Service;
 
 	constructor(log: (msg: any) => void, device: T) {
 		super(log, device);
@@ -24,7 +25,7 @@ export class ISYRelayAccessory<T extends InsteonRelayDevice> extends ISYDeviceAc
 	// Mirrors change in the state of the underlying isj-js device object.
 	public handleExternalChange(propertyName: string, value: any, formattedValue: string) {
 		super.handleExternalChange(propertyName, value, formattedValue);
-		this.primaryService.updateCharacteristic(Characteristic.On, this.device.isOn);
+		this.primaryService.getCharacteristic(Characteristic.On).updateValue(this.device.isOn);
 	}
 	// Handles request to get the current on state
 	// Handles request to get the current on state
@@ -48,12 +49,11 @@ export class ISYRelayAccessory<T extends InsteonRelayDevice> extends ISYDeviceAc
 	}
 	// Returns the set of services supported by this object.
 	public getServices() {
-		super.getServices();
-
-		this.primaryService = new Service.Switch();
-		this.primaryService.getCharacteristic(Characteristic.On).on('set', this.setPowerState.bind(this));
-		this.primaryService.getCharacteristic(Characteristic.On).on('get', this.getPowerState.bind(this));
-
-		return [this.informationService, this.primaryService];
+		const s = super.getServices();
+		this.primaryService = this.addService(Service.Switch);
+		this.primaryService.getCharacteristic(Characteristic.On).on(CharacteristicEventTypes.SET, this.setPowerState.bind(this));
+		this.primaryService.getCharacteristic(Characteristic.On).on(CharacteristicEventTypes.GET, this.getPowerState.bind(this));
+		s.push(this.primaryService);
+		return s;
 	}
 }

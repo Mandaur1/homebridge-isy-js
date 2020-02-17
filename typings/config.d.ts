@@ -5,12 +5,22 @@ export interface IgnoreDeviceRule {
 	typeCode: string;
 	family: string|number;
 	nodeDef: string;
+	folder: string;
 }
 
 export interface RenameDeviceRule {
 	name: string;
 	address: string;
 	newName: string;
+}
+
+export interface GlobalRenameRule {
+	remove : string[],
+	replace : 
+		{
+			replace : string,
+			with: string
+		}[]
 }
 
 export interface DeviceConfig
@@ -57,8 +67,10 @@ export interface PlatformConfig {
 	useHttps: boolean;
 	elkEnabled: boolean;
 	debugLoggingEnabled: boolean;
+	includeAllScenes: true;
 	ignoreDevices: IgnoreDeviceRule[];
 	renameDevices: RenameDeviceRule[];
+	transformNames: GlobalRenameRule;
 	deviceConfigs: DeviceConfig[];
 	[x: string]: any;
 }
