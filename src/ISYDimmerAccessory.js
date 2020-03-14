@@ -16,20 +16,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var hap_nodejs_1 = require("homebridge/node_modules/hap-nodejs");
 var ISYRelayAccessory_1 = require("./ISYRelayAccessory");
 require("./utils");
-var ISYDimmableAccessory = /** @class */ (function (_super) {
-    __extends(ISYDimmableAccessory, _super);
-    function ISYDimmableAccessory(log, device) {
+var InsteonDimmableAccessory = /** @class */ (function (_super) {
+    __extends(InsteonDimmableAccessory, _super);
+    function InsteonDimmableAccessory(log, device) {
         return _super.call(this, log, device) || this;
     }
     // Handles the identify command
     // Handles request to set the current powerstate from homekit. Will ignore redundant commands.
-    ISYDimmableAccessory.prototype.toCharacteristic = function (propertyName) {
+    InsteonDimmableAccessory.prototype.toCharacteristic = function (propertyName) {
         if (propertyName === 'ST')
             return hap_nodejs_1.Characteristic.Brightness;
         return null;
     };
     // Mirrors change in the state of the underlying isj-js device object.
-    ISYDimmableAccessory.prototype.handleExternalChange = function (propertyName, value, formattedValue) {
+    InsteonDimmableAccessory.prototype.handleExternalChange = function (propertyName, value, formattedValue) {
         _super.prototype.handleExternalChange.call(this, propertyName, value, formattedValue);
         //this.primaryService.getCharacteristic(Characteristic.On).updateValue(this.device.isOn);
         this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.Brightness).updateValue(this.device.level);
@@ -37,7 +37,7 @@ var ISYDimmableAccessory = /** @class */ (function (_super) {
     // Handles request to get the current on state
     // Handles request to get the current on state
     // Handles request to set the brightness level of dimmable lights. Ignore redundant commands.
-    ISYDimmableAccessory.prototype.setBrightness = function (level, callback) {
+    InsteonDimmableAccessory.prototype.setBrightness = function (level, callback) {
         this.logger("Setting brightness to " + level);
         if (level !== this.device.brightnessLevel) {
             this.device
@@ -49,11 +49,11 @@ var ISYDimmableAccessory = /** @class */ (function (_super) {
         }
     };
     // Handles a request to get the current brightness level for dimmable lights.
-    ISYDimmableAccessory.prototype.getBrightness = function (callback) {
+    InsteonDimmableAccessory.prototype.getBrightness = function (callback) {
         callback(null, this.device.level);
     };
     // Returns the set of services supported by this object.
-    ISYDimmableAccessory.prototype.getServices = function () {
+    InsteonDimmableAccessory.prototype.getServices = function () {
         var s = _super.prototype.getServices.call(this);
         this.primaryService.removeAllListeners();
         this.removeService(this.primaryService);
@@ -65,6 +65,6 @@ var ISYDimmableAccessory = /** @class */ (function (_super) {
         this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.Brightness).onSet(this.device.updateBrightnessLevel.bind(this.device));
         return [this.informationService, this.primaryService];
     };
-    return ISYDimmableAccessory;
+    return InsteonDimmableAccessory;
 }(ISYRelayAccessory_1.ISYRelayAccessory));
-exports.ISYDimmableAccessory = ISYDimmableAccessory;
+exports.InsteonDimmableAccessory = InsteonDimmableAccessory;

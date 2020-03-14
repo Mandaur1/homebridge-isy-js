@@ -100,7 +100,7 @@ var ISYPlatform = /** @class */ (function () {
                             continue;
                         }
                     }
-                    this.logger('Ignoring device: ' + deviceName + ' (' + deviceAddress + ') because of rule: ' + JSON.stringify(rule));
+                    this.logger("Ignoring device: " + deviceName + " (" + deviceAddress + ") because of rule: " + JSON.stringify(rule));
                     return true;
                 }
             }
@@ -273,7 +273,7 @@ var ISYPlatform = /** @class */ (function () {
     };
     ISYPlatform.prototype.createAccessory = function (device) {
         if (device instanceof isy_js_1.InsteonDimmableDevice) {
-            return new ISYDimmerAccessory_1.ISYDimmableAccessory(this.logger.bind(this), device);
+            return new ISYDimmerAccessory_1.InsteonDimmableAccessory(this.logger.bind(this), device);
         }
         else if (device instanceof isy_js_1.InsteonRelayDevice) {
             return new ISYRelayAccessory_1.ISYRelayAccessory(this.logger.bind(this), device);

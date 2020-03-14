@@ -4,7 +4,7 @@ import { InsteonDimmableDevice } from 'isy-js';
 import { ISYRelayAccessory } from './ISYRelayAccessory';
 import './utils';
 
-export class ISYDimmableAccessory<T extends InsteonDimmableDevice> extends ISYRelayAccessory<T> {
+export class InsteonDimmableAccessory<T extends InsteonDimmableDevice> extends ISYRelayAccessory<T> {
 	constructor(log: any, device: T) {
 		super(log, device);
 

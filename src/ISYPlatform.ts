@@ -17,7 +17,7 @@ import {
 	ISYScene,
 } from 'isy-js'
 
-import { ISYDimmableAccessory } from './ISYDimmerAccessory'
+import { InsteonDimmableAccessory } from './ISYDimmerAccessory'
 import { ISYDoorWindowSensorAccessory } from './ISYDoorWindowSensorAccessory'
 import { ISYElkAlarmPanelAccessory } from './ISYElkAlarmPanelAccessory'
 import { ISYFanAccessory } from './ISYFanAccessory'
@@ -74,7 +74,7 @@ export class ISYPlatform {
 		if (device instanceof ISYScene && this.includeAllScenes === false) {
 			for (const sceneAddress of this.includedScenes) {
 				if (sceneAddress === deviceAddress) {
-					return false;
+					return false
 				}
 			}
 
@@ -110,7 +110,7 @@ export class ISYPlatform {
 						continue
 					}
 				}
-				this.logger('Ignoring device: ' + deviceName + ' (' + deviceAddress + ') because of rule: ' + JSON.stringify(rule))
+				this.logger(`Ignoring device: ${deviceName} (${deviceAddress}) because of rule: ${JSON.stringify(rule)}`)
 				return true
 			}
 		}
@@ -225,7 +225,7 @@ export class ISYPlatform {
 	public createAccessory(device: ISYDevice) {
 
 		if (device instanceof InsteonDimmableDevice) {
-			return new ISYDimmableAccessory(this.logger.bind(this), device)
+			return new InsteonDimmableAccessory(this.logger.bind(this), device)
 		} else if (device instanceof InsteonRelayDevice) {
 			return new ISYRelayAccessory(this.logger.bind(this), device)
 		} else if (device instanceof InsteonLockDevice) {

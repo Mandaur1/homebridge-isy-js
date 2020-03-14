@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "faye-websocket": "^0.11.3",
-    "homebridge": "git+https://github.com/jedis00/homebridge.git",
+    "homebridge": "git+https://github.com/nfarina/homebridge.git#beta",
     "isy-js": "git+https://github.com/pradeepmouli/isy-js.git#v5",
     "once": "^1.4.0",
     "path": "^0.12.7",
