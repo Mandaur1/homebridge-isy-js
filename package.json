@@ -6,7 +6,6 @@
   "main": "src/plugin.js",
   "scripts": {
     "test": "mocha",
-    "prepare": "tsc",
     "start": "DEBUG=* homebridge -D -P ./",
     "debug": "npm prepare npm start"
   },
