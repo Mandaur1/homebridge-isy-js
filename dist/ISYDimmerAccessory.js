@@ -1,4 +1,3 @@
-"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -13,9 +12,9 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var hap_nodejs_1 = require("homebridge/node_modules/hap-nodejs");
-var ISYRelayAccessory_1 = require("./ISYRelayAccessory");
 require("./utils");
+var hap_nodejs_1 = require("hap-nodejs");
+var ISYRelayAccessory_1 = require("./ISYRelayAccessory");
 var InsteonDimmableAccessory = /** @class */ (function (_super) {
     __extends(InsteonDimmableAccessory, _super);
     function InsteonDimmableAccessory(log, device) {
@@ -32,28 +31,18 @@ var InsteonDimmableAccessory = /** @class */ (function (_super) {
     InsteonDimmableAccessory.prototype.handleExternalChange = function (propertyName, value, formattedValue) {
         _super.prototype.handleExternalChange.call(this, propertyName, value, formattedValue);
         //this.primaryService.getCharacteristic(Characteristic.On).updateValue(this.device.isOn);
-        this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.Brightness).updateValue(this.device.level);
+        if (propertyName !== null && propertyName !== undefined)
+            this.primaryService.getCharacteristic(this.toCharacteristic(propertyName).name).updateValue(this.device[propertyName]);
     };
     // Handles request to get the current on state
     // Handles request to get the current on state
-    // Handles request to set the brightness level of dimmable lights. Ignore redundant commands.
-    InsteonDimmableAccessory.prototype.setBrightness = function (level, callback) {
-        this.logger("Setting brightness to " + level);
-        if (level !== this.device.brightnessLevel) {
-            this.device
-                .updateBrightnessLevel(level).handleWith(callback);
-        }
-        else {
-            this.logger("Ignoring redundant setBrightness");
-            callback();
-        }
-    };
     // Handles a request to get the current brightness level for dimmable lights.
     InsteonDimmableAccessory.prototype.getBrightness = function (callback) {
         callback(null, this.device.level);
     };
     // Returns the set of services supported by this object.
     InsteonDimmableAccessory.prototype.getServices = function () {
+        var _this = this;
         var s = _super.prototype.getServices.call(this);
         this.primaryService.removeAllListeners();
         this.removeService(this.primaryService);
@@ -61,8 +50,10 @@ var InsteonDimmableAccessory = /** @class */ (function (_super) {
         this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.On).onSet(this.device.updateIsOn.bind(this.device));
         this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.On).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getPowerState.bind(this));
         // lightBulbService.getCharacteristic(Characteristic.On).on('get', this.getPowerState.bind(this));
-        this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.Brightness).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getBrightness.bind(this));
+        //this.primaryService.getCharacteristic(Characteristic.Brightness).updateValue(this.device['OL']);
+        this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.Brightness).onGet(function () { return _this.device.brightnessLevel; });
         this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.Brightness).onSet(this.device.updateBrightnessLevel.bind(this.device));
+        //this.primaryService.getCharacteristic(Characteristic.Brightness).setProps({maxValue: this.device.OL});
         return [this.informationService, this.primaryService];
     };
     return InsteonDimmableAccessory;

@@ -1,8 +1,9 @@
-import { Characteristic, CharacteristicEventTypes, Service } from 'homebridge/node_modules/hap-nodejs';
-import { InsteonDimmableDevice } from 'isy-js';
+import './utils';
+
+import { Characteristic, CharacteristicEventTypes, Service } from 'hap-nodejs';
+import { Controls, InsteonDimmableDevice } from 'isy-js';
 
 import { ISYRelayAccessory } from './ISYRelayAccessory';
-import './utils';
 
 export class InsteonDimmableAccessory<T extends InsteonDimmableDevice> extends ISYRelayAccessory<T> {
 	constructor(log: any, device: T) {
@@ -21,28 +22,19 @@ export class InsteonDimmableAccessory<T extends InsteonDimmableDevice> extends I
 	public handleExternalChange(propertyName: string, value, formattedValue) {
 		super.handleExternalChange(propertyName, value, formattedValue);
 		//this.primaryService.getCharacteristic(Characteristic.On).updateValue(this.device.isOn);
-		
-		this.primaryService.getCharacteristic(Characteristic.Brightness).updateValue(this.device.level);
+
+		if(propertyName !== null && propertyName !== undefined)
+			this.primaryService.getCharacteristic(this.toCharacteristic(propertyName).name).updateValue(this.device[propertyName]);
 
 	}
 	// Handles request to get the current on state
 	// Handles request to get the current on state
 
-	// Handles request to set the brightness level of dimmable lights. Ignore redundant commands.
-	public setBrightness(level: number, callback: (...any: any[]) => void) {
-		this.logger(`Setting brightness to ${level}`);
-		if (level !== this.device.brightnessLevel) {
-			this.device
-				.updateBrightnessLevel(level).handleWith(callback);
-		} else {
-			this.logger(`Ignoring redundant setBrightness`);
-			callback();
-		}
-	}
+
 	// Handles a request to get the current brightness level for dimmable lights.
 	public getBrightness(callback: (...any) => void) {
 		callback(null, this.device.level);
-		
+
 	}
 	// Returns the set of services supported by this object.
 	public getServices() : Service[] {
@@ -53,9 +45,10 @@ export class InsteonDimmableAccessory<T extends InsteonDimmableDevice> extends I
 		this.primaryService.getCharacteristic(Characteristic.On).onSet(this.device.updateIsOn.bind(this.device));
 		this.primaryService.getCharacteristic(Characteristic.On).on(CharacteristicEventTypes.GET,this.getPowerState.bind(this));
 		// lightBulbService.getCharacteristic(Characteristic.On).on('get', this.getPowerState.bind(this));
-		this.primaryService.getCharacteristic(Characteristic.Brightness).on(CharacteristicEventTypes.GET, this.getBrightness.bind(this));
+		//this.primaryService.getCharacteristic(Characteristic.Brightness).updateValue(this.device['OL']);
+		this.primaryService.getCharacteristic(Characteristic.Brightness).onGet(() => this.device.brightnessLevel);
 		this.primaryService.getCharacteristic(Characteristic.Brightness).onSet(this.device.updateBrightnessLevel.bind(this.device));
-		
+		//this.primaryService.getCharacteristic(Characteristic.Brightness).setProps({maxValue: this.device.OL});
 		return [this.informationService, this.primaryService];
 	}
 }

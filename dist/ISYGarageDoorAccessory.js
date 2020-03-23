@@ -1,4 +1,3 @@
-"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -14,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var ISYAccessory_1 = require("./ISYAccessory");
-var hap_nodejs_1 = require("homebridge/node_modules/hap-nodejs");
+var hap_nodejs_1 = require("hap-nodejs");
 var ISYGarageDoorAccessory = /** @class */ (function (_super) {
     __extends(ISYGarageDoorAccessory, _super);
     function ISYGarageDoorAccessory(log, sensorDevice, relayDevice, name, timeToOpen, alternate) {

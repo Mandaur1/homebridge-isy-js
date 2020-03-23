@@ -1,12 +1,12 @@
 
-import { Characteristic, CharacteristicEventTypes } from 'homebridge/node_modules/hap-nodejs';
-import {Service} from 'homebridge/node_modules/hap-nodejs/dist/lib/Service';
+import { Characteristic, CharacteristicEventTypes } from 'hap-nodejs';
+import {Service} from 'hap-nodejs/dist/lib/Service';
 import './utils';
 
 import { InsteonThermostatDevice, Props } from 'isy-js';
 
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
-import { Thermostat } from 'homebridge/node_modules/hap-nodejs/dist/lib/gen/HomeKit'
+import { Thermostat } from 'hap-nodejs/dist/lib/gen/HomeKit'
 
 
 //import { Service } from 'homebridge/node_modules/hap-nodejs/dist/lib/Service';

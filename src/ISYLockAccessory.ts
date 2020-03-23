@@ -2,7 +2,7 @@
 import { InsteonLockDevice } from 'isy-js';
 
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
-import { Characteristic, Service, CharacteristicEventTypes } from 'homebridge/node_modules/hap-nodejs'
+import { Characteristic, Service, CharacteristicEventTypes } from 'hap-nodejs'
 
 
 export class ISYLockAccessory extends ISYDeviceAccessory<InsteonLockDevice> {

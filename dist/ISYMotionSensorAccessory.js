@@ -1,4 +1,3 @@
-"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -13,8 +12,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var hap_nodejs_1 = require("homebridge/node_modules/hap-nodejs");
-var HomeKit_1 = require("homebridge/node_modules/hap-nodejs/dist/lib/gen/HomeKit");
+var hap_nodejs_1 = require("hap-nodejs");
 var ISYDeviceAccessory_1 = require("./ISYDeviceAccessory");
 var ISYMotionSensorAccessory = /** @class */ (function (_super) {
     __extends(ISYMotionSensorAccessory, _super);
@@ -29,15 +27,16 @@ var ISYMotionSensorAccessory = /** @class */ (function (_super) {
     // Mirrors change in the state of the underlying isj-js device object.
     ISYMotionSensorAccessory.prototype.handleExternalChange = function (propertyName, value, formattedValue) {
         _super.prototype.handleExternalChange.call(this, propertyName, value, formattedValue);
-        this.sensorService.setCharacteristic(hap_nodejs_1.Characteristic.MotionDetected, this.device.isMotionDetected);
+        this.sensorService.getCharacteristic(hap_nodejs_1.Characteristic.MotionDetected).updateValue(this.device.isMotionDetected);
     };
     // Returns the set of services supported by this object.
     ISYMotionSensorAccessory.prototype.getServices = function () {
+        var _this = this;
         _super.prototype.getServices.call(this);
-        var sensorService = this.addService(HomeKit_1.MotionSensor);
+        var sensorService = this.addService(hap_nodejs_1.Service.MotionSensor);
         this.sensorService = sensorService;
-        sensorService.getCharacteristic(hap_nodejs_1.Characteristic.MotionDetected).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getCurrentMotionSensorState.bind(this));
-        return [this.informationService, sensorService];
+        sensorService.getCharacteristic(hap_nodejs_1.Characteristic.MotionDetected).onGet(function () { return _this.device.isMotionDetected; });
+        return [this.informationService, this.sensorService];
     };
     return ISYMotionSensorAccessory;
 }(ISYDeviceAccessory_1.ISYDeviceAccessory));

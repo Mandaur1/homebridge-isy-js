@@ -1,4 +1,3 @@
-"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -13,22 +12,15 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var hap_nodejs_1 = require("homebridge/node_modules/hap-nodejs");
+var hap_nodejs_1 = require("hap-nodejs");
+var HomeKit_1 = require("hap-nodejs/dist/lib/gen/HomeKit");
+var uuid_1 = require("hap-nodejs/dist/lib/util/uuid");
 var isy_js_1 = require("isy-js");
-var uuid_1 = require("homebridge/node_modules/hap-nodejs/dist/lib/util/uuid");
-var HomeKit_1 = require("homebridge/node_modules/hap-nodejs/dist/lib/gen/HomeKit");
 var ISYAccessory = /** @class */ (function (_super) {
     __extends(ISYAccessory, _super);
     function ISYAccessory(log, device) {
         var _this = this;
         var s = uuid_1.generate(device.isy.address + ":" + device.address + "1");
-        //et pts = device.name.split('.');
-        //let deviceType = pts.shift();
-        // if (s == 'd2621ae0-9859-4445-a190-2359f9acddbb') log(device.name);
-        //let n = `${device.folder} ${pts.join(' ')}`;
-        //if (n === '') {
-        //	n = device.name;
-        //}
         _this = _super.call(this, device.displayName, s) || this;
         _this.uuid_base = s;
         _this.name = device.displayName;
@@ -50,12 +42,13 @@ var ISYAccessory = /** @class */ (function (_super) {
         this.informationService
             .setCharacteristic(hap_nodejs_1.Characteristic.Manufacturer, 'Insteon')
             .setCharacteristic(hap_nodejs_1.Characteristic.Model, this.device.productName === undefined ? this.device.name : this.device.productName)
-            .setCharacteristic(hap_nodejs_1.Characteristic.SerialNumber, this.device.address);
+            .setCharacteristic(hap_nodejs_1.Characteristic.SerialNumber, this.device.modelNumber)
+            .setCharacteristic(hap_nodejs_1.Characteristic.FirmwareRevision, this.device.version);
         return [this.informationService];
     };
     ISYAccessory.prototype.handleExternalChange = function (propertyName, value, formattedValue) {
         var name = propertyName in isy_js_1.Controls ? isy_js_1.Controls[propertyName].label : propertyName;
-        this.logger("Incoming external change to " + name + ". Device says: " + value + " (" + formattedValue + ")");
+        this.logger("Incoming update to " + name + ". Device says: " + this.device[propertyName] + " (" + formattedValue + ")");
     };
     ISYAccessory.prototype.convertToHK = function (propertyName, value) {
         return value;

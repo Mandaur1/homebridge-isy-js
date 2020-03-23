@@ -1,4 +1,3 @@
-"use strict";
 // import { CharacteristicEventTypes, CharacteristicProps, CharacteristicValue, WithUUID } from 'hap-nodejs';
 Object.defineProperty(exports, "__esModule", { value: true });
 var ISYPlatform_1 = require("./ISYPlatform");

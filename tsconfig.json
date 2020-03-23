@@ -2,22 +2,23 @@
     "compileOnSave": true,
     "compilerOptions": {
         "target": "ES5",
-        //"emitDecoratorMetadata": true,
-   
+        "emitDecoratorMetadata": true,
+        "outDir": "./dist/",
         //"outFile": "../index.js",
-        
+       // "module": "CommonJS",
        "downlevelIteration": true,
-        
+        "rootDir": "./src/",
         "baseUrl": "./src",
         "paths": {
-            //"hap-nodejs":["./node_modules/hap-nodejs/dist/lib/index.d.ts"],
-            
+            "hap-nodejs":["./node_modules/hap-nodejs/dist/index.d.ts"],
+
             "config":["../typings/config.d.ts"]
         },
-        //"experimentalDecorators": true,
+        "noImplicitUseStrict": true,
+        "experimentalDecorators": true,
         "moduleResolution": "node",
         "sourceMap": false,
         "allowSyntheticDefaultImports": true
     }
-   
+
 }

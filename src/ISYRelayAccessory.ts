@@ -1,4 +1,4 @@
-import { Service, Characteristic, CharacteristicEventTypes } from 'homebridge/node_modules/hap-nodejs';
+import { Service, Characteristic, CharacteristicEventTypes } from 'hap-nodejs';
 import { InsteonDimmableDevice, InsteonRelayDevice } from 'isy-js';
 
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';

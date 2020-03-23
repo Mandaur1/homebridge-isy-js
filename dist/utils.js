@@ -1,5 +1,3 @@
-"use strict";
-//import * as service from 'homebridge/node_modules/homebridge/node_modules/hap-nodejs/dist/lib/Service';
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -37,8 +35,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var characteristic = require("homebridge/node_modules/hap-nodejs/dist/lib/Characteristic");
-var HAPNodeJS = require("homebridge/node_modules/hap-nodejs");
+var HAPNodeJS = require("hap-nodejs");
+var characteristic = require("hap-nodejs/dist/lib/Characteristic");
 // tslint:disable-next-line: no-namespace
 // tslint:disable-next-line: no-namespace
 function onSet(character, func) {
@@ -46,8 +44,14 @@ function onSet(character, func) {
     return character.on(HAPNodeJS.CharacteristicEventTypes.SET, cfunc);
 }
 exports.onSet = onSet;
+// export function onGetAsync<T>(character: characteristic.Characteristic, func: (arg: HAPNodeJS.CharacteristicValue) => Promise<T>): characteristic.Characteristic {
+// 	const cfunc = addGetCallback(func)
+// 	return character.on(HAPNodeJS.CharacteristicEventTypes.GET, cfunc);
+// }
 function onGet(character, func) {
-    var cfunc = addGetCallback(func);
+    var cfunc = function (cb) {
+        cb(null, func());
+    };
     return character.on(HAPNodeJS.CharacteristicEventTypes.GET, cfunc);
 }
 exports.onGet = onGet;
@@ -74,9 +78,9 @@ Promise.prototype.handleWith = function (callback) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             return [2 /*return*/, this.then(function (value) {
-                    callback(false, value);
+                    callback(null, value);
                 }).catch(function (msg) {
-                    callback(true);
+                    callback(new Error(msg), msg);
                 })];
         });
     });
@@ -96,7 +100,7 @@ exports.addGetCallback = addGetCallback;
 function addSetCallback(func) {
     return function (arg, cb) {
         // assumption is function has signature of (val, callback, args..)
-        //const n = newArgs[1];
+        // const n = newArgs[1];
         try {
             func(arg).handleWith(cb);
         }
@@ -109,9 +113,9 @@ exports.addSetCallback = addSetCallback;
 function addCallback(func) {
     return function (arg, cb) {
         // assumption is function has signature of (val, callback, args..)
-        console.log("entering new function");
+        console.log('entering new function');
         console.log(arg);
-        //const n = newArgs[1];
+        // const n = newArgs[1];
         try {
             console.log(func);
             console.log(cb);

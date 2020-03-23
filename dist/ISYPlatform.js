@@ -1,4 +1,3 @@
-"use strict";
 var __values = (this && this.__values) || function(o) {
     var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
     if (m) return m.call(o);
@@ -130,9 +129,9 @@ var ISYPlatform = /** @class */ (function () {
         var e_3, _a, e_4, _b, e_5, _c;
         var deviceAddress = device.address;
         var deviceName = device.name;
-        //if (this.config.renameDevices === undefined) {
-        //return deviceName;
-        //}
+        // if (this.config.renameDevices === undefined) {
+        // return deviceName;
+        // }
         if (this.config.transformNames !== undefined) {
             if (this.config.transformNames.remove !== undefined)
                 try {
@@ -210,7 +209,7 @@ var ISYPlatform = /** @class */ (function () {
                     var device = _d.value;
                     var homeKitDevice = null;
                     var garageInfo = that.getGarageEntry(device.address);
-                    if (!that.shouldIgnore(device)) {
+                    if (!that.shouldIgnore(device) && !device.hidden) {
                         if (results.length >= 100) {
                             that.logger('Skipping any further devices as 100 limit has been reached');
                             break;
@@ -244,7 +243,7 @@ var ISYPlatform = /** @class */ (function () {
                 for (var _e = __values(_this.isy.sceneList.values()), _f = _e.next(); !_f.done; _f = _e.next()) {
                     var scene = _f.value;
                     if (!_this.shouldIgnore(scene)) {
-                        results.push(new ISYSceneAccessory_1.ISYSceneAccessory(_this.logger.bind(_this), scene));
+                        results.push(new ISYSceneAccessory_1.ISYSceneAccessory({ log: _this.logger.bind(_this), scene: scene }));
                     }
                 }
             }
