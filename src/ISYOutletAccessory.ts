@@ -2,7 +2,7 @@ import { InsteonOutletDevice } from 'isy-js';
 
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
 import  './utils';
-import { Characteristic, Service, CharacteristicEventTypes } from 'homebridge/node_modules/hap-nodejs'
+import { Characteristic, Service, CharacteristicEventTypes } from 'hap-nodejs'
 
 export class ISYOutletAccessory extends ISYDeviceAccessory<InsteonOutletDevice> {
 	public outletService: any;

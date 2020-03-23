@@ -2,7 +2,7 @@
 import { InsteonRelayDevice } from 'isy-js'
 
 import { ISYAccessory } from './ISYAccessory'
-import { Characteristic, Service, CharacteristicEventTypes } from 'homebridge/node_modules/hap-nodejs'
+import { Characteristic, Service, CharacteristicEventTypes } from 'hap-nodejs'
 
 
 export class ISYGarageDoorAccessory extends ISYAccessory<InsteonRelayDevice> {

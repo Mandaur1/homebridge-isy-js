@@ -1,4 +1,3 @@
-"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -13,14 +12,15 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var hap_nodejs_1 = require("homebridge/node_modules/hap-nodejs");
-var ISYAccessory_1 = require("./ISYAccessory");
 require("./utils");
-var HomeKit_1 = require("homebridge/node_modules/hap-nodejs/dist/lib/gen/HomeKit");
+var hap_nodejs_1 = require("hap-nodejs");
+var HomeKit_1 = require("hap-nodejs/dist/lib/gen/HomeKit");
+var ISYAccessory_1 = require("./ISYAccessory");
 var utils_1 = require("./utils");
 var ISYSceneAccessory = /** @class */ (function (_super) {
     __extends(ISYSceneAccessory, _super);
-    function ISYSceneAccessory(log, scene) {
+    function ISYSceneAccessory(_a) {
+        var log = _a.log, scene = _a.scene;
         var _this = _super.call(this, log, scene) || this;
         _this.scene = scene;
         _this.dimmable = scene.isDimmable;

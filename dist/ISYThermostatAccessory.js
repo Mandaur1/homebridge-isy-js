@@ -1,4 +1,3 @@
-"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -13,8 +12,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var hap_nodejs_1 = require("homebridge/node_modules/hap-nodejs");
-var Service_1 = require("homebridge/node_modules/hap-nodejs/dist/lib/Service");
+var hap_nodejs_1 = require("hap-nodejs");
+var Service_1 = require("hap-nodejs/dist/lib/Service");
 require("./utils");
 var isy_js_1 = require("isy-js");
 var ISYDeviceAccessory_1 = require("./ISYDeviceAccessory");

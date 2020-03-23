@@ -1,25 +1,25 @@
-import { CharacteristicEventTypes, Characteristic } from 'homebridge/node_modules/hap-nodejs';
-import * as Service from 'homebridge/node_modules/hap-nodejs/dist/lib/Service';
+import './utils';
+
+import { Characteristic, CharacteristicEventTypes } from 'hap-nodejs';
+import { StatelessProgrammableSwitch, Switch } from 'hap-nodejs/dist/lib/gen/HomeKit';
+import { StatefulProgrammableSwitch } from 'hap-nodejs/dist/lib/gen/HomeKit-Bridge';
 import { ISYScene } from 'isy-js';
 
 import { ISYAccessory } from './ISYAccessory';
-import './utils';
-import { StatelessProgrammableSwitch, Switch } from 'homebridge/node_modules/hap-nodejs/dist/lib/gen/HomeKit'
-import { StatefulProgrammableSwitch } from 'homebridge/node_modules/hap-nodejs/dist/lib/gen/HomeKit-Bridge'
-import { onSet } from './utils'
+import { onSet } from './utils';
 
 export class ISYSceneAccessory extends ISYAccessory<ISYScene> {
 	public dimmable: boolean;
 	public lightService: StatefulProgrammableSwitch | Switch;
 	public scene: ISYScene;
-	constructor(log: (msg: any) => void, scene: ISYScene) {
+	constructor ({ log, scene }: { log: (msg: any) => void; scene: ISYScene; }) {
 		super(log, scene);
 		this.scene = scene;
 		this.dimmable = scene.isDimmable;
 		// this.logger = function(msg) {log("Scene Accessory: " + scene.name + ": " + msg); };
 	}
 	// Handles the identify command
-	public identify(callback: (...any: any[]) => void)  {
+	public identify(callback: (...any: any[]) => void) {
 		const that = this;
 	}
 	// Handles request to set the current powerstate from homekit. Will ignore redundant commands.
@@ -54,7 +54,7 @@ export class ISYSceneAccessory extends ISYAccessory<ISYScene> {
 		}
 	}
 	// Handles request to get the current on state
-	public getPowerState(callback: (...any: any[]) => void)  {
+	public getPowerState(callback: (...any: any[]) => void) {
 		callback(null, this.scene.isOn);
 	}
 	// Returns the set of services supported by this object.
@@ -63,8 +63,8 @@ export class ISYSceneAccessory extends ISYAccessory<ISYScene> {
 
 		if (this.dimmable) {
 			this.lightService = this.addService(StatelessProgrammableSwitch);
-			onSet(this.lightService.getCharacteristic(Characteristic.Brightness),this.device.updateBrightnessLevel).on(CharacteristicEventTypes.GET,(f: (...any: any[]) => void) => this.getBrightness(f));
-			
+			onSet(this.lightService.getCharacteristic(Characteristic.Brightness), this.device.updateBrightnessLevel).on(CharacteristicEventTypes.GET, (f: (...any: any[]) => void) => this.getBrightness(f));
+
 		} else {
 			this.lightService = this.addService(Switch);
 		}

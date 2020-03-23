@@ -3,7 +3,7 @@ import { ElkAlarmSensorDevice } from 'isy-js';
 
 import { ISYAccessory } from './ISYAccessory';
 import './utils';
-import { Characteristic, Service } from 'homebridge/node_modules/hap-nodejs';
+import { Characteristic, Service } from 'hap-nodejs';
 
 export class ISYElkAlarmPanelAccessory extends ISYAccessory<ElkAlarmSensorDevice> {
 	public alarmPanelService: any;
