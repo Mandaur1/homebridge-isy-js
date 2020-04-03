@@ -13,7 +13,7 @@ export class ISYOutletAccessory extends ISYDeviceAccessory<InsteonOutletDevice,C
 	// Handles the identify command
 	// Handles a request to set the outlet state. Ignores redundant sets based on current states.
 	public setOutletState(outletState: boolean, callback: (...any: any[]) => any) {
-		this.logger(`OUTLET: Sending command to set outlet state to: ${outletState}`);
+		this.log.info(`OUTLET: Sending command to set outlet state to: ${outletState}`);
 		if (outletState !== this.device.isOn) {
 			this.device
 				.updateIsOn(outletState)
@@ -42,9 +42,9 @@ export class ISYOutletAccessory extends ISYDeviceAccessory<InsteonOutletDevice,C
 		super.setupServices();
 		const outletService = this.platformAccessory.getOrAddService(Service.Outlet);
 		this.outletService = outletService;
-		outletService.getCharacteristic(Characteristic.On).on(CharacteristicEventTypes.SET, this.setOutletState.bind(this));
-		outletService.getCharacteristic(Characteristic.On).on(CharacteristicEventTypes.GET, this.getOutletState.bind(this));
-		outletService.getCharacteristic(Characteristic.OutletInUse).on(CharacteristicEventTypes.GET, this.getOutletInUseState.bind(this));
+		outletService.getCharacteristic(Characteristic.On).onSet(this.bind(this.device.updateIsOn));
+		outletService.getCharacteristic(Characteristic.On).onGet(() => this.device.isOn);
+		outletService.getCharacteristic(Characteristic.OutletInUse).onGet(() => true);
 		return [this.informationService, outletService];
 	}
 }

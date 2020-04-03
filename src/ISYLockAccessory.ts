@@ -16,7 +16,7 @@ export class ISYLockAccessory extends ISYDeviceAccessory<InsteonLockDevice,Categ
 	}
 	// Handles a set to the target lock state. Will ignore redundant commands.
 	public setTargetLockState(lockState: number, callback: (...any: any[]) => void) {
-		this.logger(`Sending command to set lock state to: ${lockState}`);
+		this.info(`Sending command to set lock state to: ${lockState}`);
 		if (lockState !== this.getDeviceCurrentStateAsHK()) {
 			const targetLockValue = lockState === 0 ? false : true;
 			this.device.sendLockCommand(targetLockValue, callback);

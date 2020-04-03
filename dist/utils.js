@@ -35,9 +35,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
+var chalk = require("chalk");
 var HAPNodeJS = require("hap-nodejs");
 var characteristic = require("hap-nodejs/dist/lib/Characteristic");
+var logger_1 = require("homebridge/lib/logger");
 var platformAccessory_1 = require("homebridge/lib/platformAccessory");
 // import * as service from 'homebridge/node_modules/homebridge/node_modules/hap-nodejs/dist/lib/Service';
 exports.didFinishLaunching = Symbol('didFinishLaunching');
@@ -74,11 +77,35 @@ onGet<T>(characteristic: Characteristic, func: (...args) => Promise<T>): Charact
 (platformAccessory_1.PlatformAccessory.prototype).getOrAddService = function (service) {
     var acc = this;
     var serv = acc.getService(service);
-    console.log(JSON.stringify(serv));
     if (!serv)
         return acc.addService(service);
     return serv;
 };
+(logger_1.Logger.prototype).trace = function () {
+    var msg = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        msg[_i] = arguments[_i];
+    }
+    var log = _this;
+    var newMsg = chalk.dim(msg);
+    if (log.isTraceEnabled())
+        log.log.apply(_this, ['trace'].concat(newMsg));
+    (logger_1.Logger.prototype).fatal = function () {
+        var msg = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            msg[_i] = arguments[_i];
+        }
+        var log = _this;
+        var newMsg = chalk.dim(msg);
+        if (log.isFatalEnabled())
+            log.error(msg);
+    };
+};
+(logger_1.Logger.prototype).isDebugEnabled = function () { return true; };
+(logger_1.Logger.prototype).isErrorEnabled = function () { return true; };
+(logger_1.Logger.prototype).isWarnEnabled = function () { return true; };
+(logger_1.Logger.prototype).isFatalEnabled = function () { return true; };
+(logger_1.Logger.prototype).isTraceEnabled = function () { return true; };
 (characteristic.Characteristic.prototype).onGet = function (func) {
     var c = this;
     return onGet(c, func);

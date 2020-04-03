@@ -32,38 +32,38 @@ var ISYThermostatAccessory = /** @class */ (function (_super) {
         return Math.round((temp * 9.0) / 5.0 + 32.0);
     };
     ISYThermostatAccessory.prototype.getCurrentTemperature = function (callback) {
-        this.logger("Getting Current Temperature - Device says: " + this.device.currentTemperature + " says: " + this.toCelsius(this.device.currentTemperature));
+        this.logger.info("Getting Current Temperature - Device says: " + this.device.currentTemperature + " says: " + this.toCelsius(this.device.currentTemperature));
         callback(null, this.toCelsius(this.device.currentTemperature));
     };
     ISYThermostatAccessory.prototype.getCoolSetPoint = function (callback) {
-        this.logger("Getting Cooling Set Point - Device says: " + this.device.coolSetPoint + " translation says: " + this.toCelsius(this.device.coolSetPoint));
+        this.logger.info("Getting Cooling Set Point - Device says: " + this.device.coolSetPoint + " translation says: " + this.toCelsius(this.device.coolSetPoint));
         callback(null, this.toCelsius(this.device.coolSetPoint));
     };
     ISYThermostatAccessory.prototype.getHeatSetPoint = function (callback) {
-        this.logger("Getting Heating Set Point - Device says: " + this.device.heatSetPoint + " translation says: " + this.toCelsius(this.device.heatSetPoint));
+        this.logger.info("Getting Heating Set Point - Device says: " + this.device.heatSetPoint + " translation says: " + this.toCelsius(this.device.heatSetPoint));
         callback(null, this.toCelsius(this.device.heatSetPoint));
     };
     ISYThermostatAccessory.prototype.getMode = function (callback) {
-        this.logger("Getting Heating Cooling Mode - Device says: " + this.device.mode);
+        this.logger.info("Getting Heating Cooling Mode - Device says: " + this.device.mode);
         callback(null, this.device.mode);
     };
     ISYThermostatAccessory.prototype.getOperatingMode = function (callback) {
-        this.logger("Getting Heating Cooling State - Device says: " + this.device.operatingMode);
+        this.logger.info("Getting Heating Cooling State - Device says: " + this.device.operatingMode);
         callback(null, this.device.operatingMode);
     };
     ISYThermostatAccessory.prototype.getFanMode = function (callback) {
-        this.logger("Getting Fan State - Device says: " + this.device.fanMode);
+        this.logger.info("Getting Fan State - Device says: " + this.device.fanMode);
         callback(null, this.device.fanMode);
     };
     ISYThermostatAccessory.prototype.getHumidity = function (callback) {
-        this.logger("Getting Current Rel. Humidity - Device says: " + this.device.humidity);
+        this.logger.info("Getting Current Rel. Humidity - Device says: " + this.device.humidity);
         callback(null, this.device.humidity);
     };
     // Mirrors change in the state of the underlying isy-js device object.
     ISYThermostatAccessory.prototype.handleExternalChange = function (propertyName, value, formattedValue) {
         _super.prototype.handleExternalChange.call(this, propertyName, value, formattedValue);
         switch (propertyName) {
-            case isy_js_1.Props.Status:
+            case isy_js_1.Props.Climate.Temperature:
                 this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentTemperature).updateValue(this.toCelsius(this.device.currentTemperature));
                 break;
             case isy_js_1.Props.Climate.CoolSetPoint:
@@ -113,39 +113,39 @@ var ISYThermostatAccessory = /** @class */ (function (_super) {
         return svcs;
     };
     ISYThermostatAccessory.prototype.setCoolSetPoint = function (temp, callback) {
-        this.logger("Sending command to set cool set point (pre-translate) to: " + temp);
+        this.logger.info("Sending command to set cool set point (pre-translate) to: " + temp);
         var newSetPoint = this.toFahrenheit(temp);
-        this.logger("Sending command to set cool set point to: " + newSetPoint);
+        this.logger.info("Sending command to set cool set point to: " + newSetPoint);
         if (Math.abs(newSetPoint - this.device.coolSetPoint) >= 1) {
             this.device.updateCoolSetPoint(newSetPoint).handleWith(callback);
         }
         else {
-            this.logger("Command does not change actual set point");
+            this.logger.info("Command does not change actual set point");
             callback();
         }
     };
     ISYThermostatAccessory.prototype.setHeatSetPoint = function (temp, callback) {
-        this.logger("Sending command to set heat set point (pre-translate) to: " + temp);
+        this.logger.info("Sending command to set heat set point (pre-translate) to: " + temp);
         var newSetPoint = this.toFahrenheit(temp);
-        this.logger("Sending command to set heat set point to: " + newSetPoint);
+        this.logger.info("Sending command to set heat set point to: " + newSetPoint);
         if (Math.abs(newSetPoint - this.device.heatSetPoint) >= 1) {
             this.device
                 .updateHeatSetPoint(newSetPoint).handleWith(callback);
         }
         else {
-            this.logger("Command does not change actual set point");
+            this.logger.info("Command does not change actual set point");
             callback();
         }
     };
     ISYThermostatAccessory.prototype.setHeatingCoolingMode = function (mode, callback) {
-        this.logger("Sending command to set heating/cooling mode (pre-translate) to: " + mode);
-        // this.logger("THERM: " + this.device.name + " Sending command to set cool set point to: " + newSetPoint);
+        this.logger.info("Sending command to set heating/cooling mode (pre-translate) to: " + mode);
+        // this.logger.info("THERM: " + this.device.name + " Sending command to set cool set point to: " + newSetPoint);
         if (mode !== this.device.mode) {
             this.device
                 .updateMode(mode).handleWith(callback);
         }
         else {
-            this.logger("Command does not change actual mode");
+            this.logger.info("Command does not change actual mode");
             callback();
         }
     };

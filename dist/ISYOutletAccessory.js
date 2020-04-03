@@ -24,7 +24,7 @@ var ISYOutletAccessory = /** @class */ (function (_super) {
     // Handles the identify command
     // Handles a request to set the outlet state. Ignores redundant sets based on current states.
     ISYOutletAccessory.prototype.setOutletState = function (outletState, callback) {
-        this.logger("OUTLET: Sending command to set outlet state to: " + outletState);
+        this.log.info("OUTLET: Sending command to set outlet state to: " + outletState);
         if (outletState !== this.device.isOn) {
             this.device
                 .updateIsOn(outletState)
@@ -51,12 +51,13 @@ var ISYOutletAccessory = /** @class */ (function (_super) {
     };
     // Returns the set of services supported by this object.
     ISYOutletAccessory.prototype.setupServices = function () {
+        var _this = this;
         _super.prototype.setupServices.call(this);
         var outletService = this.platformAccessory.getOrAddService(hap_nodejs_1.Service.Outlet);
         this.outletService = outletService;
-        outletService.getCharacteristic(hap_nodejs_1.Characteristic.On).on(hap_nodejs_1.CharacteristicEventTypes.SET, this.setOutletState.bind(this));
-        outletService.getCharacteristic(hap_nodejs_1.Characteristic.On).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getOutletState.bind(this));
-        outletService.getCharacteristic(hap_nodejs_1.Characteristic.OutletInUse).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getOutletInUseState.bind(this));
+        outletService.getCharacteristic(hap_nodejs_1.Characteristic.On).onSet(this.bind(this.device.updateIsOn));
+        outletService.getCharacteristic(hap_nodejs_1.Characteristic.On).onGet(function () { return _this.device.isOn; });
+        outletService.getCharacteristic(hap_nodejs_1.Characteristic.OutletInUse).onGet(function () { return true; });
         return [this.informationService, outletService];
     };
     return ISYOutletAccessory;

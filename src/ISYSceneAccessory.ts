@@ -1,6 +1,6 @@
 import './utils';
 
-import { Categories, Characteristic, CharacteristicEventTypes } from 'hap-nodejs';
+import { Categories, Characteristic, CharacteristicEventTypes, Service } from 'hap-nodejs';
 import { StatelessProgrammableSwitch, Switch } from 'hap-nodejs/dist/lib/gen/HomeKit';
 import { StatefulProgrammableSwitch } from 'hap-nodejs/dist/lib/gen/HomeKit-Bridge';
 import { ISYScene } from 'isy-js';
@@ -14,7 +14,7 @@ export class ISYSceneAccessory extends ISYAccessory<ISYScene,Categories.PROGRAMM
 	public scene: ISYScene;
 	constructor (scene: ISYScene) {
 		super(scene);
-		
+
 		this.scene = scene;
 		this.dimmable = scene.isDimmable;
 		// this.logger = function(msg) {log("Scene Accessory: " + scene.name + ": " + msg); };
@@ -24,29 +24,7 @@ export class ISYSceneAccessory extends ISYAccessory<ISYScene,Categories.PROGRAMM
 		const that = this;
 	}
 	// Handles request to set the current powerstate from homekit. Will ignore redundant commands.
-	public setPowerState(powerOn: boolean, callback: (...any) => void) {
-		this.logger(`Setting powerstate to ${powerOn}`);
-		if (this.scene.isOn !== powerOn) {
-			this.logger(`Changing powerstate to ${powerOn}`);
-			this.scene.updateBrightnessLevel(powerOn).handleWith(callback);
-		} else {
-			this.logger(`Ignoring redundant setPowerState`);
-			callback();
-		}
-	}
-	public setBrightness(level: number, callback: (...any) => void) {
-		this.logger(`Setting brightness to ${level}`);
-		if (level !== this.scene.brightnessLevel) {
-			this.scene.updateBrightnessLevel(level).handleWith(callback);
-		} else {
-			this.logger(`Ignoring redundant setBrightness`);
-			callback();
-		}
-	}
-	// Handles a request to get the current brightness level for dimmable lights.
-	public getBrightness(callback: (...any) => void) {
-		callback(null, this.scene.brightnessLevel);
-	}
+	
 	// Mirrors change in the state of the underlying isj-js device object.
 	public handleExternalChange(propertyName: string, value: any, formattedValue: string) {
 		this.lightService.getCharacteristic(Characteristic.On).updateValue(this.scene.isOn);
@@ -63,16 +41,15 @@ export class ISYSceneAccessory extends ISYAccessory<ISYScene,Categories.PROGRAMM
 		super.setupServices();
 
 		if (this.dimmable) {
-			this.lightService = this.platformAccessory.getOrAddService(StatelessProgrammableSwitch);
-			onSet(this.lightService.getCharacteristic(Characteristic.Brightness), this.device.updateBrightnessLevel).on(CharacteristicEventTypes.GET, (f: (...any: any[]) => void) => this.getBrightness(f));
+			this.lightService = this.platformAccessory.getOrAddService(Service.Lightbulb);
+			onSet(this.lightService.getCharacteristic(Characteristic.Brightness), this.bind(this.device.updateBrightnessLevel)).onGet(() => this.device.brightnessLevel);
 
 		} else {
 			this.lightService = this.platformAccessory.getOrAddService(Switch);
 		}
 		this.lightService
 			.getCharacteristic(Characteristic.On)
-			.on(CharacteristicEventTypes.SET, this.setPowerState.bind(this))
-			.on(CharacteristicEventTypes.GET, this.getPowerState.bind(this));
+			.onGet(() => this.device.isOn).onSet(this.bind(this.device.updateIsOn));
 		return [this.informationService, this.lightService];
 	}
 }

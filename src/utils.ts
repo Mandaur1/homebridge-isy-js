@@ -1,8 +1,10 @@
+import * as log4js from '@log4js-node/log4js-api';
+import * as chalk from 'chalk';
 import * as HAPNodeJS from 'hap-nodejs';
 import { CharacteristicValue, Service, WithUUID } from 'hap-nodejs';
 import * as characteristic from 'hap-nodejs/dist/lib/Characteristic';
+import { Logger } from 'homebridge/lib/logger';
 import { PlatformAccessory } from 'homebridge/lib/platformAccessory';
-
 
 
 // import * as service from 'homebridge/node_modules/homebridge/node_modules/hap-nodejs/dist/lib/Service';
@@ -66,6 +68,15 @@ declare module 'homebridge/lib/platformAccessory'
 	}
 }
 
+declare module 'homebridge/lib/logger'
+{
+	// tslint:disable-next-line: no-empty-interface
+	export interface Logger extends log4js.Logger{
+
+
+	}
+}
+
 
 
 declare module 'hap-nodejs/dist/lib/Characteristic' {
@@ -94,13 +105,41 @@ declare module 'hap-nodejs/dist/lib/Characteristic' {
 (PlatformAccessory.prototype).getOrAddService = function (service: WithUUID<typeof Service>) : Service {
 	const acc =  this as unknown as PlatformAccessory;
 	const serv = acc.getService(service);
-
-	console.log(JSON.stringify(serv));
 	if(!serv)
 		return acc.addService(service);
 	return serv;
 
 };
+
+(Logger.prototype).trace = (...msg: any[]) =>
+{
+	const log = this as unknown as Logger;
+	const newMsg = chalk.dim(msg);
+	if(log.isTraceEnabled())
+		log.log.apply(this, ['trace'].concat(newMsg));
+
+
+
+(Logger.prototype).fatal = (...msg: any[]) => {
+
+	const log = this as unknown as Logger;
+	const newMsg = chalk.dim(msg);
+	if (log.isFatalEnabled())
+			log.error(msg);
+
+
+	}
+}
+
+(Logger.prototype).isDebugEnabled = () => true;
+
+(Logger.prototype).isErrorEnabled = () => true;
+
+(Logger.prototype).isWarnEnabled = () => true;
+
+(Logger.prototype).isFatalEnabled = () => true;
+
+(Logger.prototype).isTraceEnabled = () => true;
 
 
 (characteristic.Characteristic.prototype).onGet = function (func: () => HAPNodeJS.CharacteristicValue): characteristic.Characteristic {

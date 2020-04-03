@@ -17,15 +17,15 @@ export class ISYElkAlarmPanelAccessory extends ISYAccessory<ElkAlarmSensorDevice
 	}
 	// Handles the request to set the alarm target state
 	public setAlarmTargetState(targetStateHK, callback) {
-		this.logger('ALARMSYSTEM: ' + this.device.name + 'Sending command to set alarm panel state to: ' + targetStateHK);
+		this.logger.info('ALARMSYSTEM: ' + this.device.name + 'Sending command to set alarm panel state to: ' + targetStateHK);
 		const targetState = this.translateHKToAlarmTargetState(targetStateHK);
-		this.logger('ALARMSYSTEM: ' + this.device.name + ' Would send the target state of: ' + targetState);
+		this.logger.info('ALARMSYSTEM: ' + this.device.name + ' Would send the target state of: ' + targetState);
 		if (this.device.getAlarmMode() !== targetState) {
 			this.device.sendSetAlarmModeCommand(targetState, function (result) {
 				callback();
 			});
 		} else {
-			this.logger('ALARMSYSTEM: ' + this.device.name + ' Redundant command, already in that state.');
+			this.logger.info('ALARMSYSTEM: ' + this.device.name + ' Redundant command, already in that state.');
 			callback();
 		}
 	}
@@ -49,7 +49,7 @@ export class ISYElkAlarmPanelAccessory extends ISYAccessory<ElkAlarmSensorDevice
 			} else if (sourceAlarmMode === this.device.ALARM_MODE_NIGHT || sourceAlarmMode === this.device.ALARM_MODE_NIGHT_INSTANT) {
 				return Characteristic.SecuritySystemCurrentState.NIGHT_ARM;
 			} else {
-				this.logger('ALARMSYSTEM: ' + this.device.name + ' Setting to disarmed because sourceAlarmMode is ' + sourceAlarmMode);
+				this.logger.info('ALARMSYSTEM: ' + this.device.name + ' Setting to disarmed because sourceAlarmMode is ' + sourceAlarmMode);
 				return Characteristic.SecuritySystemCurrentState.DISARMED;
 			}
 		}
@@ -90,8 +90,8 @@ export class ISYElkAlarmPanelAccessory extends ISYAccessory<ElkAlarmSensorDevice
 	// Mirrors change in the state of the underlying isj-js device object.
 	public handleExternalChange(propertyName, value, formattedValue) {
 		super.handleExternalChange(propertyName, value, formattedValue);
-		this.logger(`ALARMPANEL: ${this.device.name} Source device. Currenty state locally -${this.device.getAlarmStatusAsText()}`);
-		this.logger(`ALARMPANEL: ${this.device.name} Got alarm change notification. Setting HK target state to: ${this.translateAlarmTargetStateToHK()} Setting HK Current state to: ${this.translateAlarmCurrentStateToHK()}`);
+		this.info(`ALARMPANEL: ${this.device.name} Source device. Currenty state locally -${this.device.getAlarmStatusAsText()}`);
+		this.info(`ALARMPANEL: ${this.device.name} Got alarm change notification. Setting HK target state to: ${this.translateAlarmTargetStateToHK()} Setting HK Current state to: ${this.translateAlarmCurrentStateToHK()}`);
 		this.alarmPanelService.setCharacteristic(Characteristic.SecuritySystemTargetState, this.translateAlarmTargetStateToHK());
 		this.alarmPanelService.setCharacteristic(Characteristic.SecuritySystemCurrentState, this.translateAlarmCurrentStateToHK());
 	}

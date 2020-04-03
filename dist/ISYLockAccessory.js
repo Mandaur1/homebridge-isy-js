@@ -26,7 +26,7 @@ var ISYLockAccessory = /** @class */ (function (_super) {
     };
     // Handles a set to the target lock state. Will ignore redundant commands.
     ISYLockAccessory.prototype.setTargetLockState = function (lockState, callback) {
-        this.logger("Sending command to set lock state to: " + lockState);
+        this.info("Sending command to set lock state to: " + lockState);
         if (lockState !== this.getDeviceCurrentStateAsHK()) {
             var targetLockValue = lockState === 0 ? false : true;
             this.device.sendLockCommand(targetLockValue, callback);

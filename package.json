@@ -33,6 +33,8 @@
     "mocha": ""
   },
   "dependencies": {
+    "@log4js-node/log4js-api": "^1.0.2",
+    "chalk": "",
     "faye-websocket": "^0.11.3",
     "homebridge": "git+https://github.com/nfarina/homebridge.git#beta",
     "isy-js": "git+https://github.com/pradeepmouli/isy-js.git#v5",

@@ -32,31 +32,6 @@ var ISYSceneAccessory = /** @class */ (function (_super) {
         var that = this;
     };
     // Handles request to set the current powerstate from homekit. Will ignore redundant commands.
-    ISYSceneAccessory.prototype.setPowerState = function (powerOn, callback) {
-        this.logger("Setting powerstate to " + powerOn);
-        if (this.scene.isOn !== powerOn) {
-            this.logger("Changing powerstate to " + powerOn);
-            this.scene.updateBrightnessLevel(powerOn).handleWith(callback);
-        }
-        else {
-            this.logger("Ignoring redundant setPowerState");
-            callback();
-        }
-    };
-    ISYSceneAccessory.prototype.setBrightness = function (level, callback) {
-        this.logger("Setting brightness to " + level);
-        if (level !== this.scene.brightnessLevel) {
-            this.scene.updateBrightnessLevel(level).handleWith(callback);
-        }
-        else {
-            this.logger("Ignoring redundant setBrightness");
-            callback();
-        }
-    };
-    // Handles a request to get the current brightness level for dimmable lights.
-    ISYSceneAccessory.prototype.getBrightness = function (callback) {
-        callback(null, this.scene.brightnessLevel);
-    };
     // Mirrors change in the state of the underlying isj-js device object.
     ISYSceneAccessory.prototype.handleExternalChange = function (propertyName, value, formattedValue) {
         this.lightService.getCharacteristic(hap_nodejs_1.Characteristic.On).updateValue(this.scene.isOn);
@@ -73,16 +48,15 @@ var ISYSceneAccessory = /** @class */ (function (_super) {
         var _this = this;
         _super.prototype.setupServices.call(this);
         if (this.dimmable) {
-            this.lightService = this.platformAccessory.getOrAddService(HomeKit_1.StatelessProgrammableSwitch);
-            utils_1.onSet(this.lightService.getCharacteristic(hap_nodejs_1.Characteristic.Brightness), this.device.updateBrightnessLevel).on(hap_nodejs_1.CharacteristicEventTypes.GET, function (f) { return _this.getBrightness(f); });
+            this.lightService = this.platformAccessory.getOrAddService(hap_nodejs_1.Service.Lightbulb);
+            utils_1.onSet(this.lightService.getCharacteristic(hap_nodejs_1.Characteristic.Brightness), this.bind(this.device.updateBrightnessLevel)).onGet(function () { return _this.device.brightnessLevel; });
         }
         else {
             this.lightService = this.platformAccessory.getOrAddService(HomeKit_1.Switch);
         }
         this.lightService
             .getCharacteristic(hap_nodejs_1.Characteristic.On)
-            .on(hap_nodejs_1.CharacteristicEventTypes.SET, this.setPowerState.bind(this))
-            .on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getPowerState.bind(this));
+            .onGet(function () { return _this.device.isOn; }).onSet(this.bind(this.device.updateIsOn));
         return [this.informationService, this.lightService];
     };
     return ISYSceneAccessory;

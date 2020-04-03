@@ -13,7 +13,7 @@ var ISYAccessory = /** @class */ (function () {
         this.name = device.name;
         this.displayName = device.displayName;
         // super(device.name,hapNodeJS.uuid.generate(device.isy.address + ":" + device.address))
-        this.logger = logger_1.Logger.withPrefix("ISY Device: " + this.name);
+        this.logger = new logger_1.Logger("ISY Device: " + this.name);
         this.device = device;
         this.address = device.address;
         //this.getServices();
@@ -44,7 +44,7 @@ var ISYAccessory = /** @class */ (function () {
         var _a;
         this.informationService = this.platformAccessory.getOrAddService(hap_nodejs_1.Service.AccessoryInformation);
         if (!this.informationService) {
-            this.logger.debug('information service needs to be created');
+            this.logger.trace('information service needs to be created');
             this.informationService = this.platformAccessory.addService(hap_nodejs_1.Service.AccessoryInformation);
         }
         this.informationService

@@ -15,7 +15,7 @@ export default (homebridge: API) => {
 	//const Characteristic = homebridge.hap.Characteristic;
 	 const PlatformAccessory = homebridge.platformAccessory;
 	const api = homebridge;
-	homebridge.registerPlatform(`homebridge-isy-js`, 'isy-js', ISYPlatform,true);
+	homebridge.registerPlatform(`homebridge-isy-js`, 'ISY', ISYPlatform,true);
 	return this;
 
 };

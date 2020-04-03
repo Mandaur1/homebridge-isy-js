@@ -13,7 +13,7 @@ import ISYConstants from 'isy-js/lib/isyconstants';
 
 export class ISYAccessory<T extends ISYNode, TCategory extends Categories> {
 	[x: string]: any;
-	public logger: { (...args: any[]): void; debug: (...args: any[]) => void; info: (...args: any[]) => void; warn: (...args: any[]) => void; error: (...args: any[]) => void; log: (level: string, msg: unknown) => void; prefix: string; };
+	public logger: Logger;
 	public device: T;
 	public address: any;
 	public UUID: string;
@@ -38,7 +38,7 @@ export class ISYAccessory<T extends ISYNode, TCategory extends Categories> {
 		this.name = device.name;
 		this.displayName = device.displayName;
 		// super(device.name,hapNodeJS.uuid.generate(device.isy.address + ":" + device.address))
-		this.logger = Logger.withPrefix(`ISY Device: ${this.name}`);
+		this.logger = new Logger(`ISY Device: ${this.name}`);
 		this.device = device;
 		this.address = device.address;
 		//this.getServices();
@@ -63,7 +63,7 @@ export class ISYAccessory<T extends ISYNode, TCategory extends Categories> {
 	public setupServices(): Service[] {
 		this.informationService = this.platformAccessory.getOrAddService(Service.AccessoryInformation);
 		if (!this.informationService) {
-			this.logger.debug('information service needs to be created');
+			this.logger.trace('information service needs to be created');
 			this.informationService = this.platformAccessory.addService(Service.AccessoryInformation);
 		}
 

@@ -27,16 +27,16 @@ var ISYElkAlarmPanelAccessory = /** @class */ (function (_super) {
     };
     // Handles the request to set the alarm target state
     ISYElkAlarmPanelAccessory.prototype.setAlarmTargetState = function (targetStateHK, callback) {
-        this.logger('ALARMSYSTEM: ' + this.device.name + 'Sending command to set alarm panel state to: ' + targetStateHK);
+        this.logger.info('ALARMSYSTEM: ' + this.device.name + 'Sending command to set alarm panel state to: ' + targetStateHK);
         var targetState = this.translateHKToAlarmTargetState(targetStateHK);
-        this.logger('ALARMSYSTEM: ' + this.device.name + ' Would send the target state of: ' + targetState);
+        this.logger.info('ALARMSYSTEM: ' + this.device.name + ' Would send the target state of: ' + targetState);
         if (this.device.getAlarmMode() !== targetState) {
             this.device.sendSetAlarmModeCommand(targetState, function (result) {
                 callback();
             });
         }
         else {
-            this.logger('ALARMSYSTEM: ' + this.device.name + ' Redundant command, already in that state.');
+            this.logger.info('ALARMSYSTEM: ' + this.device.name + ' Redundant command, already in that state.');
             callback();
         }
     };
@@ -65,7 +65,7 @@ var ISYElkAlarmPanelAccessory = /** @class */ (function (_super) {
                 return hap_nodejs_1.Characteristic.SecuritySystemCurrentState.NIGHT_ARM;
             }
             else {
-                this.logger('ALARMSYSTEM: ' + this.device.name + ' Setting to disarmed because sourceAlarmMode is ' + sourceAlarmMode);
+                this.logger.info('ALARMSYSTEM: ' + this.device.name + ' Setting to disarmed because sourceAlarmMode is ' + sourceAlarmMode);
                 return hap_nodejs_1.Characteristic.SecuritySystemCurrentState.DISARMED;
             }
         }
@@ -112,8 +112,8 @@ var ISYElkAlarmPanelAccessory = /** @class */ (function (_super) {
     // Mirrors change in the state of the underlying isj-js device object.
     ISYElkAlarmPanelAccessory.prototype.handleExternalChange = function (propertyName, value, formattedValue) {
         _super.prototype.handleExternalChange.call(this, propertyName, value, formattedValue);
-        this.logger("ALARMPANEL: " + this.device.name + " Source device. Currenty state locally -" + this.device.getAlarmStatusAsText());
-        this.logger("ALARMPANEL: " + this.device.name + " Got alarm change notification. Setting HK target state to: " + this.translateAlarmTargetStateToHK() + " Setting HK Current state to: " + this.translateAlarmCurrentStateToHK());
+        this.info("ALARMPANEL: " + this.device.name + " Source device. Currenty state locally -" + this.device.getAlarmStatusAsText());
+        this.info("ALARMPANEL: " + this.device.name + " Got alarm change notification. Setting HK target state to: " + this.translateAlarmTargetStateToHK() + " Setting HK Current state to: " + this.translateAlarmCurrentStateToHK());
         this.alarmPanelService.setCharacteristic(hap_nodejs_1.Characteristic.SecuritySystemTargetState, this.translateAlarmTargetStateToHK());
         this.alarmPanelService.setCharacteristic(hap_nodejs_1.Characteristic.SecuritySystemCurrentState, this.translateAlarmCurrentStateToHK());
     };
