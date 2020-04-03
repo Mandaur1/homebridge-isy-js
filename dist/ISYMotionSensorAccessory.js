@@ -1,3 +1,4 @@
+"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -16,8 +17,8 @@ var hap_nodejs_1 = require("hap-nodejs");
 var ISYDeviceAccessory_1 = require("./ISYDeviceAccessory");
 var ISYMotionSensorAccessory = /** @class */ (function (_super) {
     __extends(ISYMotionSensorAccessory, _super);
-    function ISYMotionSensorAccessory(log, device) {
-        return _super.call(this, log, device) || this;
+    function ISYMotionSensorAccessory(device) {
+        return _super.call(this, device) || this;
     }
     // Handles the identify command.
     // Handles the request to get he current motion sensor state.
@@ -30,10 +31,10 @@ var ISYMotionSensorAccessory = /** @class */ (function (_super) {
         this.sensorService.getCharacteristic(hap_nodejs_1.Characteristic.MotionDetected).updateValue(this.device.isMotionDetected);
     };
     // Returns the set of services supported by this object.
-    ISYMotionSensorAccessory.prototype.getServices = function () {
+    ISYMotionSensorAccessory.prototype.setupServices = function () {
         var _this = this;
-        _super.prototype.getServices.call(this);
-        var sensorService = this.addService(hap_nodejs_1.Service.MotionSensor);
+        _super.prototype.setupServices.call(this);
+        var sensorService = this.platformAccessory.getOrAddService(hap_nodejs_1.Service.MotionSensor);
         this.sensorService = sensorService;
         sensorService.getCharacteristic(hap_nodejs_1.Characteristic.MotionDetected).onGet(function () { return _this.device.isMotionDetected; });
         return [this.informationService, this.sensorService];

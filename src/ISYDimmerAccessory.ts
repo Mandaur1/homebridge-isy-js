@@ -1,13 +1,13 @@
 import './utils';
 
-import { Characteristic, CharacteristicEventTypes, Service } from 'hap-nodejs';
+import { Characteristic, CharacteristicChange, CharacteristicEventTypes, Service, ServiceEventTypes } from 'hap-nodejs';
 import { Controls, InsteonDimmableDevice } from 'isy-js';
 
 import { ISYRelayAccessory } from './ISYRelayAccessory';
 
 export class InsteonDimmableAccessory<T extends InsteonDimmableDevice> extends ISYRelayAccessory<T> {
-	constructor(log: any, device: T) {
-		super(log, device);
+	constructor(device: T) {
+		super(device);
 
 	}
 	// Handles the identify command
@@ -22,9 +22,9 @@ export class InsteonDimmableAccessory<T extends InsteonDimmableDevice> extends I
 	public handleExternalChange(propertyName: string, value, formattedValue) {
 		super.handleExternalChange(propertyName, value, formattedValue);
 		//this.primaryService.getCharacteristic(Characteristic.On).updateValue(this.device.isOn);
-
-		if(propertyName !== null && propertyName !== undefined)
-			this.primaryService.getCharacteristic(this.toCharacteristic(propertyName).name).updateValue(this.device[propertyName]);
+		let ch = this.toCharacteristic(propertyName);
+		if(ch !== null && ch !== undefined)
+			this.primaryService.getCharacteristic(ch.name).updateValue(this.device[propertyName]);
 
 	}
 	// Handles request to get the current on state
@@ -37,17 +37,17 @@ export class InsteonDimmableAccessory<T extends InsteonDimmableDevice> extends I
 
 	}
 	// Returns the set of services supported by this object.
-	public getServices() : Service[] {
-		const s = super.getServices();
-		this.primaryService.removeAllListeners();
-		this.removeService(this.primaryService);
-		this.primaryService = this.addService(Service.Lightbulb);
-		this.primaryService.getCharacteristic(Characteristic.On).onSet(this.device.updateIsOn.bind(this.device));
-		this.primaryService.getCharacteristic(Characteristic.On).on(CharacteristicEventTypes.GET,this.getPowerState.bind(this));
+	public setupServices() : Service[] {
+		const s = super.setupServices();
+
+		this.platformAccessory.removeService(this.primaryService);
+		this.primaryService = this.platformAccessory.getOrAddService(Service.Lightbulb);
+		this.primaryService.getCharacteristic(Characteristic.On).onSet(this.bind(this.device.updateIsOn));
+		this.primaryService.getCharacteristic(Characteristic.On).onGet(() => this.device.isOn);
 		// lightBulbService.getCharacteristic(Characteristic.On).on('get', this.getPowerState.bind(this));
 		//this.primaryService.getCharacteristic(Characteristic.Brightness).updateValue(this.device['OL']);
 		this.primaryService.getCharacteristic(Characteristic.Brightness).onGet(() => this.device.brightnessLevel);
-		this.primaryService.getCharacteristic(Characteristic.Brightness).onSet(this.device.updateBrightnessLevel.bind(this.device));
+		this.primaryService.getCharacteristic(Characteristic.Brightness).onSet(this.bind(this.device.updateBrightnessLevel));
 		//this.primaryService.getCharacteristic(Characteristic.Brightness).setProps({maxValue: this.device.OL});
 		return [this.informationService, this.primaryService];
 	}

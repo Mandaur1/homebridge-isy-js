@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -37,6 +38,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var HAPNodeJS = require("hap-nodejs");
 var characteristic = require("hap-nodejs/dist/lib/Characteristic");
+var platformAccessory_1 = require("homebridge/lib/platformAccessory");
+// import * as service from 'homebridge/node_modules/homebridge/node_modules/hap-nodejs/dist/lib/Service';
+exports.didFinishLaunching = Symbol('didFinishLaunching');
 // tslint:disable-next-line: no-namespace
 // tslint:disable-next-line: no-namespace
 function onSet(character, func) {
@@ -65,6 +69,15 @@ onGet<T>(characteristic: Characteristic, func: (...args) => Promise<T>): Charact
 (characteristic.Characteristic.prototype).onSet = function (func) {
     var c = this;
     return onSet(c, func);
+};
+// tslint:disable-next-line: only-arrow-functions
+(platformAccessory_1.PlatformAccessory.prototype).getOrAddService = function (service) {
+    var acc = this;
+    var serv = acc.getService(service);
+    console.log(JSON.stringify(serv));
+    if (!serv)
+        return acc.addService(service);
+    return serv;
 };
 (characteristic.Characteristic.prototype).onGet = function (func) {
     var c = this;

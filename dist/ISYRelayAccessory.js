@@ -1,3 +1,4 @@
+"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -12,14 +13,14 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+require("./utils");
 var hap_nodejs_1 = require("hap-nodejs");
 var isy_js_1 = require("isy-js");
 var ISYDeviceAccessory_1 = require("./ISYDeviceAccessory");
-require("./utils");
 var ISYRelayAccessory = /** @class */ (function (_super) {
     __extends(ISYRelayAccessory, _super);
-    function ISYRelayAccessory(log, device) {
-        var _this = _super.call(this, log, device) || this;
+    function ISYRelayAccessory(device) {
+        var _this = _super.call(this, device) || this;
         _this.dimmable = device instanceof isy_js_1.InsteonDimmableDevice;
         return _this;
     }
@@ -62,9 +63,9 @@ var ISYRelayAccessory = /** @class */ (function (_super) {
         callback(null, this.device.brightnessLevel);
     };
     // Returns the set of services supported by this object.
-    ISYRelayAccessory.prototype.getServices = function () {
-        var s = _super.prototype.getServices.call(this);
-        this.primaryService = this.addService(hap_nodejs_1.Service.Switch);
+    ISYRelayAccessory.prototype.setupServices = function () {
+        var s = _super.prototype.setupServices.call(this);
+        this.primaryService = this.platformAccessory.getOrAddService(hap_nodejs_1.Service.Switch);
         this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.On).on(hap_nodejs_1.CharacteristicEventTypes.SET, this.setPowerState.bind(this));
         this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.On).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getPowerState.bind(this));
         s.push(this.primaryService);

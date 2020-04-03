@@ -1,3 +1,4 @@
+"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -12,12 +13,12 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var ISYAccessory_1 = require("./ISYAccessory");
 var hap_nodejs_1 = require("hap-nodejs");
+var ISYAccessory_1 = require("./ISYAccessory");
 var ISYGarageDoorAccessory = /** @class */ (function (_super) {
     __extends(ISYGarageDoorAccessory, _super);
-    function ISYGarageDoorAccessory(log, sensorDevice, relayDevice, name, timeToOpen, alternate) {
-        var _this = _super.call(this, log, sensorDevice) || this;
+    function ISYGarageDoorAccessory(sensorDevice, relayDevice, name, timeToOpen, alternate) {
+        var _this = _super.call(this, sensorDevice) || this;
         _this.timeToOpen = timeToOpen;
         _this.relayDevice = relayDevice;
         _this.alternate = alternate === undefined ? false : alternate;
@@ -162,9 +163,9 @@ var ISYGarageDoorAccessory = /** @class */ (function (_super) {
         callback(null, false);
     };
     // Returns the set of services supported by this object.
-    ISYGarageDoorAccessory.prototype.getServices = function () {
-        _super.prototype.getServices.call(this);
-        var garageDoorService = this.addService(hap_nodejs_1.Service.GarageDoorOpener);
+    ISYGarageDoorAccessory.prototype.setupServices = function () {
+        _super.prototype.setupServices.call(this);
+        var garageDoorService = this.platformAccessory.getOrAddService(hap_nodejs_1.Service.GarageDoorOpener);
         this.garageDoorService = garageDoorService;
         garageDoorService.getCharacteristic(hap_nodejs_1.Characteristic.TargetDoorState).on(hap_nodejs_1.CharacteristicEventTypes.SET, this.setTargetDoorState.bind(this));
         garageDoorService.getCharacteristic(hap_nodejs_1.Characteristic.TargetDoorState).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getTargetDoorState.bind(this));

@@ -1,22 +1,23 @@
+import './utils';
 
+import { Categories, Characteristic, CharacteristicEventTypes, Service } from 'hap-nodejs';
 import { InsteonDoorWindowSensorDevice } from 'isy-js';
 
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
-import './utils';
-import { Characteristic, Service, CharacteristicEventTypes } from 'hap-nodejs'
 
-export class ISYDoorWindowSensorAccessory extends ISYDeviceAccessory<InsteonDoorWindowSensorDevice> {
+
+export class ISYDoorWindowSensorAccessory extends ISYDeviceAccessory<InsteonDoorWindowSensorDevice,Categories.SENSOR> {
 
 	public sensorService: Service;
-	constructor(log: (msg: any) => void, device: InsteonDoorWindowSensorDevice) {
-		super(log, device);
+	constructor(device: InsteonDoorWindowSensorDevice) {
+		super(device);
 		this.doorWindowState = false;
 	}
 	// Handles the identify command.
 	// Translates the state of the underlying device object into the corresponding homekit compatible state
 	public translateCurrentDoorWindowState()  {
-	
-		return this.device.isOpen ? Characteristic.CurrentDoorState.OPEN : Characteristic.CurrentDoorState.CLOSED;
+
+		return this.device.isOpen;
 	}
 	// Handles the request to get he current door window state.
 	public getCurrentDoorWindowState(callback) {
@@ -25,14 +26,14 @@ export class ISYDoorWindowSensorAccessory extends ISYDeviceAccessory<InsteonDoor
 	// Mirrors change in the state of the underlying isj-js device object.
 	public handleExternalChange(propertyName: string, value: any, formattedValue: string) {
 		super.handleExternalChange(propertyName, value, formattedValue);
-		this.sensorService.getCharacteristic(Characteristic.CurrentDoorState).updateValue(this.translateCurrentDoorWindowState());
+		this.sensorService.getCharacteristic(Characteristic.CurrentDoorState).updateValue(!this.device.isOpen);
 	}
 	// Returns the set of services supported by this object.
-	public getServices() {
-		super.getServices();
-		const sensorService = this.addService(Service.Door)
+	public setupServices() {
+		super.setupServices();
+		const sensorService = this.platformAccessory.getOrAddService(Service.ContactSensor);
 		this.sensorService = sensorService;
-		sensorService.getCharacteristic(Characteristic.CurrentDoorState).on(CharacteristicEventTypes.GET, this.getCurrentDoorWindowState.bind(this));
+		sensorService.getCharacteristic(Characteristic.ContactSensorState).onGet(() => this.device.isOpen);
 		return [this.informationService, sensorService];
 	}
 }

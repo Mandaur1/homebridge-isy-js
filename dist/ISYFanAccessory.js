@@ -1,3 +1,4 @@
+"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -17,8 +18,8 @@ var hap_nodejs_1 = require("hap-nodejs");
 var ISYDeviceAccessory_1 = require("./ISYDeviceAccessory");
 var ISYFanAccessory = /** @class */ (function (_super) {
     __extends(ISYFanAccessory, _super);
-    function ISYFanAccessory(log, device) {
-        var _this = _super.call(this, log, device) || this;
+    function ISYFanAccessory(device) {
+        var _this = _super.call(this, device) || this;
         //this.device.Motor.onPropertyChanged(null, this.handleExternalChangeToMotor.bind(this));
         _this.device.Light.onPropertyChanged(null, _this.handleExternalChangeToLight.bind(_this));
         return _this;
@@ -140,18 +141,18 @@ var ISYFanAccessory = /** @class */ (function (_super) {
         }
     };
     // Returns the services supported by the fan device.
-    ISYFanAccessory.prototype.getServices = function () {
+    ISYFanAccessory.prototype.setupServices = function () {
         var _this = this;
-        var s = _super.prototype.getServices.call(this);
-        var fanService = this.addService(hap_nodejs_1.Service.Fan);
+        var s = _super.prototype.setupServices.call(this);
+        var fanService = this.platformAccessory.getOrAddService(hap_nodejs_1.Service.Fan);
         this.fanService = fanService;
-        var lightService = this.addService(hap_nodejs_1.Service.Lightbulb);
+        var lightService = this.platformAccessory.getOrAddService(hap_nodejs_1.Service.Lightbulb);
         this.lightService = lightService;
         fanService.getCharacteristic(hap_nodejs_1.Characteristic.RotationSpeed).onSet(this.device.Motor.updateFanSpeed.bind(this.device.Motor)).onGet(function () { return _this.device.Motor.fanSpeed; });
         fanService.getCharacteristic(hap_nodejs_1.Characteristic.On).onSet(this.device.Motor.updateIsOn.bind(this.device.Motor)).onGet(function () { return _this.device.Motor.isOn; });
         lightService.getCharacteristic(hap_nodejs_1.Characteristic.On).onSet(this.device.Light.updateIsOn.bind(this.device.Light)).onGet(function () { return _this.device.Light.isOn; });
         lightService.getCharacteristic(hap_nodejs_1.Characteristic.Brightness).onSet(this.device.Light.updateBrightnessLevel.bind(this.device.Light)).onGet(function () { return _this.device.Light.brightnessLevel; });
-        this.setPrimaryService(fanService);
+        fanService.isPrimaryService = true;
         s.push(fanService, lightService);
         return s;
     };

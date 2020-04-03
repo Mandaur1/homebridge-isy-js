@@ -1,3 +1,4 @@
+"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -12,20 +13,20 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var ISYDeviceAccessory_1 = require("./ISYDeviceAccessory");
 require("./utils");
 var hap_nodejs_1 = require("hap-nodejs");
+var ISYDeviceAccessory_1 = require("./ISYDeviceAccessory");
 var ISYDoorWindowSensorAccessory = /** @class */ (function (_super) {
     __extends(ISYDoorWindowSensorAccessory, _super);
-    function ISYDoorWindowSensorAccessory(log, device) {
-        var _this = _super.call(this, log, device) || this;
+    function ISYDoorWindowSensorAccessory(device) {
+        var _this = _super.call(this, device) || this;
         _this.doorWindowState = false;
         return _this;
     }
     // Handles the identify command.
     // Translates the state of the underlying device object into the corresponding homekit compatible state
     ISYDoorWindowSensorAccessory.prototype.translateCurrentDoorWindowState = function () {
-        return this.device.isOpen ? hap_nodejs_1.Characteristic.CurrentDoorState.OPEN : hap_nodejs_1.Characteristic.CurrentDoorState.CLOSED;
+        return this.device.isOpen;
     };
     // Handles the request to get he current door window state.
     ISYDoorWindowSensorAccessory.prototype.getCurrentDoorWindowState = function (callback) {
@@ -34,14 +35,15 @@ var ISYDoorWindowSensorAccessory = /** @class */ (function (_super) {
     // Mirrors change in the state of the underlying isj-js device object.
     ISYDoorWindowSensorAccessory.prototype.handleExternalChange = function (propertyName, value, formattedValue) {
         _super.prototype.handleExternalChange.call(this, propertyName, value, formattedValue);
-        this.sensorService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentDoorState).updateValue(this.translateCurrentDoorWindowState());
+        this.sensorService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentDoorState).updateValue(!this.device.isOpen);
     };
     // Returns the set of services supported by this object.
-    ISYDoorWindowSensorAccessory.prototype.getServices = function () {
-        _super.prototype.getServices.call(this);
-        var sensorService = this.addService(hap_nodejs_1.Service.Door);
+    ISYDoorWindowSensorAccessory.prototype.setupServices = function () {
+        var _this = this;
+        _super.prototype.setupServices.call(this);
+        var sensorService = this.platformAccessory.getOrAddService(hap_nodejs_1.Service.ContactSensor);
         this.sensorService = sensorService;
-        sensorService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentDoorState).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getCurrentDoorWindowState.bind(this));
+        sensorService.getCharacteristic(hap_nodejs_1.Characteristic.ContactSensorState).onGet(function () { return _this.device.isOpen; });
         return [this.informationService, sensorService];
     };
     return ISYDoorWindowSensorAccessory;

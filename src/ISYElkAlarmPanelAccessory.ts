@@ -1,14 +1,15 @@
+import './utils';
 
+import { Categories, Characteristic, Service } from 'hap-nodejs';
 import { ElkAlarmSensorDevice } from 'isy-js';
 
 import { ISYAccessory } from './ISYAccessory';
-import './utils';
-import { Characteristic, Service } from 'hap-nodejs';
 
-export class ISYElkAlarmPanelAccessory extends ISYAccessory<ElkAlarmSensorDevice> {
+
+export class ISYElkAlarmPanelAccessory extends ISYAccessory<ElkAlarmSensorDevice,Categories.ALARM_SYSTEM> {
 	public alarmPanelService: any;
-	constructor (log, device) {
-		super(log, device);
+	constructor (device) {
+		super(device);
 	}
 	// Handles the identify command
 	public identify(callback) {
@@ -95,9 +96,9 @@ export class ISYElkAlarmPanelAccessory extends ISYAccessory<ElkAlarmSensorDevice
 		this.alarmPanelService.setCharacteristic(Characteristic.SecuritySystemCurrentState, this.translateAlarmCurrentStateToHK());
 	}
 	// Returns the set of services supported by this object.
-	public getServices() {
-		const s = super.getServices();
-		
+	public setupServices() {
+		const s = super.setupServices();
+
 		this.alarmPanelService = this.addService(Service.SecuritySystem);
 		this.alarmPanelService.getCharacteristic(Characteristic.SecuritySystemTargetState).on('set', this.setAlarmTargetState.bind(this));
 		this.alarmPanelService.getCharacteristic(Characteristic.SecuritySystemTargetState).on('get', this.getAlarmTargetState.bind(this));

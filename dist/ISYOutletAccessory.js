@@ -1,3 +1,4 @@
+"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -12,13 +13,13 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var ISYDeviceAccessory_1 = require("./ISYDeviceAccessory");
 require("./utils");
 var hap_nodejs_1 = require("hap-nodejs");
+var ISYDeviceAccessory_1 = require("./ISYDeviceAccessory");
 var ISYOutletAccessory = /** @class */ (function (_super) {
     __extends(ISYOutletAccessory, _super);
-    function ISYOutletAccessory(log, device) {
-        return _super.call(this, log, device) || this;
+    function ISYOutletAccessory(device) {
+        return _super.call(this, device) || this;
     }
     // Handles the identify command
     // Handles a request to set the outlet state. Ignores redundant sets based on current states.
@@ -49,9 +50,9 @@ var ISYOutletAccessory = /** @class */ (function (_super) {
         this.outletService.updateCharacteristic(hap_nodejs_1.Characteristic.On, this.device.isOn);
     };
     // Returns the set of services supported by this object.
-    ISYOutletAccessory.prototype.getServices = function () {
-        _super.prototype.getServices.call(this);
-        var outletService = this.addService(hap_nodejs_1.Service.Outlet);
+    ISYOutletAccessory.prototype.setupServices = function () {
+        _super.prototype.setupServices.call(this);
+        var outletService = this.platformAccessory.getOrAddService(hap_nodejs_1.Service.Outlet);
         this.outletService = outletService;
         outletService.getCharacteristic(hap_nodejs_1.Characteristic.On).on(hap_nodejs_1.CharacteristicEventTypes.SET, this.setOutletState.bind(this));
         outletService.getCharacteristic(hap_nodejs_1.Characteristic.On).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getOutletState.bind(this));

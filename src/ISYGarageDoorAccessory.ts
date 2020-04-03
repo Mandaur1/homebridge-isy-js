@@ -1,19 +1,19 @@
+import { Categories, Characteristic, CharacteristicEventTypes, Service } from 'hap-nodejs';
+import { InsteonRelayDevice } from 'isy-js';
 
-import { InsteonRelayDevice } from 'isy-js'
-
-import { ISYAccessory } from './ISYAccessory'
-import { Characteristic, Service, CharacteristicEventTypes } from 'hap-nodejs'
+import { ISYAccessory } from './ISYAccessory';
 
 
-export class ISYGarageDoorAccessory extends ISYAccessory<InsteonRelayDevice> {
+
+export class ISYGarageDoorAccessory extends ISYAccessory<InsteonRelayDevice, Categories.GARAGE_DOOR_OPENER> {
 	public timeToOpen: any
 	public relayDevice: any
 	public alternate: any
 	public targetGarageState: any
 	public currentGarageState: any
 	public garageDoorService: any
-	constructor (log, sensorDevice, relayDevice, name, timeToOpen, alternate) {
-		super(log, sensorDevice)
+	constructor (sensorDevice, relayDevice, name, timeToOpen, alternate) {
+		super(sensorDevice)
 		this.timeToOpen = timeToOpen
 		this.relayDevice = relayDevice
 		this.alternate = alternate === undefined ? false : alternate
@@ -144,9 +144,9 @@ export class ISYGarageDoorAccessory extends ISYAccessory<InsteonRelayDevice> {
 		callback(null, false)
 	}
 	// Returns the set of services supported by this object.
-	public getServices() {
-		super.getServices()
-		const garageDoorService = this.addService(Service.GarageDoorOpener);
+	public setupServices() {
+		super.setupServices()
+		const garageDoorService = this.platformAccessory.getOrAddService(Service.GarageDoorOpener);
 		this.garageDoorService = garageDoorService;
 		garageDoorService.getCharacteristic(Characteristic.TargetDoorState).on(CharacteristicEventTypes.SET, this.setTargetDoorState.bind(this))
 		garageDoorService.getCharacteristic(Characteristic.TargetDoorState).on(CharacteristicEventTypes.GET, this.getTargetDoorState.bind(this))

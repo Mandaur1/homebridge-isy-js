@@ -1,14 +1,16 @@
-import { Service, Characteristic, CharacteristicEventTypes } from 'hap-nodejs';
+import './utils';
+
+import { Categories, Characteristic, CharacteristicEventTypes, Service } from 'hap-nodejs';
 import { InsteonDimmableDevice, InsteonRelayDevice } from 'isy-js';
 
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
-import './utils';
 
-export class ISYRelayAccessory<T extends InsteonRelayDevice> extends ISYDeviceAccessory<T> {
+export class ISYRelayAccessory<T extends InsteonRelayDevice> extends ISYDeviceAccessory<T,Categories.SWITCH> {
 	public primaryService: Service;
 
-	constructor(log: (msg: any) => void, device: T) {
-		super(log, device);
+	constructor(device: T) {
+		super(device);
+
 		this.dimmable = device instanceof InsteonDimmableDevice;
 	}
 	// Handles the identify command
@@ -48,9 +50,9 @@ export class ISYRelayAccessory<T extends InsteonRelayDevice> extends ISYDeviceAc
 		callback(null, this.device.brightnessLevel);
 	}
 	// Returns the set of services supported by this object.
-	public getServices() {
-		const s = super.getServices();
-		this.primaryService = this.addService(Service.Switch);
+	public setupServices() {
+		const s = super.setupServices();
+		this.primaryService = this.platformAccessory.getOrAddService(Service.Switch);
 		this.primaryService.getCharacteristic(Characteristic.On).on(CharacteristicEventTypes.SET, this.setPowerState.bind(this));
 		this.primaryService.getCharacteristic(Characteristic.On).on(CharacteristicEventTypes.GET, this.getPowerState.bind(this));
 		s.push(this.primaryService);

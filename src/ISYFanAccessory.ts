@@ -1,15 +1,15 @@
 import './ISYPlatform';
 
-import { Characteristic, CharacteristicEventTypes, Service } from 'hap-nodejs';
+import { Categories, Characteristic, CharacteristicEventTypes, Service } from 'hap-nodejs';
 import { InsteonFanDevice } from 'isy-js';
 
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
 
-export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice> {
+export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice,Categories.FAN> {
 	public fanService: Service;
 	public lightService: Service;
-	constructor (log: (msg: any) => void, device: InsteonFanDevice) {
-		super(log, device);
+	constructor (device: InsteonFanDevice) {
+		super(device);
 		//this.device.Motor.onPropertyChanged(null, this.handleExternalChangeToMotor.bind(this));
 		this.device.Light.onPropertyChanged(null, this.handleExternalChangeToLight.bind(this));
 		// this.logger(JSON.stringify(this.device.scenes[0]));
@@ -126,17 +126,17 @@ export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice> {
 		}
 	}
 	// Returns the services supported by the fan device.
-	public getServices() {
-		const s = super.getServices();
-		const fanService = this.addService(Service.Fan);
+	public setupServices() {
+		const s = super.setupServices();
+		const fanService = this.platformAccessory.getOrAddService(Service.Fan);
 		this.fanService = fanService;
-		const lightService = this.addService(Service.Lightbulb);
+		const lightService = this.platformAccessory.getOrAddService(Service.Lightbulb);
 		this.lightService = lightService;
 		fanService.getCharacteristic(Characteristic.RotationSpeed).onSet(this.device.Motor.updateFanSpeed.bind(this.device.Motor)).onGet(() => this.device.Motor.fanSpeed);
 		fanService.getCharacteristic(Characteristic.On).onSet(this.device.Motor.updateIsOn.bind(this.device.Motor)).onGet(() => this.device.Motor.isOn);
 		lightService.getCharacteristic(Characteristic.On).onSet(this.device.Light.updateIsOn.bind(this.device.Light)).onGet(() => this.device.Light.isOn);
 		lightService.getCharacteristic(Characteristic.Brightness).onSet(this.device.Light.updateBrightnessLevel.bind(this.device.Light)).onGet(() => this.device.Light.brightnessLevel);
-		this.setPrimaryService(fanService);
+		fanService.isPrimaryService = true;
 		s.push(fanService, lightService);
 
 		return s;

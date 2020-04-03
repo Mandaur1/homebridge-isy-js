@@ -1,3 +1,4 @@
+"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -19,9 +20,8 @@ var ISYAccessory_1 = require("./ISYAccessory");
 var utils_1 = require("./utils");
 var ISYSceneAccessory = /** @class */ (function (_super) {
     __extends(ISYSceneAccessory, _super);
-    function ISYSceneAccessory(_a) {
-        var log = _a.log, scene = _a.scene;
-        var _this = _super.call(this, log, scene) || this;
+    function ISYSceneAccessory(scene) {
+        var _this = _super.call(this, scene) || this;
         _this.scene = scene;
         _this.dimmable = scene.isDimmable;
         return _this;
@@ -69,15 +69,15 @@ var ISYSceneAccessory = /** @class */ (function (_super) {
         callback(null, this.scene.isOn);
     };
     // Returns the set of services supported by this object.
-    ISYSceneAccessory.prototype.getServices = function () {
+    ISYSceneAccessory.prototype.setupServices = function () {
         var _this = this;
-        _super.prototype.getServices.call(this);
+        _super.prototype.setupServices.call(this);
         if (this.dimmable) {
-            this.lightService = this.addService(HomeKit_1.StatelessProgrammableSwitch);
+            this.lightService = this.platformAccessory.getOrAddService(HomeKit_1.StatelessProgrammableSwitch);
             utils_1.onSet(this.lightService.getCharacteristic(hap_nodejs_1.Characteristic.Brightness), this.device.updateBrightnessLevel).on(hap_nodejs_1.CharacteristicEventTypes.GET, function (f) { return _this.getBrightness(f); });
         }
         else {
-            this.lightService = this.addService(HomeKit_1.Switch);
+            this.lightService = this.platformAccessory.getOrAddService(HomeKit_1.Switch);
         }
         this.lightService
             .getCharacteristic(hap_nodejs_1.Characteristic.On)

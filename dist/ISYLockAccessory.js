@@ -1,3 +1,4 @@
+"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -12,12 +13,12 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var ISYDeviceAccessory_1 = require("./ISYDeviceAccessory");
 var hap_nodejs_1 = require("hap-nodejs");
+var ISYDeviceAccessory_1 = require("./ISYDeviceAccessory");
 var ISYLockAccessory = /** @class */ (function (_super) {
     __extends(ISYLockAccessory, _super);
-    function ISYLockAccessory(log, device) {
-        return _super.call(this, log, device) || this;
+    function ISYLockAccessory(device) {
+        return _super.call(this, device) || this;
     }
     // Handles an identify request
     ISYLockAccessory.prototype.identify = function (callback) {
@@ -52,9 +53,9 @@ var ISYLockAccessory = /** @class */ (function (_super) {
         this.lockService.updateCharacteristic(hap_nodejs_1.Characteristic.LockCurrentState, this.getDeviceCurrentStateAsHK());
     };
     // Returns the set of services supported by this object.
-    ISYLockAccessory.prototype.getServices = function () {
-        _super.prototype.getServices.call(this);
-        var lockMechanismService = this.addService(hap_nodejs_1.Service.LockMechanism);
+    ISYLockAccessory.prototype.setupServices = function () {
+        _super.prototype.setupServices.call(this);
+        var lockMechanismService = this.platformAccessory.getOrAddService(hap_nodejs_1.Service.LockMechanism);
         this.lockService = lockMechanismService;
         lockMechanismService.getCharacteristic(hap_nodejs_1.Characteristic.LockTargetState).on(hap_nodejs_1.CharacteristicEventTypes.SET, this.setTargetLockState.bind(this));
         lockMechanismService.getCharacteristic(hap_nodejs_1.Characteristic.LockTargetState).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getTargetLockState.bind(this));

@@ -1,3 +1,4 @@
+"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -17,8 +18,8 @@ var hap_nodejs_1 = require("hap-nodejs");
 var ISYRelayAccessory_1 = require("./ISYRelayAccessory");
 var InsteonDimmableAccessory = /** @class */ (function (_super) {
     __extends(InsteonDimmableAccessory, _super);
-    function InsteonDimmableAccessory(log, device) {
-        return _super.call(this, log, device) || this;
+    function InsteonDimmableAccessory(device) {
+        return _super.call(this, device) || this;
     }
     // Handles the identify command
     // Handles request to set the current powerstate from homekit. Will ignore redundant commands.
@@ -31,8 +32,9 @@ var InsteonDimmableAccessory = /** @class */ (function (_super) {
     InsteonDimmableAccessory.prototype.handleExternalChange = function (propertyName, value, formattedValue) {
         _super.prototype.handleExternalChange.call(this, propertyName, value, formattedValue);
         //this.primaryService.getCharacteristic(Characteristic.On).updateValue(this.device.isOn);
-        if (propertyName !== null && propertyName !== undefined)
-            this.primaryService.getCharacteristic(this.toCharacteristic(propertyName).name).updateValue(this.device[propertyName]);
+        var ch = this.toCharacteristic(propertyName);
+        if (ch !== null && ch !== undefined)
+            this.primaryService.getCharacteristic(ch.name).updateValue(this.device[propertyName]);
     };
     // Handles request to get the current on state
     // Handles request to get the current on state
@@ -41,18 +43,17 @@ var InsteonDimmableAccessory = /** @class */ (function (_super) {
         callback(null, this.device.level);
     };
     // Returns the set of services supported by this object.
-    InsteonDimmableAccessory.prototype.getServices = function () {
+    InsteonDimmableAccessory.prototype.setupServices = function () {
         var _this = this;
-        var s = _super.prototype.getServices.call(this);
-        this.primaryService.removeAllListeners();
-        this.removeService(this.primaryService);
-        this.primaryService = this.addService(hap_nodejs_1.Service.Lightbulb);
-        this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.On).onSet(this.device.updateIsOn.bind(this.device));
-        this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.On).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getPowerState.bind(this));
+        var s = _super.prototype.setupServices.call(this);
+        this.platformAccessory.removeService(this.primaryService);
+        this.primaryService = this.platformAccessory.getOrAddService(hap_nodejs_1.Service.Lightbulb);
+        this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.On).onSet(this.bind(this.device.updateIsOn));
+        this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.On).onGet(function () { return _this.device.isOn; });
         // lightBulbService.getCharacteristic(Characteristic.On).on('get', this.getPowerState.bind(this));
         //this.primaryService.getCharacteristic(Characteristic.Brightness).updateValue(this.device['OL']);
         this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.Brightness).onGet(function () { return _this.device.brightnessLevel; });
-        this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.Brightness).onSet(this.device.updateBrightnessLevel.bind(this.device));
+        this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.Brightness).onSet(this.bind(this.device.updateBrightnessLevel));
         //this.primaryService.getCharacteristic(Characteristic.Brightness).setProps({maxValue: this.device.OL});
         return [this.informationService, this.primaryService];
     };

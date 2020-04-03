@@ -1,14 +1,14 @@
-
+import { Categories, Characteristic, CharacteristicEventTypes, Service } from 'hap-nodejs';
 import { InsteonLockDevice } from 'isy-js';
 
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
-import { Characteristic, Service, CharacteristicEventTypes } from 'hap-nodejs'
 
 
-export class ISYLockAccessory extends ISYDeviceAccessory<InsteonLockDevice> {
+
+export class ISYLockAccessory extends ISYDeviceAccessory<InsteonLockDevice,Categories.DOOR_LOCK> {
 	public lockService: any;
-	constructor(log: (msg: any) => void, device: InsteonLockDevice) {
-		super(log, device);
+	constructor(device: InsteonLockDevice) {
+		super(device);
 	}
 	// Handles an identify request
 	public identify(callback) {
@@ -43,9 +43,9 @@ export class ISYLockAccessory extends ISYDeviceAccessory<InsteonLockDevice> {
 		this.lockService.updateCharacteristic(Characteristic.LockCurrentState, this.getDeviceCurrentStateAsHK());
 	}
 	// Returns the set of services supported by this object.
-	public getServices() {
-		super.getServices();
-		const lockMechanismService = this.addService(Service.LockMechanism);
+	public setupServices() {
+		super.setupServices();
+		const lockMechanismService = this.platformAccessory.getOrAddService(Service.LockMechanism);
 		this.lockService = lockMechanismService;
 		lockMechanismService.getCharacteristic(Characteristic.LockTargetState).on(CharacteristicEventTypes.SET, this.setTargetLockState.bind(this));
 		lockMechanismService.getCharacteristic(Characteristic.LockTargetState).on(CharacteristicEventTypes.GET, this.getTargetLockState.bind(this));

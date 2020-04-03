@@ -9,12 +9,13 @@
        "downlevelIteration": true,
         "rootDir": "./src/",
         "baseUrl": "./src",
-        "paths": {
-            "hap-nodejs":["./node_modules/hap-nodejs/dist/index.d.ts"],
 
+        "paths": {
+
+            //"homebridge":["./typings/api.d.ts","./typings/platformAccessory.d.ts"],
             "config":["../typings/config.d.ts"]
         },
-        "noImplicitUseStrict": true,
+
         "experimentalDecorators": true,
         "moduleResolution": "node",
         "sourceMap": false,

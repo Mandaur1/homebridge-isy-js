@@ -1,6 +1,6 @@
 import './utils';
 
-import { Characteristic, CharacteristicEventTypes } from 'hap-nodejs';
+import { Categories, Characteristic, CharacteristicEventTypes } from 'hap-nodejs';
 import { StatelessProgrammableSwitch, Switch } from 'hap-nodejs/dist/lib/gen/HomeKit';
 import { StatefulProgrammableSwitch } from 'hap-nodejs/dist/lib/gen/HomeKit-Bridge';
 import { ISYScene } from 'isy-js';
@@ -8,12 +8,13 @@ import { ISYScene } from 'isy-js';
 import { ISYAccessory } from './ISYAccessory';
 import { onSet } from './utils';
 
-export class ISYSceneAccessory extends ISYAccessory<ISYScene> {
+export class ISYSceneAccessory extends ISYAccessory<ISYScene,Categories.PROGRAMMABLE_SWITCH> {
 	public dimmable: boolean;
 	public lightService: StatefulProgrammableSwitch | Switch;
 	public scene: ISYScene;
-	constructor ({ log, scene }: { log: (msg: any) => void; scene: ISYScene; }) {
-		super(log, scene);
+	constructor (scene: ISYScene) {
+		super(scene);
+		
 		this.scene = scene;
 		this.dimmable = scene.isDimmable;
 		// this.logger = function(msg) {log("Scene Accessory: " + scene.name + ": " + msg); };
@@ -58,15 +59,15 @@ export class ISYSceneAccessory extends ISYAccessory<ISYScene> {
 		callback(null, this.scene.isOn);
 	}
 	// Returns the set of services supported by this object.
-	public getServices() {
-		super.getServices();
+	public setupServices() {
+		super.setupServices();
 
 		if (this.dimmable) {
-			this.lightService = this.addService(StatelessProgrammableSwitch);
+			this.lightService = this.platformAccessory.getOrAddService(StatelessProgrammableSwitch);
 			onSet(this.lightService.getCharacteristic(Characteristic.Brightness), this.device.updateBrightnessLevel).on(CharacteristicEventTypes.GET, (f: (...any: any[]) => void) => this.getBrightness(f));
 
 		} else {
-			this.lightService = this.addService(Switch);
+			this.lightService = this.platformAccessory.getOrAddService(Switch);
 		}
 		this.lightService
 			.getCharacteristic(Characteristic.On)

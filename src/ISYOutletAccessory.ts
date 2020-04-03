@@ -1,13 +1,14 @@
+import './utils';
+
+import { Categories, Characteristic, CharacteristicEventTypes, Service } from 'hap-nodejs';
 import { InsteonOutletDevice } from 'isy-js';
 
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
-import  './utils';
-import { Characteristic, Service, CharacteristicEventTypes } from 'hap-nodejs'
 
-export class ISYOutletAccessory extends ISYDeviceAccessory<InsteonOutletDevice> {
+export class ISYOutletAccessory extends ISYDeviceAccessory<InsteonOutletDevice,Categories.OUTLET> {
 	public outletService: any;
-	constructor(log: (msg: any) => void, device: InsteonOutletDevice) {
-		super(log, device);
+	constructor(device: InsteonOutletDevice) {
+		super(device);
 	}
 	// Handles the identify command
 	// Handles a request to set the outlet state. Ignores redundant sets based on current states.
@@ -37,9 +38,9 @@ export class ISYOutletAccessory extends ISYDeviceAccessory<InsteonOutletDevice> 
 		this.outletService.updateCharacteristic(Characteristic.On, this.device.isOn);
 	}
 	// Returns the set of services supported by this object.
-	public getServices() {
-		super.getServices();
-		const outletService = this.addService(Service.Outlet);
+	public setupServices() {
+		super.setupServices();
+		const outletService = this.platformAccessory.getOrAddService(Service.Outlet);
 		this.outletService = outletService;
 		outletService.getCharacteristic(Characteristic.On).on(CharacteristicEventTypes.SET, this.setOutletState.bind(this));
 		outletService.getCharacteristic(Characteristic.On).on(CharacteristicEventTypes.GET, this.getOutletState.bind(this));

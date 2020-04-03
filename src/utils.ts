@@ -1,12 +1,13 @@
 import * as HAPNodeJS from 'hap-nodejs';
-import { CharacteristicValue } from 'hap-nodejs';
+import { CharacteristicValue, Service, WithUUID } from 'hap-nodejs';
 import * as characteristic from 'hap-nodejs/dist/lib/Characteristic';
+import { PlatformAccessory } from 'homebridge/lib/platformAccessory';
 
 
 
 // import * as service from 'homebridge/node_modules/homebridge/node_modules/hap-nodejs/dist/lib/Service';
 
-
+export const didFinishLaunching: symbol = Symbol('didFinishLaunching');
 
 
 
@@ -56,6 +57,17 @@ export function onGet<T extends CharacteristicValue>(character: characteristic.C
 
 // }
 
+declare module 'homebridge/lib/platformAccessory'
+{
+	export interface PlatformAccessory
+	{
+		getOrAddService(service :  WithUUID<typeof Service>) : Service;
+
+	}
+}
+
+
+
 declare module 'hap-nodejs/dist/lib/Characteristic' {
 	export interface Characteristic {
 		onSet<T extends CharacteristicValue>(func: (...args: any) => Promise<T>) : Characteristic;
@@ -76,8 +88,20 @@ declare module 'hap-nodejs/dist/lib/Characteristic' {
 	const c = this as unknown as characteristic.Characteristic;
 
 	 return onSet(c,func);
+};
+
+// tslint:disable-next-line: only-arrow-functions
+(PlatformAccessory.prototype).getOrAddService = function (service: WithUUID<typeof Service>) : Service {
+	const acc =  this as unknown as PlatformAccessory;
+	const serv = acc.getService(service);
+
+	console.log(JSON.stringify(serv));
+	if(!serv)
+		return acc.addService(service);
+	return serv;
 
 };
+
 
 (characteristic.Characteristic.prototype).onGet = function (func: () => HAPNodeJS.CharacteristicValue): characteristic.Characteristic {
 	const c = this as unknown as characteristic.Characteristic

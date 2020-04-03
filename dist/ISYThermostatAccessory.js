@@ -1,3 +1,4 @@
+"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -12,17 +13,17 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+require("./utils");
 var hap_nodejs_1 = require("hap-nodejs");
 var Service_1 = require("hap-nodejs/dist/lib/Service");
-require("./utils");
 var isy_js_1 = require("isy-js");
 var ISYDeviceAccessory_1 = require("./ISYDeviceAccessory");
 //import { Service } from 'homebridge/node_modules/hap-nodejs/dist/lib/Service';
 //import { Characteristic } from 'homebridge/node_modules/hap-nodejs/dist/lib/Characteristic';
 var ISYThermostatAccessory = /** @class */ (function (_super) {
     __extends(ISYThermostatAccessory, _super);
-    function ISYThermostatAccessory(log, device) {
-        return _super.call(this, log, device) || this;
+    function ISYThermostatAccessory(device) {
+        return _super.call(this, device) || this;
     }
     ISYThermostatAccessory.prototype.toCelsius = function (temp) {
         return ((temp - 32.0) * 5.0) / 9.0;
@@ -87,9 +88,9 @@ var ISYThermostatAccessory = /** @class */ (function (_super) {
                 break;
         }
     };
-    ISYThermostatAccessory.prototype.getServices = function () {
+    ISYThermostatAccessory.prototype.setupServices = function () {
         var _this = this;
-        var svcs = _super.prototype.getServices.call(this);
+        var svcs = _super.prototype.setupServices.call(this);
         this.thermostatService = this.addService(Service_1.Service.Thermostat);
         // thermostatService.getCharacteristic(Characteristic.TargetTemperature).on("get", this.getTargetTemperature.bind(this));
         // thermostatService.getCharacteristic(Characteristic.TargetTemperature).on("set", this.setTargetTemperature.bind(this));

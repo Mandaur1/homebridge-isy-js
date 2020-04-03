@@ -1,3 +1,4 @@
+"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -12,13 +13,13 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var ISYAccessory_1 = require("./ISYAccessory");
 require("./utils");
 var hap_nodejs_1 = require("hap-nodejs");
+var ISYAccessory_1 = require("./ISYAccessory");
 var ISYElkAlarmPanelAccessory = /** @class */ (function (_super) {
     __extends(ISYElkAlarmPanelAccessory, _super);
-    function ISYElkAlarmPanelAccessory(log, device) {
-        return _super.call(this, log, device) || this;
+    function ISYElkAlarmPanelAccessory(device) {
+        return _super.call(this, device) || this;
     }
     // Handles the identify command
     ISYElkAlarmPanelAccessory.prototype.identify = function (callback) {
@@ -117,8 +118,8 @@ var ISYElkAlarmPanelAccessory = /** @class */ (function (_super) {
         this.alarmPanelService.setCharacteristic(hap_nodejs_1.Characteristic.SecuritySystemCurrentState, this.translateAlarmCurrentStateToHK());
     };
     // Returns the set of services supported by this object.
-    ISYElkAlarmPanelAccessory.prototype.getServices = function () {
-        var s = _super.prototype.getServices.call(this);
+    ISYElkAlarmPanelAccessory.prototype.setupServices = function () {
+        var s = _super.prototype.setupServices.call(this);
         this.alarmPanelService = this.addService(hap_nodejs_1.Service.SecuritySystem);
         this.alarmPanelService.getCharacteristic(hap_nodejs_1.Characteristic.SecuritySystemTargetState).on('set', this.setAlarmTargetState.bind(this));
         this.alarmPanelService.getCharacteristic(hap_nodejs_1.Characteristic.SecuritySystemTargetState).on('get', this.getAlarmTargetState.bind(this));

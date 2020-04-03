@@ -1,8 +1,8 @@
 // import { CharacteristicEventTypes, CharacteristicProps, CharacteristicValue, WithUUID } from 'hap-nodejs';
-
+import { API } from 'homebridge';
+import { ISYAccessory } from 'ISYAccessory';
 
 import { ISYPlatform } from './ISYPlatform';
-import { API } from 'homebridge/lib/api'
 
 
 
@@ -12,7 +12,10 @@ export default (homebridge: API) => {
 
 	//const Hap = homebridge.hap;
 
-	//onst Characteristic = homebridge.hap.Characteristic;
-	//const api = homebridge;
-	homebridge.registerPlatform(`homebridge-isy-js`, 'isy-js', ISYPlatform,null);
+	//const Characteristic = homebridge.hap.Characteristic;
+	 const PlatformAccessory = homebridge.platformAccessory;
+	const api = homebridge;
+	homebridge.registerPlatform(`homebridge-isy-js`, 'isy-js', ISYPlatform,true);
+	return this;
+
 };

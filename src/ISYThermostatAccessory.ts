@@ -1,21 +1,21 @@
-
-import { Characteristic, CharacteristicEventTypes } from 'hap-nodejs';
-import {Service} from 'hap-nodejs/dist/lib/Service';
 import './utils';
 
+import { Categories, Characteristic, CharacteristicEventTypes } from 'hap-nodejs';
+import { Thermostat } from 'hap-nodejs/dist/lib/gen/HomeKit';
+import { Service } from 'hap-nodejs/dist/lib/Service';
 import { InsteonThermostatDevice, Props } from 'isy-js';
 
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
-import { Thermostat } from 'hap-nodejs/dist/lib/gen/HomeKit'
+
 
 
 //import { Service } from 'homebridge/node_modules/hap-nodejs/dist/lib/Service';
 //import { Characteristic } from 'homebridge/node_modules/hap-nodejs/dist/lib/Characteristic';
-export class ISYThermostatAccessory extends ISYDeviceAccessory<InsteonThermostatDevice> {
+export class ISYThermostatAccessory extends ISYDeviceAccessory<InsteonThermostatDevice,Categories.THERMOSTAT> {
 	public targetTemperature: number;
 	public thermostatService: Thermostat;
-	constructor(log: (msg: any) => void, device: InsteonThermostatDevice) {
-		super(log, device);
+	constructor(device: InsteonThermostatDevice) {
+		super(device);
 	}
 	public toCelsius(temp: number): any {
 		return ((temp - 32.0) * 5.0) / 9.0;
@@ -81,8 +81,8 @@ export class ISYThermostatAccessory extends ISYDeviceAccessory<InsteonThermostat
 				break;
 		}
 	}
-	public getServices(): Service[] {
-		const svcs = super.getServices();
+	public setupServices(): Service[] {
+		const svcs = super.setupServices();
 		this.thermostatService = this.addService(Service.Thermostat);
 		// thermostatService.getCharacteristic(Characteristic.TargetTemperature).on("get", this.getTargetTemperature.bind(this));
 		// thermostatService.getCharacteristic(Characteristic.TargetTemperature).on("set", this.setTargetTemperature.bind(this));
