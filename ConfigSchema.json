@@ -1,0 +1,212 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "additionalProperties": {
+    },
+    "definitions": {
+        "DeviceConfig": {
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "ignore": {
+                    "type": "boolean"
+                },
+                "mapping": {
+                    "$ref": "#/definitions/DeviceServiceMapping"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "triggers": {
+                    "items": {
+                        "$ref": "#/definitions/DevicePropertyTrigger"
+                    },
+                    "type": "array"
+                },
+                "typeCode": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "DevicePropertyTrigger": {
+            "properties": {
+                "property": {
+                    "type": "string"
+                },
+                "target": {
+                    "properties": {
+                        "address": {
+                            "type": "string"
+                        },
+                        "command": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
+                "value": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "DeviceServiceMapping": {
+            "properties": {
+                "properties": {
+                    "items": {
+                        "$ref": "#/definitions/PropertyCharacteristicMapping"
+                    },
+                    "type": "array"
+                },
+                "service": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "GlobalRenameRule": {
+            "properties": {
+                "remove": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "replace": {
+                    "items": {
+                        "properties": {
+                            "replace": {
+                                "type": "string"
+                            },
+                            "with": {
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "IgnoreDeviceRule": {
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "family": {
+                    "type": [
+                        "string",
+                        "number"
+                    ]
+                },
+                "folder": {
+                    "type": "string"
+                },
+                "lastAddressDigit": {
+                    "type": "number"
+                },
+                "nameContains": {
+                    "type": "string"
+                },
+                "nodeDef": {
+                    "type": "string"
+                },
+                "typeCode": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "PropertyCharacteristicMapping": {
+            "properties": {
+                 "property": {
+                     "type": "string"
+                 },
+                 "service":
+                 {
+                    "type": "string"
+                    
+                 },
+                "characteristic": {
+                    "type": "string"
+                }
+
+
+            },
+            "type": "object"
+        },
+        "RenameDeviceRule": {
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "newName": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "properties": {
+        "debugLoggingEnabled": {
+            "type": "boolean"
+        },
+        "deviceConfigs": {
+            "items": {
+                "$ref": "#/definitions/DeviceConfig"
+            },
+            "type": "array"
+        },
+        "elkEnabled": {
+            "type": "boolean"
+        },
+        "host": {
+            "type": "string"
+        },
+        "ignoreDevices": {
+            "items": {
+                "$ref": "#/definitions/IgnoreDeviceRule"
+            },
+            "type": "array"
+        },
+        "includeAllScenes": {
+            "enum": [
+                true
+            ],
+            "type": "boolean"
+        },
+        "name": {
+            "type": "string"
+        },
+        "password": {
+            "type": "string"
+        },
+        "platform": {
+            "type": "string"
+        },
+        "renameDevices": {
+            "items": {
+                "$ref": "#/definitions/RenameDeviceRule"
+            },
+            "type": "array"
+        },
+        "transformNames": {
+            "$ref": "#/definitions/GlobalRenameRule"
+        },
+        "useHttps": {
+            "type": "boolean"
+        },
+        "username": {
+            "type": "string"
+        }
+    },
+    "type": "object"
+}

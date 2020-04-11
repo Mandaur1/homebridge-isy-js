@@ -1,67 +1,52 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
 require("./utils");
-var hap_nodejs_1 = require("hap-nodejs");
-var Service_1 = require("hap-nodejs/dist/lib/Service");
-var isy_js_1 = require("isy-js");
-var ISYDeviceAccessory_1 = require("./ISYDeviceAccessory");
+const hap_nodejs_1 = require("hap-nodejs");
+const isy_js_1 = require("isy-js");
+const ISYDeviceAccessory_1 = require("./ISYDeviceAccessory");
 //import { Service } from 'homebridge/node_modules/hap-nodejs/dist/lib/Service';
 //import { Characteristic } from 'homebridge/node_modules/hap-nodejs/dist/lib/Characteristic';
-var ISYThermostatAccessory = /** @class */ (function (_super) {
-    __extends(ISYThermostatAccessory, _super);
-    function ISYThermostatAccessory(device) {
-        return _super.call(this, device) || this;
+class ISYThermostatAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
+    constructor(device) {
+        super(device);
     }
-    ISYThermostatAccessory.prototype.toCelsius = function (temp) {
+    toCelsius(temp) {
         return ((temp - 32.0) * 5.0) / 9.0;
-    };
-    ISYThermostatAccessory.prototype.toFahrenheit = function (temp) {
+    }
+    toFahrenheit(temp) {
         return Math.round((temp * 9.0) / 5.0 + 32.0);
-    };
-    ISYThermostatAccessory.prototype.getCurrentTemperature = function (callback) {
-        this.logger.info("Getting Current Temperature - Device says: " + this.device.currentTemperature + " says: " + this.toCelsius(this.device.currentTemperature));
+    }
+    getCurrentTemperature(callback) {
+        this.logger.info(`Getting Current Temperature - Device says: ${this.device.currentTemperature} says: ${this.toCelsius(this.device.currentTemperature)}`);
         callback(null, this.toCelsius(this.device.currentTemperature));
-    };
-    ISYThermostatAccessory.prototype.getCoolSetPoint = function (callback) {
-        this.logger.info("Getting Cooling Set Point - Device says: " + this.device.coolSetPoint + " translation says: " + this.toCelsius(this.device.coolSetPoint));
+    }
+    getCoolSetPoint(callback) {
+        this.logger.info(`Getting Cooling Set Point - Device says: ${this.device.coolSetPoint} translation says: ${this.toCelsius(this.device.coolSetPoint)}`);
         callback(null, this.toCelsius(this.device.coolSetPoint));
-    };
-    ISYThermostatAccessory.prototype.getHeatSetPoint = function (callback) {
-        this.logger.info("Getting Heating Set Point - Device says: " + this.device.heatSetPoint + " translation says: " + this.toCelsius(this.device.heatSetPoint));
+    }
+    getHeatSetPoint(callback) {
+        this.logger.info(`Getting Heating Set Point - Device says: ${this.device.heatSetPoint} translation says: ${this.toCelsius(this.device.heatSetPoint)}`);
         callback(null, this.toCelsius(this.device.heatSetPoint));
-    };
-    ISYThermostatAccessory.prototype.getMode = function (callback) {
-        this.logger.info("Getting Heating Cooling Mode - Device says: " + this.device.mode);
+    }
+    getMode(callback) {
+        this.logger.info(`Getting Heating Cooling Mode - Device says: ${this.device.mode}`);
         callback(null, this.device.mode);
-    };
-    ISYThermostatAccessory.prototype.getOperatingMode = function (callback) {
-        this.logger.info("Getting Heating Cooling State - Device says: " + this.device.operatingMode);
+    }
+    getOperatingMode(callback) {
+        this.logger.info(`Getting Heating Cooling State - Device says: ${this.device.operatingMode}`);
         callback(null, this.device.operatingMode);
-    };
-    ISYThermostatAccessory.prototype.getFanMode = function (callback) {
-        this.logger.info("Getting Fan State - Device says: " + this.device.fanMode);
+    }
+    getFanMode(callback) {
+        this.logger.info(`Getting Fan State - Device says: ${this.device.fanMode}`);
         callback(null, this.device.fanMode);
-    };
-    ISYThermostatAccessory.prototype.getHumidity = function (callback) {
-        this.logger.info("Getting Current Rel. Humidity - Device says: " + this.device.humidity);
+    }
+    getHumidity(callback) {
+        this.logger.info(`Getting Current Rel. Humidity - Device says: ${this.device.humidity}`);
         callback(null, this.device.humidity);
-    };
+    }
     // Mirrors change in the state of the underlying isy-js device object.
-    ISYThermostatAccessory.prototype.handleExternalChange = function (propertyName, value, formattedValue) {
-        _super.prototype.handleExternalChange.call(this, propertyName, value, formattedValue);
+    handleExternalChange(propertyName, value, formattedValue) {
+        super.handleExternalChange(propertyName, value, formattedValue);
         switch (propertyName) {
             case isy_js_1.Props.Climate.Temperature:
                 this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentTemperature).updateValue(this.toCelsius(this.device.currentTemperature));
@@ -87,16 +72,15 @@ var ISYThermostatAccessory = /** @class */ (function (_super) {
             default:
                 break;
         }
-    };
-    ISYThermostatAccessory.prototype.setupServices = function () {
-        var _this = this;
-        var svcs = _super.prototype.setupServices.call(this);
-        this.thermostatService = this.addService(Service_1.Service.Thermostat);
+    }
+    setupServices() {
+        const svcs = super.setupServices();
+        this.thermostatService = this.addService(hap_nodejs_1.Service.Thermostat);
         // thermostatService.getCharacteristic(Characteristic.TargetTemperature).on("get", this.getTargetTemperature.bind(this));
         // thermostatService.getCharacteristic(Characteristic.TargetTemperature).on("set", this.setTargetTemperature.bind(this));
         this.thermostatService.setCharacteristic(hap_nodejs_1.Characteristic.TemperatureDisplayUnits, 1);
         this.thermostatService.addCharacteristic(hap_nodejs_1.Characteristic.CurrentFanState);
-        this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentFanState).on(hap_nodejs_1.CharacteristicEventTypes.GET, function (f) { return _this.getFanMode(f); });
+        this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentFanState).on(hap_nodejs_1.CharacteristicEventTypes.GET, (f) => this.getFanMode(f));
         this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentTemperature).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getCurrentTemperature.bind(this));
         this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CoolingThresholdTemperature).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getCoolSetPoint.bind(this));
         this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CoolingThresholdTemperature).on(hap_nodejs_1.CharacteristicEventTypes.SET, this.setCoolSetPoint.bind(this));
@@ -111,44 +95,43 @@ var ISYThermostatAccessory = /** @class */ (function (_super) {
         //   .getCharacteristic(Characteristic.RotationSpeed)
         //   .on(CharacteristicEventTypes.SET, this.setThermostatRotationSpeed.bind(this));
         return svcs;
-    };
-    ISYThermostatAccessory.prototype.setCoolSetPoint = function (temp, callback) {
-        this.logger.info("Sending command to set cool set point (pre-translate) to: " + temp);
-        var newSetPoint = this.toFahrenheit(temp);
-        this.logger.info("Sending command to set cool set point to: " + newSetPoint);
+    }
+    setCoolSetPoint(temp, callback) {
+        this.logger.info(`Sending command to set cool set point (pre-translate) to: ${temp}`);
+        const newSetPoint = this.toFahrenheit(temp);
+        this.logger.info(`Sending command to set cool set point to: ${newSetPoint}`);
         if (Math.abs(newSetPoint - this.device.coolSetPoint) >= 1) {
             this.device.updateCoolSetPoint(newSetPoint).handleWith(callback);
         }
         else {
-            this.logger.info("Command does not change actual set point");
+            this.logger.info(`Command does not change actual set point`);
             callback();
         }
-    };
-    ISYThermostatAccessory.prototype.setHeatSetPoint = function (temp, callback) {
-        this.logger.info("Sending command to set heat set point (pre-translate) to: " + temp);
-        var newSetPoint = this.toFahrenheit(temp);
-        this.logger.info("Sending command to set heat set point to: " + newSetPoint);
+    }
+    setHeatSetPoint(temp, callback) {
+        this.logger.info(`Sending command to set heat set point (pre-translate) to: ${temp}`);
+        const newSetPoint = this.toFahrenheit(temp);
+        this.logger.info(`Sending command to set heat set point to: ${newSetPoint}`);
         if (Math.abs(newSetPoint - this.device.heatSetPoint) >= 1) {
             this.device
                 .updateHeatSetPoint(newSetPoint).handleWith(callback);
         }
         else {
-            this.logger.info("Command does not change actual set point");
+            this.logger.info(`Command does not change actual set point`);
             callback();
         }
-    };
-    ISYThermostatAccessory.prototype.setHeatingCoolingMode = function (mode, callback) {
-        this.logger.info("Sending command to set heating/cooling mode (pre-translate) to: " + mode);
+    }
+    setHeatingCoolingMode(mode, callback) {
+        this.logger.info(`Sending command to set heating/cooling mode (pre-translate) to: ${mode}`);
         // this.logger.info("THERM: " + this.device.name + " Sending command to set cool set point to: " + newSetPoint);
         if (mode !== this.device.mode) {
             this.device
                 .updateMode(mode).handleWith(callback);
         }
         else {
-            this.logger.info("Command does not change actual mode");
+            this.logger.info(`Command does not change actual mode`);
             callback();
         }
-    };
-    return ISYThermostatAccessory;
-}(ISYDeviceAccessory_1.ISYDeviceAccessory));
+    }
+}
 exports.ISYThermostatAccessory = ISYThermostatAccessory;

@@ -9,6 +9,7 @@ export class ISYOutletAccessory extends ISYDeviceAccessory<InsteonOutletDevice,C
 	public outletService: any;
 	constructor(device: InsteonOutletDevice) {
 		super(device);
+		this.category = Categories.OUTLET;
 	}
 	// Handles the identify command
 	// Handles a request to set the outlet state. Ignores redundant sets based on current states.
@@ -41,6 +42,7 @@ export class ISYOutletAccessory extends ISYDeviceAccessory<InsteonOutletDevice,C
 	public setupServices() {
 		super.setupServices();
 		const outletService = this.platformAccessory.getOrAddService(Service.Outlet);
+
 		this.outletService = outletService;
 		outletService.getCharacteristic(Characteristic.On).onSet(this.bind(this.device.updateIsOn));
 		outletService.getCharacteristic(Characteristic.On).onGet(() => this.device.isOn);

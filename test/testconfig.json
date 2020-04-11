@@ -8,8 +8,8 @@
   "description": "Raspberry Pi homebridge",
   "platforms": [
     {
-      "platform": "isy-js",
-      "name": "isy-js",
+      "platform": "ISY",
+      "name": "ISY",
       "host": "127.0.0.1:3000",
       "username": "admin",
       "password": "password",

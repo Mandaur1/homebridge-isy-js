@@ -1,44 +1,66 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
-var hap_nodejs_1 = require("hap-nodejs");
-var ISYDeviceAccessory_1 = require("./ISYDeviceAccessory");
-var ISYMotionSensorAccessory = /** @class */ (function (_super) {
-    __extends(ISYMotionSensorAccessory, _super);
-    function ISYMotionSensorAccessory(device) {
-        return _super.call(this, device) || this;
+const hap_nodejs_1 = require("hap-nodejs");
+const HomeKit_1 = require("hap-nodejs/dist/lib/gen/HomeKit");
+const ISYDeviceAccessory_1 = require("./ISYDeviceAccessory");
+const utils_1 = require("./utils");
+class ISYMotionSensorAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
+    get motionSensorService() {
+        var _a;
+        return (_a = this.platformAccessory) === null || _a === void 0 ? void 0 : _a.getOrAddService(HomeKit_1.MotionSensor);
+    }
+    get lightSensorService() {
+        var _a;
+        return (_a = this.platformAccessory) === null || _a === void 0 ? void 0 : _a.getOrAddService(HomeKit_1.LightSensor);
+    }
+    get batteryLevelService() {
+        var _a;
+        return (_a = this.platformAccessory) === null || _a === void 0 ? void 0 : _a.getOrAddService(hap_nodejs_1.Service.BatteryService);
+    }
+    get temperatureSensorService() {
+        var _a;
+        return (_a = this.platformAccessory) === null || _a === void 0 ? void 0 : _a.getOrAddService(hap_nodejs_1.Service.TemperatureSensor);
+    }
+    constructor(device) {
+        super(device);
+        this.category = hap_nodejs_1.Categories.SENSOR;
+    }
+    map(propertyName) {
+        switch (propertyName) {
+            case 'CLITEMP':
+                return { characteristic: hap_nodejs_1.Characteristic.CurrentTemperature, service: this.temperatureSensorService };
+            case 'BATLVL':
+                return { characteristic: hap_nodejs_1.Characteristic.BatteryLevel, service: this.batteryLevelService };
+            case 'ST':
+                return { characteristic: hap_nodejs_1.Characteristic.Active, service: this.informationService };
+            case 'LUMIN':
+                return { characteristic: hap_nodejs_1.Characteristic.CurrentTemperature, service: this.lightSensorService };
+            case 'motionDetected':
+                return { characteristic: hap_nodejs_1.Characteristic.MotionDetected, service: this.motionSensorService };
+        }
+        return null;
     }
     // Handles the identify command.
     // Handles the request to get he current motion sensor state.
-    ISYMotionSensorAccessory.prototype.getCurrentMotionSensorState = function (callback) {
+    getCurrentMotionSensorState(callback) {
         callback(null, this.device.isMotionDetected);
-    };
+    }
     // Mirrors change in the state of the underlying isj-js device object.
-    ISYMotionSensorAccessory.prototype.handleExternalChange = function (propertyName, value, formattedValue) {
-        _super.prototype.handleExternalChange.call(this, propertyName, value, formattedValue);
-        this.sensorService.getCharacteristic(hap_nodejs_1.Characteristic.MotionDetected).updateValue(this.device.isMotionDetected);
-    };
+    /*ublic handleExternalChange(propertyName: string, value: any, formattedValue: string) {
+        super.handleExternalChange(propertyName, value, formattedValue);
+
+        this.sensorService.getCharacteristic(Characteristic.MotionDetected).updateValue(this.device.isMotionDetected);
+    }
     // Returns the set of services supported by this object.
-    ISYMotionSensorAccessory.prototype.setupServices = function () {
-        var _this = this;
-        _super.prototype.setupServices.call(this);
-        var sensorService = this.platformAccessory.getOrAddService(hap_nodejs_1.Service.MotionSensor);
-        this.sensorService = sensorService;
-        sensorService.getCharacteristic(hap_nodejs_1.Characteristic.MotionDetected).onGet(function () { return _this.device.isMotionDetected; });
+    var undefined = sensorService;
+*/
+    setupServices() {
+        super.setupServices();
+        this.motionSensorService.getCharacteristic(hap_nodejs_1.Characteristic.MotionDetected).onGet(() => this.device.isMotionDetected);
+        this.temperatureSensorService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentTemperature).onGet(() => utils_1.toCelsius(this.device.CLITEMP));
+        this.batteryLevelService.getCharacteristic(hap_nodejs_1.Characteristic.BatteryLevel).onGet(() => this.device.BATLVL);
+        this.lightSensorService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentAmbientLightLevel).onGet(() => this.device.LUMIN);
         return [this.informationService, this.sensorService];
-    };
-    return ISYMotionSensorAccessory;
-}(ISYDeviceAccessory_1.ISYDeviceAccessory));
+    }
+}
 exports.ISYMotionSensorAccessory = ISYMotionSensorAccessory;

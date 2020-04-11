@@ -1,5 +1,5 @@
 {
-  "name": "homebridge-isy-js",
+  "name": "homebridge-isy",
   "version": "0.5.0",
   "description": "Homebridge plugin for ISY series of home controllers from universal devices.",
   "note": "",
@@ -26,21 +26,22 @@
     "Siri"
   ],
   "devDependencies": {
-    "@types/node": "",
+    "@types/node": "^13.11.1",
     "@types/restler": "",
     "fake-isy-994i": "",
-    "hap-nodejs": "^0.5.7",
+    "hap-nodejs": "^0.5.12-beta.1",
+    "homebridge": "^0.4.54-beta.25",
     "mocha": ""
   },
   "dependencies": {
     "@log4js-node/log4js-api": "^1.0.2",
-    "chalk": "",
     "faye-websocket": "^0.11.3",
-    "homebridge": "git+https://github.com/nfarina/homebridge.git#beta",
+    "has-flag": "^4.0.0",
     "isy-js": "git+https://github.com/pradeepmouli/isy-js.git#v5",
     "once": "^1.4.0",
     "path": "^0.12.7",
     "restler": "^3.4.0",
+    "source-map-support": "^0.5.16",
     "xmldoc": "^1.1.2"
   },
   "author": "pradeepmouli",

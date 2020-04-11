@@ -1,19 +1,16 @@
 import './utils';
 
-import { Categories, Characteristic, CharacteristicEventTypes } from 'hap-nodejs';
-import { Thermostat } from 'hap-nodejs/dist/lib/gen/HomeKit';
-import { Service } from 'hap-nodejs/dist/lib/Service';
+import { Categories, Characteristic, CharacteristicEventTypes, Service } from 'hap-nodejs';
 import { InsteonThermostatDevice, Props } from 'isy-js';
 
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
-
 
 
 //import { Service } from 'homebridge/node_modules/hap-nodejs/dist/lib/Service';
 //import { Characteristic } from 'homebridge/node_modules/hap-nodejs/dist/lib/Characteristic';
 export class ISYThermostatAccessory extends ISYDeviceAccessory<InsteonThermostatDevice,Categories.THERMOSTAT> {
 	public targetTemperature: number;
-	public thermostatService: Thermostat;
+	public thermostatService: Service;
 	constructor(device: InsteonThermostatDevice) {
 		super(device);
 	}

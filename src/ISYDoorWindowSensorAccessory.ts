@@ -1,9 +1,10 @@
 import './utils';
 
-import { Categories, Characteristic, CharacteristicEventTypes, Service } from 'hap-nodejs';
+import { Categories, Characteristic, Service } from 'hap-nodejs';
 import { InsteonDoorWindowSensorDevice } from 'isy-js';
 
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
+
 
 
 export class ISYDoorWindowSensorAccessory extends ISYDeviceAccessory<InsteonDoorWindowSensorDevice,Categories.SENSOR> {
@@ -26,7 +27,7 @@ export class ISYDoorWindowSensorAccessory extends ISYDeviceAccessory<InsteonDoor
 	// Mirrors change in the state of the underlying isj-js device object.
 	public handleExternalChange(propertyName: string, value: any, formattedValue: string) {
 		super.handleExternalChange(propertyName, value, formattedValue);
-		this.sensorService.getCharacteristic(Characteristic.CurrentDoorState).updateValue(!this.device.isOpen);
+		this.sensorService.getCharacteristic(Characteristic.CurrentDoorState).updateValue(!this.device.isOpen ? 1 : 0);
 	}
 	// Returns the set of services supported by this object.
 	public setupServices() {

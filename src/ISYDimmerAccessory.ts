@@ -1,30 +1,31 @@
 import './utils';
 
-import { Characteristic, CharacteristicChange, CharacteristicEventTypes, Service, ServiceEventTypes } from 'hap-nodejs';
+import { Categories, Characteristic, CharacteristicChange, CharacteristicEventTypes, Service, ServiceEventTypes } from 'hap-nodejs';
 import { Controls, InsteonDimmableDevice } from 'isy-js';
 
 import { ISYRelayAccessory } from './ISYRelayAccessory';
 
 export class InsteonDimmableAccessory<T extends InsteonDimmableDevice> extends ISYRelayAccessory<T> {
 	constructor(device: T) {
-		super(device);
 
+		super(device);
+		this.category = Categories.LIGHTBULB;
 	}
 	// Handles the identify command
 	// Handles request to set the current powerstate from homekit. Will ignore redundant commands.
-	toCharacteristic(propertyName: string) : typeof Characteristic
-	{
-		if(propertyName === 'ST')
-			return Characteristic.Brightness;
-		return null;
+	public map(propertyName: keyof T): { characteristic: typeof Characteristic, service: Service; } {
+		const o = super.map(propertyName)
+		if(o)
+			o.characteristic = Characteristic.Brightness
+		return o;
 	}
+
 	// Mirrors change in the state of the underlying isj-js device object.
 	public handleExternalChange(propertyName: string, value, formattedValue) {
 		super.handleExternalChange(propertyName, value, formattedValue);
 		//this.primaryService.getCharacteristic(Characteristic.On).updateValue(this.device.isOn);
-		let ch = this.toCharacteristic(propertyName);
-		if(ch !== null && ch !== undefined)
-			this.primaryService.getCharacteristic(ch.name).updateValue(this.device[propertyName]);
+		//this.a
+			//this.primaryService.getCharacteristic(ch.name).updateValue(this.device[propertyName]);
 
 	}
 	// Handles request to get the current on state

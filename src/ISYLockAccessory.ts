@@ -11,9 +11,7 @@ export class ISYLockAccessory extends ISYDeviceAccessory<InsteonLockDevice,Categ
 		super(device);
 	}
 	// Handles an identify request
-	public identify(callback) {
-		callback();
-	}
+
 	// Handles a set to the target lock state. Will ignore redundant commands.
 	public setTargetLockState(lockState: number, callback: (...any: any[]) => void) {
 		this.info(`Sending command to set lock state to: ${lockState}`);

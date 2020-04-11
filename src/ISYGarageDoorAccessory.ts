@@ -35,9 +35,7 @@ export class ISYGarageDoorAccessory extends ISYAccessory<InsteonRelayDevice, Cat
 		}
 	}
 	// Handles an identify request
-	public identify(callback) {
-		callback()
-	}
+
 	public sendGarageDoorCommand(callback) {
 		this.relayDevice.sendLightCommand(true, function () {
 			callback()

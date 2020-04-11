@@ -10,6 +10,7 @@ export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice,Categor
 	public lightService: Service;
 	constructor (device: InsteonFanDevice) {
 		super(device);
+		this.category = Categories.FAN;
 		device.propertyChanged.removeListener(null, super.handleExternalChange)
 		this.device.Motor.onPropertyChanged(null, this.handleExternalChangeToMotor.bind(this));
 		this.device.Light.onPropertyChanged(null, this.handleExternalChangeToLight.bind(this));
@@ -27,7 +28,6 @@ export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice,Categor
 		super.handleExternalChange(propertyName, value, formattedValue);
 		this.fanService.getCharacteristic(Characteristic.On).updateValue(this.device.isOn);
 		this.fanService.getCharacteristic(Characteristic.RotationSpeed).updateValue(this.device.fanSpeed);
-
 
 	}
 	public handleExternalChangeToLight(propertyName: string, value: any, formattedValue: string) {

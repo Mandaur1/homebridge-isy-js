@@ -2,7 +2,7 @@
     "defaultSeverity": "warning",
     "extends": [
         "tslint:recommended"
-        
+
     ],
     "jsRules": {},
     "rules": {"no-return-await":true,
@@ -16,6 +16,6 @@
        "prefer-template": true,
         "interface-name": false
     },
-    
+
     "rulesDirectory": []
 }

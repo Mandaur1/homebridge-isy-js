@@ -7,7 +7,7 @@ export class ISYDeviceAccessory<T extends InsteonBaseDevice, TCategory extends C
 
 
 
-	public identify(callback: any) {
-		this.device.sendBeep(100).then(() => callback);
+	public identify() {
+		this.device.sendBeep(100);
 	}
 }

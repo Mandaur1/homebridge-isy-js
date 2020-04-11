@@ -12,9 +12,7 @@ export class ISYElkAlarmPanelAccessory extends ISYAccessory<ElkAlarmSensorDevice
 		super(device);
 	}
 	// Handles the identify command
-	public identify(callback) {
-		callback();
-	}
+
 	// Handles the request to set the alarm target state
 	public setAlarmTargetState(targetStateHK, callback) {
 		this.logger.info('ALARMSYSTEM: ' + this.device.name + 'Sending command to set alarm panel state to: ' + targetStateHK);

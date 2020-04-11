@@ -1,30 +1,29 @@
 import './utils';
 
 import { Categories, Characteristic, CharacteristicEventTypes, Service } from 'hap-nodejs';
-import { StatelessProgrammableSwitch, Switch } from 'hap-nodejs/dist/lib/gen/HomeKit';
-import { StatefulProgrammableSwitch } from 'hap-nodejs/dist/lib/gen/HomeKit-Bridge';
 import { ISYScene } from 'isy-js';
 
 import { ISYAccessory } from './ISYAccessory';
 import { onSet } from './utils';
 
-export class ISYSceneAccessory extends ISYAccessory<ISYScene,Categories.PROGRAMMABLE_SWITCH> {
+export class ISYSceneAccessory extends ISYAccessory<ISYScene,Categories.LIGHTBULB> {
 	public dimmable: boolean;
-	public lightService: StatefulProgrammableSwitch | Switch;
+	public lightService: Service;
 	public scene: ISYScene;
 	constructor (scene: ISYScene) {
 		super(scene);
-
+		this.category = Categories.LIGHTBULB;
 		this.scene = scene;
 		this.dimmable = scene.isDimmable;
+
 		// this.logger = function(msg) {log("Scene Accessory: " + scene.name + ": " + msg); };
 	}
 	// Handles the identify command
-	public identify(callback: (...any: any[]) => void) {
+	public identify() {
 		const that = this;
 	}
 	// Handles request to set the current powerstate from homekit. Will ignore redundant commands.
-	
+
 	// Mirrors change in the state of the underlying isj-js device object.
 	public handleExternalChange(propertyName: string, value: any, formattedValue: string) {
 		this.lightService.getCharacteristic(Characteristic.On).updateValue(this.scene.isOn);
@@ -45,7 +44,7 @@ export class ISYSceneAccessory extends ISYAccessory<ISYScene,Categories.PROGRAMM
 			onSet(this.lightService.getCharacteristic(Characteristic.Brightness), this.bind(this.device.updateBrightnessLevel)).onGet(() => this.device.brightnessLevel);
 
 		} else {
-			this.lightService = this.platformAccessory.getOrAddService(Switch);
+			this.lightService = this.platformAccessory.getOrAddService(Service.Switch);
 		}
 		this.lightService
 			.getCharacteristic(Characteristic.On)

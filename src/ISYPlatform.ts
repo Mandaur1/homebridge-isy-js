@@ -1,8 +1,9 @@
-import { IgnoreDeviceRule, PlatformConfig } from 'config';
+import './utils';
+
+import { IgnoreDeviceRule } from 'config';
 import { EventEmitter } from 'events';
-import { Accessory, Characteristic, Service } from 'hap-nodejs';
-import { TargetHeatingCoolingState } from 'hap-nodejs/dist/lib/gen/HomeKit';
-import { API } from 'homebridge';
+import { API, APIEvent, PlatformConfig, PlatformPlugin, PlatformPluginConstructor } from 'homebridge';
+import { Logger, Logging } from 'homebridge/lib/logger';
 import { PlatformAccessory } from 'homebridge/lib/platformAccessory';
 import {
     ElkAlarmSensorDevice,
@@ -34,16 +35,18 @@ import { ISYOutletAccessory } from './ISYOutletAccessory';
 import { ISYRelayAccessory } from './ISYRelayAccessory';
 import { ISYSceneAccessory } from './ISYSceneAccessory';
 import { ISYThermostatAccessory } from './ISYThermostatAccessory';
-import { didFinishLaunching } from './utils';
+import { PlatformName, PluginName } from './plugin';
+import { didFinishLaunching, LoggerLike } from './utils';
 
 
 
-const platformName = 'isy-js';
-const pluginName = 'homebridge-isy-js';
 // tslint:disable-next-line: ordered-imports
 
-export class ISYPlatform {
-	public log: { (...args: any[]): void; debug: (...args: any[]) => void; info: (...args: any[]) => void; warn: (...args: any[]) => void; error: (...args: any[]) => void; log: (level: string, msg: unknown) => void; prefix: string; };
+export class ISYPlatform implements PlatformPlugin {
+
+
+
+	public log: Logging;
 	public config: PlatformConfig;
 	public host: string;
 	public username: string;
@@ -54,14 +57,15 @@ export class ISYPlatform {
 	public includedScenes: [];
 	public ignoreRules: IgnoreDeviceRule[];
 	public homebridge: API;
-
-	public accessories: Map<string, ISYAccessory<any, any>> = new Map<string, ISYAccessory<any, any>>();
+	public static Instance: ISYPlatform;
+	public accessories: PlatformAccessory[] = [];
+	public accessoriesWrappers: Map<string, ISYAccessory<any, any>> = new Map<string, ISYAccessory<any, any>>();
 	public accessoriesToRegister: PlatformAccessory[] = [];
 	public accessoriesToConfigure: Map<string, PlatformAccessory> = new Map<string, PlatformAccessory>();
 
-
 	public isy: ISY;
-	constructor (log: { (...args: any[]): void; debug: (...args: any[]) => void; info: (...args: any[]) => void; warn: (...args: any[]) => void; error: (...args: any[]) => void; log: (level: string, msg: unknown) => void; prefix: string; }, config: PlatformConfig, homebridge: API) {
+	constructor (log: Logging, config: PlatformConfig, homebridge: API){
+
 		this.log = log;
 		this.config = config;
 		this.host = config.host;
@@ -74,23 +78,40 @@ export class ISYPlatform {
 		this.ignoreRules = config.ignoreDevices;
 		this.homebridge = homebridge;
 
+		ISYPlatform.Instance = this;
 
-		this.isy = new ISY(this.host, this.username, this.password, config.elkEnabled, null, config.useHttps, true, this.debugLoggingEnabled, null, this.logger.bind(this));
+		this.isy = new ISY(this.host, this.username, this.password, config.elkEnabled, null, config.useHttps, true, this.debugLoggingEnabled, null, Logger.withPrefix('isy-js'));
 		const p = this.createAccessories();
 		const self = this;
 
-		homebridge.on('didFinishLaunching', async () => {
+
+		homebridge.on(APIEvent.DID_FINISH_LAUNCHING, async () => {
+
 			self.logger('Homebridge has launched');
+			self.log('Homebridge Version', self.homebridge.version);
 			await p;
-			self.logger('Accessories created');
+
+
+			self.logger(`Total Accessories: ${this.accessories.length}`);
+			self.logger(`Total Accessories Identified: ${this.accessoriesWrappers.size}`);
 			self.logger(`Accessories to Register: ${this.accessoriesToRegister.length}`);
-			self.homebridge.registerPlatformAccessories(
-				pluginName, platformName, this.accessoriesToRegister);
-			this.accessoriesToRegister = [];
+			if (this.accessoriesToRegister.length > 0) {
+				self.logger('Registering Platform Accessories');
+				self.homebridge.registerPlatformAccessories(
+					PluginName, PlatformName, this.accessoriesToRegister);
+				this.accessoriesToRegister = [];
+			}
 			self.logger(`Accessories to Remove: ${this.accessoriesToConfigure.size}`);
-			self.homebridge.unregisterPlatformAccessories(pluginName, platformName, Array.from(this.accessoriesToConfigure.values()));
-			this.accessoriesToConfigure.clear();
+
+			if (this.accessoriesToConfigure.size > 0) {
+				self.logger('Removing Platform Accessories');
+				self.homebridge.unregisterPlatformAccessories(PluginName, PlatformName, Array.from(this.accessoriesToConfigure.values()));
+				this.accessoriesToConfigure.clear();
+			}
+			self.homebridge.updatePlatformAccessories(this.accessories);
+
 		});
+
 	}
 
 	public logger(msg: string) {
@@ -149,6 +170,7 @@ export class ISYPlatform {
 
 		return false;
 	}
+
 	public getGarageEntry(address: string) {
 		const garageDoorList = this.config.garageDoors;
 		if (garageDoorList !== undefined) {
@@ -204,25 +226,30 @@ export class ISYPlatform {
 		return deviceName;
 	}
 
-
 	public configureAccessory(accessory: PlatformAccessory) {
+		const self = this;
 		try {
-			let i = this.accessories.get(accessory.UUID);
-			if (i) {
 
+
+			const i = this.accessoriesWrappers.get(accessory.UUID);
+			if (i) {
+				self.log('Accessory Wrapper Exists');
 				i.configure(accessory);
+
 			}
 			else {
+
 				this.accessoriesToConfigure.set(accessory.UUID, accessory);
 			}
+			this.accessories.push(accessory);
 
 
 
 			return true;
 		}
-		catch
-		{
-			return false;
+		catch (ex) {
+			throw ex;
+
 		}
 
 	}
@@ -232,7 +259,7 @@ export class ISYPlatform {
 		const that = this;
 		await this.isy.initialize(() => {
 			const results: ISYAccessory<any, any>[] = [];
-
+			that.log(`Accessories to configure: ${this.accessoriesToConfigure.size}`);
 			const deviceList = that.isy.deviceList;
 			this.log.info(`ISY has ${deviceList.size} devices and ${that.isy.sceneList.size} scenes`);
 			for (const device of deviceList.values()) {
@@ -252,6 +279,7 @@ export class ISYPlatform {
 						homeKitDevice = new ISYGarageDoorAccessory(device, relayDevice, garageInfo.name, garageInfo.timeToOpen, garageInfo.alternate);
 					} else {
 						homeKitDevice = that.createAccessory(device);
+
 						id = homeKitDevice.UUID;
 
 
@@ -288,15 +316,22 @@ export class ISYPlatform {
 			}
 			that.log.info(`Filtered device list has: ${results.length} devices`);
 			for (const homeKitDevice of results) {
+
+				this.accessoriesWrappers.set(homeKitDevice.UUID, homeKitDevice);
 				const s = this.accessoriesToConfigure.get(homeKitDevice.UUID);
 				if (s !== null && s !== undefined) {
+					//that.log("Configuring linked accessory");
 					homeKitDevice.configure(s);
-					this.accessoriesToConfigure.delete(homeKitDevice.UUID);
+					that.accessoriesToConfigure.delete(homeKitDevice.UUID);
 				}
 				else {
 					homeKitDevice.configure();
+					this.accessories.push(homeKitDevice.platformAccessory);
+					//that.homebridge.registerPlatformAccessories(pluginName, platformName, [homeKitDevice.platformAccessory]);
+
 					this.accessoriesToRegister.push(homeKitDevice.platformAccessory);
 				}
+
 			}
 
 		});
