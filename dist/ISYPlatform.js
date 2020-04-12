@@ -1,4 +1,3 @@
-"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 require("./utils");
 const homebridge_1 = require("homebridge");

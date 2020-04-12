@@ -1,14 +1,6 @@
-"use strict";
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const hap_nodejs_1 = require("hap-nodejs");
-const characteristic = __importStar(require("hap-nodejs/dist/lib/Characteristic"));
+const Characteristic_1 = require("hap-nodejs/dist/lib/Characteristic");
 const logger_1 = require("homebridge/lib/logger");
 // import * as service from 'homebridge/node_modules/homebridge/node_modules/hap-nodejs/dist/lib/Service';
 exports.didFinishLaunching = Symbol('didFinishLaunching');
@@ -45,21 +37,22 @@ onSet<T>(characteristic: Characteristic, func: (...args) => Promise<T>): Charact
 onGet<T>(characteristic: Characteristic, func: (...args) => Promise<T>): Characteristic;
 }
 } */
-(characteristic.Characteristic.prototype).onSet = function (func) {
+(Characteristic_1.Characteristic.prototype).onSet = function (func) {
     const c = this;
     return onSet(c, func);
 };
 // tslint:disable-next-line: only-arrow-functions
 (logger_1.Logger.prototype).trace = (...msg) => {
     const log = this;
-    //onst newMsg = chalk.dim(msg);
-    if (log.isTraceEnabled())
+    // onst newMsg = chalk.dim(msg);
+    if (log.isTraceEnabled()) {
         log.log.apply(this, ['trace'].concat(msg));
+    }
 };
 (logger_1.Logger.prototype).fatal = (...msg) => {
     var _a;
     const log = this;
-    //const newMsg = chalk.dim(msg);
+    // const newMsg = chalk.dim(msg);
     if ((_a = log) === null || _a === void 0 ? void 0 : _a.isFatalEnabled()) {
         log.error(msg[0], msg.shift());
     }
@@ -70,10 +63,10 @@ onGet<T>(characteristic: Characteristic, func: (...args) => Promise<T>): Charact
 (logger_1.Logger.prototype).isFatalEnabled = () => true;
 (logger_1.Logger.prototype).isTraceEnabled = () => true;
 (logger_1.Logger.prototype).call = (msg) => {
-    let l = this;
+    const l = this;
     l.info(msg);
 };
-(hap_nodejs_1.Characteristic.prototype).onGet = function (func) {
+(Characteristic_1.Characteristic.prototype).onGet = function (func) {
     const c = this;
     return onGet(c, func);
 };

@@ -1,4 +1,3 @@
-"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const hap_nodejs_1 = require("hap-nodejs");
 const uuid_1 = require("hap-nodejs/dist/lib/util/uuid");

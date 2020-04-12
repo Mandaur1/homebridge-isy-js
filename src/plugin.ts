@@ -1,11 +1,11 @@
-import './utils';
-
-import { CharacteristicEventTypes, CharacteristicProps, CharacteristicValue, Service, WithUUID } from 'hap-nodejs';
+import { Characteristic, CharacteristicEventTypes, CharacteristicProps, CharacteristicValue, Service, WithUUID } from 'hap-nodejs';
 import { API } from 'homebridge';
 import { PlatformAccessory } from 'homebridge/lib/platformAccessory';
 import { ISYAccessory } from 'ISYAccessory';
 
 import { ISYPlatform } from './ISYPlatform';
+
+
 
 
 export const PluginName = 'homebridge-isy'
@@ -14,8 +14,8 @@ export const PlatformName = 'ISY'
 export let platformAccessory : typeof PlatformAccessory;
 
 export default (homebridge: API) => {
-	//const Service = homebridge.hap.Service;
 
+	//Characteristic.prototype.onSet = function
 	//const Hap = homebridge.hap;
 
 	//const Characteristic = homebridge.hap.Characteristic;

@@ -4,20 +4,27 @@
         "target": "es2018",
         "emitDecoratorMetadata": true,
         "outDir": "./dist/",
-        //"outFile": "../index.js",
+    //"outFile": "../index.js",
        "module": "CommonJS",
        "esModuleInterop": true,
-       "downlevelIteration": true,
+
         "rootDir": "./src/",
 
         "baseUrl": "./src",
 
         "paths": {
 
-            //"hap-nodejs":["../node_modules/homebridge/node_modules/hap-nodejs"],
+            "hap-nodejs/dist/lib/Characteristic": ["/usr/local/lib/node_modules/hap-nodejs/dist/lib/Characteristic"],
+            "hap-nodejs/dist/lib/gen/HomeKit": ["/usr/local/lib/node_modules/hap-nodejs/dist/lib/gen/Homekit"],
+            "hap-nodejs":["/usr/local/lib/node_modules/hap-nodejs"],
+            "hap-nodejs/dist/lib/util/uuid": ["/usr/local/lib/node_modules/hap-nodejs/dist/lib/util/uuid"],
+            "hap-nodejs/dist/accessories/types": ["/usr/local/lib/node_modules/hap-nodejs/dist/accessories/types"],
+            "homebridge": ["/usr/local/lib/node_modules/homebridge"],
+            "homebridge/lib/platformAccessory": ["/usr/local/lib/node_modules/homebridge/lib/platformAccessory"],
             "config":["../typings/config.d.ts"]
         },
-
+        "noImplicitUseStrict": true,
+        "importHelpers": true,
         "experimentalDecorators": true,
         "moduleResolution": "node",
         "sourceMap": false,

@@ -1,4 +1,3 @@
-"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const hap_nodejs_1 = require("hap-nodejs");
 const HomeKit_1 = require("hap-nodejs/dist/lib/gen/HomeKit");

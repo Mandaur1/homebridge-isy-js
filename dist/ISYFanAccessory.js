@@ -1,4 +1,3 @@
-"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 require("./ISYPlatform");
 const hap_nodejs_1 = require("hap-nodejs");

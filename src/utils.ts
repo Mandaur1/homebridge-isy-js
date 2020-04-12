@@ -1,13 +1,12 @@
 import * as log4js from '@log4js-node/log4js-api';
-import { Characteristic, CharacteristicEventTypes, CharacteristicValue, Service, WithUUID } from 'hap-nodejs';
-import * as characteristic from 'hap-nodejs/dist/lib/Characteristic';
+import { CharacteristicEventTypes, CharacteristicGetCallback, CharacteristicSetCallback, CharacteristicValue, Service, WithUUID } from 'hap-nodejs';
+import { Characteristic } from 'hap-nodejs/dist/lib/Characteristic';
 import { Logger } from 'homebridge/lib/logger';
 import { PlatformAccessory } from 'homebridge/lib/platformAccessory';
 
 // import * as service from 'homebridge/node_modules/homebridge/node_modules/hap-nodejs/dist/lib/Service';
 
 export const didFinishLaunching: symbol = Symbol('didFinishLaunching');
-
 
 export let Hap;
 
@@ -21,7 +20,7 @@ declare global {
 
 // tslint:disable-next-line: no-namespace
 
-export function onSet<T extends CharacteristicValue>(character: characteristic.Characteristic, func: (arg: T) => Promise<any>): characteristic.Characteristic {
+export function onSet<T extends CharacteristicValue>(character: Characteristic, func: (arg: T) => Promise<any>): Characteristic {
 
 	const cfunc = addSetCallback(func);
 
@@ -42,9 +41,9 @@ export function toFahrenheit(temp: number): any {
 // 	return character.on(CharacteristicEventTypes.GET, cfunc);
 // }
 
-export function onGet<T extends CharacteristicValue>(character: characteristic.Characteristic, func: () => T): characteristic.Characteristic {
+export function onGet<T extends CharacteristicValue>(character: Characteristic, func: () => T): Characteristic {
 
-	const cfunc = (cb: characteristic.CharacteristicGetCallback) => {
+	const cfunc = (cb: CharacteristicGetCallback) => {
 		cb(null, func());
 	};
 
@@ -59,8 +58,6 @@ export function onGet<T extends CharacteristicValue>(character: characteristic.C
 
 // 	}
 
-
-
 // }
 
 export interface LoggerLike extends Partial<log4js.Logger> {
@@ -70,31 +67,25 @@ export interface LoggerLike extends Partial<log4js.Logger> {
 
 }
 
-declare module 'homebridge/lib/platformAccessory'
-{
+declare module 'homebridge/lib/platformAccessory' {
 	export interface PlatformAccessory {
 		getOrAddService(service: WithUUID<typeof Service>): Service;
 
 	}
 }
 
-declare module 'homebridge/lib/logger'
-{
+declare module 'homebridge/lib/logger' {
 	// tslint:disable-next-line: no-empty-interface
 	export interface Logger extends LoggerLike {
 
-
 	}
-
 
 }
 
-
-
 declare module 'hap-nodejs/dist/lib/Characteristic' {
 	export interface Characteristic {
-		onSet<T extends CharacteristicValue>(func: (...args: any) => Promise<T>): Characteristic;
-		onGet<T extends CharacteristicValue>(func: () => T): Characteristic;
+		 onSet<T extends CharacteristicValue>(func: (...args: any) => Promise<T>): Characteristic;
+		 onGet<T extends CharacteristicValue>(func: () => T): Characteristic;
 	}
 
 }
@@ -107,29 +98,26 @@ onGet<T>(characteristic: Characteristic, func: (...args) => Promise<T>): Charact
 }
 } */
 
-(characteristic.Characteristic.prototype).onSet = function (func: (arg: CharacteristicValue) => Promise<any>): characteristic.Characteristic {
-	const c = this as unknown as characteristic.Characteristic;
+(Characteristic.prototype).onSet = function(func: (arg: CharacteristicValue) => Promise<any>): Characteristic {
+	const c = this as unknown as Characteristic;
 	return onSet(c, func);
 };
 
 // tslint:disable-next-line: only-arrow-functions
 
-
-
 (Logger.prototype).trace = (...msg: any[]) => {
 	const log = this as unknown as Logger;
-	//onst newMsg = chalk.dim(msg);
-	if (log.isTraceEnabled())
+	// onst newMsg = chalk.dim(msg);
+	if (log.isTraceEnabled()) {
 		log.log.apply(this, ['trace'].concat(msg));
+	}
 };
-
-
 
 (Logger.prototype).fatal = (...msg: any[]) => {
 	const log = this as unknown as Logger;
-	//const newMsg = chalk.dim(msg);
+	// const newMsg = chalk.dim(msg);
 	if (log?.isFatalEnabled()) {
-		log.error(msg[0],msg.shift());
+		log.error(msg[0], msg.shift());
 	}
 };
 
@@ -144,13 +132,12 @@ onGet<T>(characteristic: Characteristic, func: (...args) => Promise<T>): Charact
 (Logger.prototype).isTraceEnabled = () => true;
 
 (Logger.prototype).call = (msg: any) => {
-	let l = this as unknown as Logger;
+	const l = this as unknown as Logger;
 	l.info(msg);
-}
+};
 
-
-(Characteristic.prototype).onGet = function (func: () => CharacteristicValue): characteristic.Characteristic {
-	const c = this as unknown as characteristic.Characteristic;
+((Characteristic as any).prototype).onGet = function(func: () => CharacteristicValue): Characteristic {
+	const c = this as unknown as Characteristic;
 	return onGet(c, func);
 
 };
@@ -169,11 +156,10 @@ Promise.prototype.handleWith = async function <T extends CharacteristicValue>(ca
 	});
 };
 
-export function addGetCallback<T extends CharacteristicValue>(func: (...args: any[]) => Promise<T>): (arg: any, cb: characteristic.CharacteristicGetCallback) => void {
+export function addGetCallback<T extends CharacteristicValue>(func: (...args: any[]) => Promise<T>): (arg: any, cb: CharacteristicGetCallback) => void {
 
-	return (arg: any, cb: characteristic.CharacteristicGetCallback) => {
+	return (arg: any, cb: CharacteristicGetCallback) => {
 		// assumption is function has signature of (val, callback, args..)
-
 
 		try {
 
@@ -186,11 +172,10 @@ export function addGetCallback<T extends CharacteristicValue>(func: (...args: an
 
 }
 
-export function addSetCallback<T extends CharacteristicValue>(func: (...args: any[]) => Promise<T>): (arg: any, cb: characteristic.CharacteristicSetCallback) => void {
+export function addSetCallback<T extends CharacteristicValue>(func: (...args: any[]) => Promise<T>): (arg: any, cb: CharacteristicSetCallback) => void {
 
-	return (arg: any, cb: characteristic.CharacteristicSetCallback) => {
+	return (arg: any, cb: CharacteristicSetCallback) => {
 		// assumption is function has signature of (val, callback, args..)
-
 
 		// const n = newArgs[1];
 
@@ -205,9 +190,9 @@ export function addSetCallback<T extends CharacteristicValue>(func: (...args: an
 
 }
 
-export function addCallback<T>(func: (...args: any[]) => Promise<T>): (arg: any, cb: characteristic.CharacteristicSetCallback) => void {
+export function addCallback<T>(func: (...args: any[]) => Promise<T>): (arg: any, cb: CharacteristicSetCallback) => void {
 
-	return (arg: any, cb: characteristic.CharacteristicSetCallback) => {
+	return (arg: any, cb: CharacteristicSetCallback) => {
 		// assumption is function has signature of (val, callback, args..)
 		console.log('entering new function');
 		console.log(arg);

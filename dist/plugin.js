@@ -1,4 +1,3 @@
-"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 require("./utils");
 const platformAccessory_1 = require("homebridge/lib/platformAccessory");
@@ -7,6 +6,7 @@ exports.PluginName = 'homebridge-isy';
 exports.PlatformName = 'ISY';
 exports.default = (homebridge) => {
     //const Service = homebridge.hap.Service;
+    //Characteristic.prototype.onSet = function
     //const Hap = homebridge.hap;
     //const Characteristic = homebridge.hap.Characteristic;
     platformAccessory_1.PlatformAccessory.prototype.getOrAddService = function (service) {
