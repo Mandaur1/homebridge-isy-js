@@ -1,8 +1,8 @@
 import { Characteristic, CharacteristicEventTypes, CharacteristicProps, CharacteristicValue, Service, WithUUID } from 'hap-nodejs';
 import { API } from 'homebridge';
 import { PlatformAccessory } from 'homebridge/lib/platformAccessory';
-import { ISYAccessory } from 'ISYAccessory';
 
+import { ISYAccessory } from './ISYAccessory';
 import { ISYPlatform } from './ISYPlatform';
 
 

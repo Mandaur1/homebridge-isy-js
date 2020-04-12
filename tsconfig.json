@@ -10,7 +10,7 @@
 
         "rootDir": "./src/",
 
-        "baseUrl": "./src",
+        "baseUrl": "/node_modules/",
 
         "paths": {
 
@@ -27,7 +27,8 @@
         "importHelpers": true,
         "experimentalDecorators": true,
         "moduleResolution": "node",
-        "sourceMap": false,
+        "declaration": true,
+        "sourceMap": true,
         "allowSyntheticDefaultImports": true
     }
 

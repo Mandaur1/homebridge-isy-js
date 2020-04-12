@@ -31,3 +31,4 @@ class ISYDoorWindowSensorAccessory extends ISYDeviceAccessory_1.ISYDeviceAccesso
     }
 }
 exports.ISYDoorWindowSensorAccessory = ISYDoorWindowSensorAccessory;
+//# sourceMappingURL=ISYDoorWindowSensorAccessory.js.map

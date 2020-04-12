@@ -157,3 +157,4 @@ class ISYGarageDoorAccessory extends ISYAccessory_1.ISYAccessory {
     }
 }
 exports.ISYGarageDoorAccessory = ISYGarageDoorAccessory;
+//# sourceMappingURL=ISYGarageDoorAccessory.js.map

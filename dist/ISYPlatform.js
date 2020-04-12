@@ -38,8 +38,9 @@ class ISYPlatform {
         const p = this.createAccessories();
         const self = this;
         homebridge.on(homebridge_1.APIEvent.DID_FINISH_LAUNCHING, async () => {
-            self.logger('Homebridge has launched');
-            self.log('Homebridge Version', self.homebridge.version);
+            self.logger('Homebridge Launched');
+            self.log('Homebridge API Version', self.homebridge.version);
+            self.log('Homebridge Server Version', self.homebridge.serverVersion);
             await p;
             self.logger(`Total Accessories: ${this.accessories.length}`);
             self.logger(`Total Accessories Identified: ${this.accessoriesWrappers.size}`);
@@ -283,3 +284,4 @@ class ISYPlatform {
     }
 }
 exports.ISYPlatform = ISYPlatform;
+//# sourceMappingURL=ISYPlatform.js.map

@@ -1,6 +1,5 @@
 import './utils';
 
-import { IgnoreDeviceRule } from 'config';
 import { EventEmitter } from 'events';
 import { API, APIEvent, PlatformConfig, PlatformPlugin, PlatformPluginConstructor } from 'homebridge';
 import { Logger, Logging } from 'homebridge/lib/logger';
@@ -21,9 +20,10 @@ import {
     ISYScene,
     NodeType,
 } from 'isy-js';
-import { ISYAccessory } from 'ISYAccessory';
-import { ISYDeviceAccessory } from 'ISYDeviceAccessory';
 
+import { IgnoreDeviceRule } from '../typings/config';
+import { ISYAccessory } from './ISYAccessory';
+import { ISYDeviceAccessory } from './ISYDeviceAccessory';
 import { InsteonDimmableAccessory } from './ISYDimmerAccessory';
 import { ISYDoorWindowSensorAccessory } from './ISYDoorWindowSensorAccessory';
 import { ISYElkAlarmPanelAccessory } from './ISYElkAlarmPanelAccessory';
@@ -87,8 +87,9 @@ export class ISYPlatform implements PlatformPlugin {
 
 		homebridge.on(APIEvent.DID_FINISH_LAUNCHING, async () => {
 
-			self.logger('Homebridge has launched');
-			self.log('Homebridge Version', self.homebridge.version);
+			self.logger('Homebridge Launched');
+			self.log('Homebridge API Version', self.homebridge.version);
+			self.log('Homebridge Server Version', self.homebridge.serverVersion);
 			await p;
 
 

@@ -31,3 +31,4 @@ class ISYRelayAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
     }
 }
 exports.ISYRelayAccessory = ISYRelayAccessory;
+//# sourceMappingURL=ISYRelayAccessory.js.map

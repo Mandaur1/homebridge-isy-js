@@ -46,3 +46,4 @@ class ISYLockAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
     }
 }
 exports.ISYLockAccessory = ISYLockAccessory;
+//# sourceMappingURL=ISYLockAccessory.js.map

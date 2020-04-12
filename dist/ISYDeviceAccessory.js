@@ -6,3 +6,4 @@ class ISYDeviceAccessory extends ISYAccessory_1.ISYAccessory {
     }
 }
 exports.ISYDeviceAccessory = ISYDeviceAccessory;
+//# sourceMappingURL=ISYDeviceAccessory.js.map

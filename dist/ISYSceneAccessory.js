@@ -44,3 +44,4 @@ class ISYSceneAccessory extends ISYAccessory_1.ISYAccessory {
     }
 }
 exports.ISYSceneAccessory = ISYSceneAccessory;
+//# sourceMappingURL=ISYSceneAccessory.js.map

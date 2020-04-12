@@ -1,6 +1,6 @@
 {
   "name": "homebridge-isy",
-  "version": "0.5.0",
+  "version": "1.0.0",
   "description": "Homebridge plugin for ISY series of home controllers from universal devices.",
   "note": "",
   "main": "dist/plugin.js",
@@ -26,11 +26,11 @@
     "Siri"
   ],
   "devDependencies": {
-    "@types/node": "^13.11.1",
+    "@types/node": "",
     "@types/restler": "",
     "fake-isy-994i": "",
-    "hap-nodejs": "^0.5.12-beta.1",
-    "homebridge": "^0.4.54-beta.25",
+    "hap-nodejs": "~0.5.12-beta",
+    "homebridge": "~0.4.54-beta",
     "mocha": ""
   },
   "dependencies": {

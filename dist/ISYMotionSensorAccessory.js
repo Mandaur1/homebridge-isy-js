@@ -63,3 +63,4 @@ class ISYMotionSensorAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
     }
 }
 exports.ISYMotionSensorAccessory = ISYMotionSensorAccessory;
+//# sourceMappingURL=ISYMotionSensorAccessory.js.map

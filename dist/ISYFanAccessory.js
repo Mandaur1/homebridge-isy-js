@@ -49,3 +49,4 @@ class ISYFanAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
     }
 }
 exports.ISYFanAccessory = ISYFanAccessory;
+//# sourceMappingURL=ISYFanAccessory.js.map

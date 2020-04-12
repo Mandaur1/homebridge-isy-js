@@ -92,3 +92,4 @@ class ISYAccessory {
     }
 }
 exports.ISYAccessory = ISYAccessory;
+//# sourceMappingURL=ISYAccessory.js.map

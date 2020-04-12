@@ -47,3 +47,4 @@ class ISYOutletAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
     }
 }
 exports.ISYOutletAccessory = ISYOutletAccessory;
+//# sourceMappingURL=ISYOutletAccessory.js.map

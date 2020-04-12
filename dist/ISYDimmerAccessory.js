@@ -44,3 +44,4 @@ class InsteonDimmableAccessory extends ISYRelayAccessory_1.ISYRelayAccessory {
     }
 }
 exports.InsteonDimmableAccessory = InsteonDimmableAccessory;
+//# sourceMappingURL=ISYDimmerAccessory.js.map
