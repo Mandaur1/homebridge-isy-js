@@ -1,4 +1,4 @@
-import { Categories, Service } from 'hap-nodejs';
+import { Categories } from 'hap-nodejs';
 import { InsteonRelayDevice } from 'isy-js';
 import { ISYAccessory } from './ISYAccessory';
 export declare class ISYGarageDoorAccessory extends ISYAccessory<InsteonRelayDevice, Categories.GARAGE_DOOR_OPENER> {
@@ -18,5 +18,6 @@ export declare class ISYGarageDoorAccessory extends ISYAccessory<InsteonRelayDev
     completeOpen(): void;
     handleExternalChange(propertyName: any, value: any, formattedValue: any): void;
     getObstructionState(callback: any): void;
-    setupServices(): Service[];
+    setupServices(): void;
 }
+//# sourceMappingURL=ISYGarageDoorAccessory.d.ts.map

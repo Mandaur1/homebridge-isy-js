@@ -9,8 +9,7 @@ import { toCelsius } from './utils';
 export class ISYMotionSensorAccessory extends ISYDeviceAccessory<InsteonMotionSensorDevice, Categories.SENSOR> {
 
 
-	get motionSensorService() : MotionSensor
-	{
+	get motionSensorService(): MotionSensor {
 		return this.platformAccessory?.getOrAddService(MotionSensor);
 	}
 
@@ -18,8 +17,7 @@ export class ISYMotionSensorAccessory extends ISYDeviceAccessory<InsteonMotionSe
 		return this.platformAccessory?.getOrAddService(LightSensor);
 	}
 
-	get batteryLevelService(): BatteryService
-	{
+	get batteryLevelService(): BatteryService {
 		return this.platformAccessory?.getOrAddService(Service.BatteryService);
 	}
 
@@ -36,10 +34,9 @@ export class ISYMotionSensorAccessory extends ISYDeviceAccessory<InsteonMotionSe
 	}
 
 	public map(propertyName: string): { characteristic: typeof Characteristic, service: Service; } {
-		switch (propertyName)
-		{
+		switch (propertyName) {
 			case 'CLITEMP':
-				return {characteristic: Characteristic.CurrentTemperature, service: this.temperatureSensorService};
+				return { characteristic: Characteristic.CurrentTemperature, service: this.temperatureSensorService };
 			case 'BATLVL':
 				return { characteristic: Characteristic.BatteryLevel, service: this.batteryLevelService };
 			case 'ST':
@@ -66,13 +63,13 @@ export class ISYMotionSensorAccessory extends ISYDeviceAccessory<InsteonMotionSe
 	// Returns the set of services supported by this object.
 	var undefined = sensorService;
 */
-public setupServices() {
-	super.setupServices();
+	public setupServices() {
+		super.setupServices();
+		this.primaryService = this.motionSensorService;
+		this.motionSensorService.getCharacteristic(Characteristic.MotionDetected).onGet(() => this.device.isMotionDetected);
+		this.temperatureSensorService.getCharacteristic(Characteristic.CurrentTemperature).onGet(() => toCelsius(this.device.CLITEMP));
+		this.batteryLevelService.getCharacteristic(Characteristic.BatteryLevel).onGet(() => this.device.BATLVL);
+		this.lightSensorService.getCharacteristic(Characteristic.CurrentAmbientLightLevel).onGet(() => this.device.LUMIN);
 
-	this.motionSensorService.getCharacteristic(Characteristic.MotionDetected).onGet(() => this.device.isMotionDetected);
-	this.temperatureSensorService.getCharacteristic(Characteristic.CurrentTemperature).onGet(() => toCelsius(this.device.CLITEMP));
-	this.batteryLevelService.getCharacteristic(Characteristic.BatteryLevel).onGet(() => this.device.BATLVL);
-	this.lightSensorService.getCharacteristic(Characteristic.CurrentAmbientLightLevel).onGet(() => this.device.LUMIN);
-	return [this.informationService, this.sensorService];
-}
+	}
 }

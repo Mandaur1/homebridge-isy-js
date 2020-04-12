@@ -1,35 +1,40 @@
 {
     "compileOnSave": true,
     "compilerOptions": {
-        "target": "es2018",
+        "target": "ES2018",
         "emitDecoratorMetadata": true,
         "outDir": "./dist/",
-    //"outFile": "../index.js",
-       "module": "CommonJS",
-       "esModuleInterop": true,
-
+        //"outFile": "../index.js",
+        "module": "CommonJS",
+        "esModuleInterop": true,
         "rootDir": "./src/",
-
-        "baseUrl": "/node_modules/",
-
+        "baseUrl": "./node_modules/",
         "paths": {
-
-            "hap-nodejs/dist/lib/Characteristic": ["/usr/local/lib/node_modules/hap-nodejs/dist/lib/Characteristic"],
-            "hap-nodejs/dist/lib/gen/HomeKit": ["/usr/local/lib/node_modules/hap-nodejs/dist/lib/gen/Homekit"],
-            "hap-nodejs":["/usr/local/lib/node_modules/hap-nodejs"],
-            "hap-nodejs/dist/lib/util/uuid": ["/usr/local/lib/node_modules/hap-nodejs/dist/lib/util/uuid"],
-            "hap-nodejs/dist/accessories/types": ["/usr/local/lib/node_modules/hap-nodejs/dist/accessories/types"],
-            "homebridge": ["/usr/local/lib/node_modules/homebridge"],
-            "homebridge/lib/platformAccessory": ["/usr/local/lib/node_modules/homebridge/lib/platformAccessory"],
-            "config":["../typings/config.d.ts"]
+            "hap-nodejs/dist/lib/Characteristic": [
+                "homebridge/node_modules/hap-nodejs/dist/lib/Characteristic"
+            ],
+            "hap-nodejs/dist/lib/gen/HomeKit": [
+                "homebridge/node_modules/hap-nodejs/dist/lib/gen/Homekit"
+            ],
+            "hap-nodejs": [
+                "homebridge/node_modules/hap-nodejs"
+            ],
+            "hap-nodejs/dist/lib/util/uuid": [
+                "/usr/local/lib/node_modules/hap-nodejs/dist/lib/util/uuid"
+            ],
+            //"hap-nodejs/dist/accessories/types": ["/usr/local/lib/node_modules/hap-nodejs/dist/accessories/types"],
+            //"homebridge": ["/usr/local/lib/node_modules/homebridge"],
+            // "homebridge/lib/platformAccessory": ["/usr/local/lib/node_modules/homebridge/lib/platformAccessory"],
+            "config": [
+                "../typings/config.d.ts"
+            ]
         },
-        "noImplicitUseStrict": true,
-        "importHelpers": true,
+       //"strict": true,
         "experimentalDecorators": true,
         "moduleResolution": "node",
         "declaration": true,
+        "declarationMap": true,
         "sourceMap": true,
         "allowSyntheticDefaultImports": true
     }
-
 }

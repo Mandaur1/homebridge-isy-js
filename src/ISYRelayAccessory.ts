@@ -1,12 +1,9 @@
+import { Categories, Characteristic, Service } from 'hap-nodejs';
+import { InsteonDimmableDevice, InsteonRelayDevice } from 'isy-js';
+import { ISYDeviceAccessory } from './ISYDeviceAccessory';
 import './utils';
 
-import { Categories, Characteristic, CharacteristicEventTypes, Service } from 'hap-nodejs';
-import { InsteonDimmableDevice, InsteonRelayDevice } from 'isy-js';
-
-import { ISYDeviceAccessory } from './ISYDeviceAccessory';
-
-export class ISYRelayAccessory<T extends InsteonRelayDevice> extends ISYDeviceAccessory<T,Categories.SWITCH | Categories.LIGHTBULB | Categories.OUTLET> {
-
+export class ISYRelayAccessory<T extends InsteonRelayDevice> extends ISYDeviceAccessory<T, Categories.SWITCH | Categories.LIGHTBULB | Categories.OUTLET> {
 
 	constructor(device: T) {
 		super(device);
@@ -15,27 +12,27 @@ export class ISYRelayAccessory<T extends InsteonRelayDevice> extends ISYDeviceAc
 
 	}
 
-	public map(propertyName: keyof T): { characteristic: typeof Characteristic, service: Service; }
-	{
+	public map(propertyName: keyof T): { characteristic: typeof Characteristic, service: Service; } {
 		const o = super.map(propertyName);
-		if(o)
+		if (o) {
 			o.characteristic = Characteristic.On;
+		}
 		return o;
 	}
 
 	// Mirrors change in the state of the underlying isj-js device object.
-	//public handleExternalChange(propertyName: string, value: any, formattedValue: string) {
-		//super.handleExternalChange(propertyName, value, formattedValue);
-		//l
-		//this.primaryService.getCharacteristic(Characteristic.On).updateValue(this.device.isOn);
-	//}
+	// public handleExternalChange(propertyName: string, value: any, formattedValue: string) {
+		// super.handleExternalChange(propertyName, value, formattedValue);
+		// l
+		// this.primaryService.getCharacteristic(Characteristic.On).updateValue(this.device.isOn);
+	// }
 
 	// Returns the set of services supported by this object.
 	public setupServices() {
-		const s = super.setupServices();
+		super.setupServices();
 		this.primaryService = this.platformAccessory.getOrAddService(Service.Switch);
 		this.primaryService.getCharacteristic(Characteristic.On).onGet(() => this.device.isOn).onSet(this.bind(this.device.updateIsOn));
-		s.push(this.primaryService);
-		return s;
+
+
 	}
 }

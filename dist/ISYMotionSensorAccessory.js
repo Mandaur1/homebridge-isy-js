@@ -1,3 +1,4 @@
+"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const hap_nodejs_1 = require("hap-nodejs");
 const HomeKit_1 = require("hap-nodejs/dist/lib/gen/HomeKit");
@@ -55,11 +56,11 @@ class ISYMotionSensorAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
 */
     setupServices() {
         super.setupServices();
+        this.primaryService = this.motionSensorService;
         this.motionSensorService.getCharacteristic(hap_nodejs_1.Characteristic.MotionDetected).onGet(() => this.device.isMotionDetected);
         this.temperatureSensorService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentTemperature).onGet(() => utils_1.toCelsius(this.device.CLITEMP));
         this.batteryLevelService.getCharacteristic(hap_nodejs_1.Characteristic.BatteryLevel).onGet(() => this.device.BATLVL);
         this.lightSensorService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentAmbientLightLevel).onGet(() => this.device.LUMIN);
-        return [this.informationService, this.sensorService];
     }
 }
 exports.ISYMotionSensorAccessory = ISYMotionSensorAccessory;

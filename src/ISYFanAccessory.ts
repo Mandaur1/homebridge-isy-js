@@ -11,7 +11,7 @@ export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice,Categor
 	constructor (device: InsteonFanDevice) {
 		super(device);
 		this.category = Categories.FAN;
-		device.propertyChanged.removeListener(null, super.handleExternalChange)
+		device.propertyChanged.removeListener(null, super.handleExternalChange);
 		this.device.Motor.onPropertyChanged(null, this.handleExternalChangeToMotor.bind(this));
 		this.device.Light.onPropertyChanged(null, this.handleExternalChangeToLight.bind(this));
 		// this.logger(JSON.stringify(this.device.scenes[0]));
@@ -25,13 +25,14 @@ export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice,Categor
 	}
 	// Mirrors change in the state of the underlying isj-js device object.
 	public handleExternalChangeToMotor(propertyName: string, value: any, formattedValue: string) {
-		super.handleExternalChange(propertyName, value, formattedValue);
+		//super.handleExternalChange(propertyName, value, formattedValue);
+
 		this.fanService.getCharacteristic(Characteristic.On).updateValue(this.device.isOn);
 		this.fanService.getCharacteristic(Characteristic.RotationSpeed).updateValue(this.device.fanSpeed);
 
 	}
 	public handleExternalChangeToLight(propertyName: string, value: any, formattedValue: string) {
-		super.handleExternalChange(propertyName, value, formattedValue);
+		//super.handleExternalChange(propertyName, value, formattedValue);
 		this.lightService
 			.getCharacteristic(Characteristic.On).updateValue(this.device.Light.isOn);
 		if (this.dimmable) {
@@ -41,7 +42,7 @@ export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice,Categor
 	}
 	// Returns the services supported by the fan device.
 	public setupServices() {
-		const s = super.setupServices();
+		super.setupServices();
 		const fanService = this.platformAccessory.getOrAddService(Service.Fan);
 		this.fanService = fanService;
 		const lightService = this.platformAccessory.getOrAddService(Service.Lightbulb);
@@ -51,8 +52,7 @@ export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice,Categor
 		lightService.getCharacteristic(Characteristic.On).onSet(this.device.Light.updateIsOn.bind(this.device.Light)).onGet(() => this.device.Light.isOn);
 		lightService.getCharacteristic(Characteristic.Brightness).onSet(this.device.Light.updateBrightnessLevel.bind(this.device.Light)).onGet(() => this.device.Light.brightnessLevel);
 		fanService.isPrimaryService = true;
-		s.push(fanService, lightService);
+		this.primaryService = fanService;
 
-		return s;
 	}
 }

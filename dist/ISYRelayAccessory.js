@@ -1,8 +1,9 @@
+"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-require("./utils");
 const hap_nodejs_1 = require("hap-nodejs");
 const isy_js_1 = require("isy-js");
 const ISYDeviceAccessory_1 = require("./ISYDeviceAccessory");
+require("./utils");
 class ISYRelayAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
     constructor(device) {
         super(device);
@@ -11,23 +12,22 @@ class ISYRelayAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
     }
     map(propertyName) {
         const o = super.map(propertyName);
-        if (o)
+        if (o) {
             o.characteristic = hap_nodejs_1.Characteristic.On;
+        }
         return o;
     }
     // Mirrors change in the state of the underlying isj-js device object.
-    //public handleExternalChange(propertyName: string, value: any, formattedValue: string) {
-    //super.handleExternalChange(propertyName, value, formattedValue);
-    //l
-    //this.primaryService.getCharacteristic(Characteristic.On).updateValue(this.device.isOn);
-    //}
+    // public handleExternalChange(propertyName: string, value: any, formattedValue: string) {
+    // super.handleExternalChange(propertyName, value, formattedValue);
+    // l
+    // this.primaryService.getCharacteristic(Characteristic.On).updateValue(this.device.isOn);
+    // }
     // Returns the set of services supported by this object.
     setupServices() {
-        const s = super.setupServices();
+        super.setupServices();
         this.primaryService = this.platformAccessory.getOrAddService(hap_nodejs_1.Service.Switch);
         this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.On).onGet(() => this.device.isOn).onSet(this.bind(this.device.updateIsOn));
-        s.push(this.primaryService);
-        return s;
     }
 }
 exports.ISYRelayAccessory = ISYRelayAccessory;

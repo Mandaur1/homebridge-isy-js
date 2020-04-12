@@ -1,5 +1,5 @@
 import './utils';
-import { Categories, Service } from 'hap-nodejs';
+import { Categories } from 'hap-nodejs';
 import { ElkAlarmSensorDevice } from 'isy-js';
 import { ISYAccessory } from './ISYAccessory';
 export declare class ISYElkAlarmPanelAccessory extends ISYAccessory<ElkAlarmSensorDevice, Categories.ALARM_SYSTEM> {
@@ -11,6 +11,7 @@ export declare class ISYElkAlarmPanelAccessory extends ISYAccessory<ElkAlarmSens
     translateHKToAlarmTargetState(state: any): any;
     getAlarmTargetState(callback: any): void;
     getAlarmCurrentState(callback: any): void;
-    handleExternalChange(propertyName: any, value: any, formattedValue: any): void;
-    setupServices(): Service[];
+    handleExternalChange(propertyName: string, value: any, formattedValue: string): void;
+    setupServices(): void;
 }
+//# sourceMappingURL=ISYElkAlarmPanelAccessory.d.ts.map

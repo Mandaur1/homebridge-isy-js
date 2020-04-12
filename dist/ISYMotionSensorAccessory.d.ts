@@ -13,5 +13,6 @@ export declare class ISYMotionSensorAccessory extends ISYDeviceAccessory<Insteon
         service: Service;
     };
     getCurrentMotionSensorState(callback: (...any: any[]) => void): void;
-    setupServices(): any[];
+    setupServices(): void;
 }
+//# sourceMappingURL=ISYMotionSensorAccessory.d.ts.map

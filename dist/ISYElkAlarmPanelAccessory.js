@@ -1,3 +1,4 @@
+"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 require("./utils");
 const hap_nodejs_1 = require("hap-nodejs");
@@ -101,13 +102,11 @@ class ISYElkAlarmPanelAccessory extends ISYAccessory_1.ISYAccessory {
     }
     // Returns the set of services supported by this object.
     setupServices() {
-        const s = super.setupServices();
+        super.setupServices();
         this.alarmPanelService = this.addService(hap_nodejs_1.Service.SecuritySystem);
         this.alarmPanelService.getCharacteristic(hap_nodejs_1.Characteristic.SecuritySystemTargetState).on('set', this.setAlarmTargetState.bind(this));
         this.alarmPanelService.getCharacteristic(hap_nodejs_1.Characteristic.SecuritySystemTargetState).on('get', this.getAlarmTargetState.bind(this));
         this.alarmPanelService.getCharacteristic(hap_nodejs_1.Characteristic.SecuritySystemCurrentState).on('get', this.getAlarmCurrentState.bind(this));
-        s.push(this.alarmPanelService);
-        return s;
     }
 }
 exports.ISYElkAlarmPanelAccessory = ISYElkAlarmPanelAccessory;

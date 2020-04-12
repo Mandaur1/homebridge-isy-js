@@ -1,7 +1,7 @@
-import './utils';
 import { Characteristic, Service } from 'hap-nodejs';
 import { InsteonDimmableDevice } from 'isy-js';
 import { ISYRelayAccessory } from './ISYRelayAccessory';
+import './utils';
 export declare class InsteonDimmableAccessory<T extends InsteonDimmableDevice> extends ISYRelayAccessory<T> {
     constructor(device: T);
     map(propertyName: keyof T): {
@@ -10,5 +10,6 @@ export declare class InsteonDimmableAccessory<T extends InsteonDimmableDevice> e
     };
     handleExternalChange(propertyName: string, value: any, formattedValue: any): void;
     getBrightness(callback: (...any: any[]) => void): void;
-    setupServices(): Service[];
+    setupServices(): void;
 }
+//# sourceMappingURL=ISYDimmerAccessory.d.ts.map

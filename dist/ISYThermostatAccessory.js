@@ -1,3 +1,4 @@
+"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 require("./utils");
 const hap_nodejs_1 = require("hap-nodejs");
@@ -48,52 +49,50 @@ class ISYThermostatAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
         super.handleExternalChange(propertyName, value, formattedValue);
         switch (propertyName) {
             case isy_js_1.Props.Climate.Temperature:
-                this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentTemperature).updateValue(this.toCelsius(this.device.currentTemperature));
+                this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentTemperature).updateValue(this.toCelsius(this.device.currentTemperature));
                 break;
             case isy_js_1.Props.Climate.CoolSetPoint:
-                this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CoolingThresholdTemperature).updateValue(this.toCelsius(this.device.coolSetPoint));
+                this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.CoolingThresholdTemperature).updateValue(this.toCelsius(this.device.coolSetPoint));
                 break;
             case isy_js_1.Props.Climate.HeatSetPoint:
-                this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CoolingThresholdTemperature).updateValue(this.toCelsius(this.device.heatSetPoint));
+                this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.CoolingThresholdTemperature).updateValue(this.toCelsius(this.device.heatSetPoint));
                 break;
             case isy_js_1.Props.Climate.OperatingMode:
-                this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentHeatingCoolingState).updateValue(this.device.operatingMode);
+                this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentHeatingCoolingState).updateValue(this.device.operatingMode);
                 break;
             case isy_js_1.Props.Climate.Mode:
-                this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.TargetHeatingCoolingState).updateValue(this.device.mode);
+                this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.TargetHeatingCoolingState).updateValue(this.device.mode);
                 break;
             case isy_js_1.Props.Climate.FanMode:
-                this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentFanState).updateValue(this.device.fanMode);
+                this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentFanState).updateValue(this.device.fanMode);
                 break;
             case isy_js_1.Props.Climate.Humidity:
-                this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentRelativeHumidity).updateValue(this.device.humidity);
+                this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentRelativeHumidity).updateValue(this.device.humidity);
                 break;
             default:
                 break;
         }
     }
     setupServices() {
-        const svcs = super.setupServices();
-        this.thermostatService = this.addService(hap_nodejs_1.Service.Thermostat);
-        // thermostatService.getCharacteristic(Characteristic.TargetTemperature).on("get", this.getTargetTemperature.bind(this));
-        // thermostatService.getCharacteristic(Characteristic.TargetTemperature).on("set", this.setTargetTemperature.bind(this));
-        this.thermostatService.setCharacteristic(hap_nodejs_1.Characteristic.TemperatureDisplayUnits, 1);
-        this.thermostatService.addCharacteristic(hap_nodejs_1.Characteristic.CurrentFanState);
-        this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentFanState).on(hap_nodejs_1.CharacteristicEventTypes.GET, (f) => this.getFanMode(f));
-        this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentTemperature).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getCurrentTemperature.bind(this));
-        this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CoolingThresholdTemperature).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getCoolSetPoint.bind(this));
-        this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CoolingThresholdTemperature).on(hap_nodejs_1.CharacteristicEventTypes.SET, this.setCoolSetPoint.bind(this));
-        this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.HeatingThresholdTemperature).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getHeatSetPoint.bind(this));
-        this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.HeatingThresholdTemperature).on(hap_nodejs_1.CharacteristicEventTypes.SET, this.setHeatSetPoint.bind(this));
-        this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentHeatingCoolingState).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getOperatingMode.bind(this));
-        this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.TargetHeatingCoolingState).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getMode.bind(this));
-        this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.TargetHeatingCoolingState).on(hap_nodejs_1.CharacteristicEventTypes.SET, this.setHeatingCoolingMode.bind(this));
-        this.thermostatService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentRelativeHumidity).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getHumidity.bind(this));
-        svcs.push(this.thermostatService);
-        // ThermostatService
+        super.setupServices();
+        this.primaryService = this.addService(hap_nodejs_1.Service.Thermostat);
+        // primaryService.getCharacteristic(Characteristic.TargetTemperature).on("get", this.getTargetTemperature.bind(this));
+        // primaryService.getCharacteristic(Characteristic.TargetTemperature).on("set", this.setTargetTemperature.bind(this));
+        this.primaryService.setCharacteristic(hap_nodejs_1.Characteristic.TemperatureDisplayUnits, 1);
+        this.primaryService.addCharacteristic(hap_nodejs_1.Characteristic.CurrentFanState);
+        this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentFanState).on(hap_nodejs_1.CharacteristicEventTypes.GET, (f) => this.getFanMode(f));
+        this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentTemperature).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getCurrentTemperature.bind(this));
+        this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.CoolingThresholdTemperature).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getCoolSetPoint.bind(this));
+        this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.CoolingThresholdTemperature).on(hap_nodejs_1.CharacteristicEventTypes.SET, this.setCoolSetPoint.bind(this));
+        this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.HeatingThresholdTemperature).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getHeatSetPoint.bind(this));
+        this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.HeatingThresholdTemperature).on(hap_nodejs_1.CharacteristicEventTypes.SET, this.setHeatSetPoint.bind(this));
+        this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentHeatingCoolingState).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getOperatingMode.bind(this));
+        this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.TargetHeatingCoolingState).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getMode.bind(this));
+        this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.TargetHeatingCoolingState).on(hap_nodejs_1.CharacteristicEventTypes.SET, this.setHeatingCoolingMode.bind(this));
+        this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentRelativeHumidity).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getHumidity.bind(this));
+        // primaryService
         //   .getCharacteristic(Characteristic.RotationSpeed)
         //   .on(CharacteristicEventTypes.SET, this.setThermostatRotationSpeed.bind(this));
-        return svcs;
     }
     setCoolSetPoint(temp, callback) {
         this.logger.info(`Sending command to set cool set point (pre-translate) to: ${temp}`);

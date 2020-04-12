@@ -6,7 +6,7 @@ import { InsteonOutletDevice } from 'isy-js';
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
 
 export class ISYOutletAccessory extends ISYDeviceAccessory<InsteonOutletDevice,Categories.OUTLET> {
-	public outletService: any;
+
 	constructor(device: InsteonOutletDevice) {
 		super(device);
 		this.category = Categories.OUTLET;
@@ -43,10 +43,10 @@ export class ISYOutletAccessory extends ISYDeviceAccessory<InsteonOutletDevice,C
 		super.setupServices();
 		const outletService = this.platformAccessory.getOrAddService(Service.Outlet);
 
-		this.outletService = outletService;
+		this.primaryService = outletService;
 		outletService.getCharacteristic(Characteristic.On).onSet(this.bind(this.device.updateIsOn));
 		outletService.getCharacteristic(Characteristic.On).onGet(() => this.device.isOn);
 		outletService.getCharacteristic(Characteristic.OutletInUse).onGet(() => true);
-		return [this.informationService, outletService];
+
 	}
 }

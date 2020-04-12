@@ -1,9 +1,7 @@
-import './utils';
-
-import { Categories, Characteristic, CharacteristicChange, CharacteristicEventTypes, Service, ServiceEventTypes } from 'hap-nodejs';
-import { Controls, InsteonDimmableDevice } from 'isy-js';
-
+import { Categories, Characteristic, Service } from 'hap-nodejs';
+import { InsteonDimmableDevice } from 'isy-js';
 import { ISYRelayAccessory } from './ISYRelayAccessory';
+import './utils';
 
 export class InsteonDimmableAccessory<T extends InsteonDimmableDevice> extends ISYRelayAccessory<T> {
 	constructor(device: T) {
@@ -14,23 +12,23 @@ export class InsteonDimmableAccessory<T extends InsteonDimmableDevice> extends I
 	// Handles the identify command
 	// Handles request to set the current powerstate from homekit. Will ignore redundant commands.
 	public map(propertyName: keyof T): { characteristic: typeof Characteristic, service: Service; } {
-		const o = super.map(propertyName)
-		if(o)
-			o.characteristic = Characteristic.Brightness
+		const o = super.map(propertyName);
+		if (o) {
+			o.characteristic = Characteristic.Brightness;
+		}
 		return o;
 	}
 
 	// Mirrors change in the state of the underlying isj-js device object.
 	public handleExternalChange(propertyName: string, value, formattedValue) {
 		super.handleExternalChange(propertyName, value, formattedValue);
-		//this.primaryService.getCharacteristic(Characteristic.On).updateValue(this.device.isOn);
-		//this.a
-			//this.primaryService.getCharacteristic(ch.name).updateValue(this.device[propertyName]);
+		this.primaryService.getCharacteristic(Characteristic.On).updateValue(this.device.isOn);
+		// this.a
+			// this.primaryService.getCharacteristic(ch.name).updateValue(this.device[propertyName]);
 
 	}
 	// Handles request to get the current on state
 	// Handles request to get the current on state
-
 
 	// Handles a request to get the current brightness level for dimmable lights.
 	public getBrightness(callback: (...any) => void) {
@@ -38,7 +36,7 @@ export class InsteonDimmableAccessory<T extends InsteonDimmableDevice> extends I
 
 	}
 	// Returns the set of services supported by this object.
-	public setupServices() : Service[] {
+	public setupServices() {
 		const s = super.setupServices();
 
 		this.platformAccessory.removeService(this.primaryService);
@@ -46,10 +44,10 @@ export class InsteonDimmableAccessory<T extends InsteonDimmableDevice> extends I
 		this.primaryService.getCharacteristic(Characteristic.On).onSet(this.bind(this.device.updateIsOn));
 		this.primaryService.getCharacteristic(Characteristic.On).onGet(() => this.device.isOn);
 		// lightBulbService.getCharacteristic(Characteristic.On).on('get', this.getPowerState.bind(this));
-		//this.primaryService.getCharacteristic(Characteristic.Brightness).updateValue(this.device['OL']);
+		// this.primaryService.getCharacteristic(Characteristic.Brightness).updateValue(this.device['OL']);
 		this.primaryService.getCharacteristic(Characteristic.Brightness).onGet(() => this.device.brightnessLevel);
 		this.primaryService.getCharacteristic(Characteristic.Brightness).onSet(this.bind(this.device.updateBrightnessLevel));
-		//this.primaryService.getCharacteristic(Characteristic.Brightness).setProps({maxValue: this.device.OL});
-		return [this.informationService, this.primaryService];
+		// this.primaryService.getCharacteristic(Characteristic.Brightness).setProps({maxValue: this.device.OL});
+	
 	}
 }

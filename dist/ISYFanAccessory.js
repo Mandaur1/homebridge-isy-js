@@ -1,3 +1,4 @@
+"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 require("./ISYPlatform");
 const hap_nodejs_1 = require("hap-nodejs");
@@ -19,12 +20,12 @@ class ISYFanAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
     }
     // Mirrors change in the state of the underlying isj-js device object.
     handleExternalChangeToMotor(propertyName, value, formattedValue) {
-        super.handleExternalChange(propertyName, value, formattedValue);
+        //super.handleExternalChange(propertyName, value, formattedValue);
         this.fanService.getCharacteristic(hap_nodejs_1.Characteristic.On).updateValue(this.device.isOn);
         this.fanService.getCharacteristic(hap_nodejs_1.Characteristic.RotationSpeed).updateValue(this.device.fanSpeed);
     }
     handleExternalChangeToLight(propertyName, value, formattedValue) {
-        super.handleExternalChange(propertyName, value, formattedValue);
+        //super.handleExternalChange(propertyName, value, formattedValue);
         this.lightService
             .getCharacteristic(hap_nodejs_1.Characteristic.On).updateValue(this.device.Light.isOn);
         if (this.dimmable) {
@@ -34,7 +35,7 @@ class ISYFanAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
     }
     // Returns the services supported by the fan device.
     setupServices() {
-        const s = super.setupServices();
+        super.setupServices();
         const fanService = this.platformAccessory.getOrAddService(hap_nodejs_1.Service.Fan);
         this.fanService = fanService;
         const lightService = this.platformAccessory.getOrAddService(hap_nodejs_1.Service.Lightbulb);
@@ -44,8 +45,7 @@ class ISYFanAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
         lightService.getCharacteristic(hap_nodejs_1.Characteristic.On).onSet(this.device.Light.updateIsOn.bind(this.device.Light)).onGet(() => this.device.Light.isOn);
         lightService.getCharacteristic(hap_nodejs_1.Characteristic.Brightness).onSet(this.device.Light.updateBrightnessLevel.bind(this.device.Light)).onGet(() => this.device.Light.brightnessLevel);
         fanService.isPrimaryService = true;
-        s.push(fanService, lightService);
-        return s;
+        this.primaryService = fanService;
     }
 }
 exports.ISYFanAccessory = ISYFanAccessory;

@@ -24,9 +24,10 @@ export declare class ISYAccessory<T extends ISYNode, TCategory extends Categorie
         service: Service;
     };
     configure(accessory?: PlatformAccessory): void;
-    setupServices(): Service[];
+    setupServices(): void;
     handleExternalChange(propertyName: string, value: any, formattedValue: string): void;
     updateCharacteristicValue(value: CharacteristicValue, characteristic: typeof Characteristic, service?: Service): void;
     convertToHK(propertyName: string, value: any): any;
     identify(): void;
 }
+//# sourceMappingURL=ISYAccessory.d.ts.map

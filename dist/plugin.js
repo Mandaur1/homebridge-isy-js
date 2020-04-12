@@ -1,3 +1,4 @@
+"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const platformAccessory_1 = require("homebridge/lib/platformAccessory");
 const ISYPlatform_1 = require("./ISYPlatform");

@@ -1,10 +1,10 @@
-import './utils';
 import { API, PlatformConfig, PlatformPlugin } from 'homebridge';
 import { Logging } from 'homebridge/lib/logger';
 import { PlatformAccessory } from 'homebridge/lib/platformAccessory';
 import { ISY, ISYDevice, ISYNode } from 'isy-js';
 import { IgnoreDeviceRule } from '../typings/config';
 import { ISYAccessory } from './ISYAccessory';
+import './utils';
 export declare class ISYPlatform implements PlatformPlugin {
     log: Logging;
     config: PlatformConfig;
@@ -32,3 +32,4 @@ export declare class ISYPlatform implements PlatformPlugin {
     createAccessories(): Promise<void>;
     createAccessory(device: ISYDevice<any>): ISYAccessory<any, any>;
 }
+//# sourceMappingURL=ISYPlatform.d.ts.map

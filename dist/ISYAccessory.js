@@ -1,3 +1,4 @@
+"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const hap_nodejs_1 = require("hap-nodejs");
 const uuid_1 = require("hap-nodejs/dist/lib/util/uuid");
@@ -49,16 +50,17 @@ class ISYAccessory {
     }
     configure(accessory) {
         if (accessory) {
-            if (!accessory.getOrAddService)
+            if (!accessory.getOrAddService) {
                 accessory.getOrAddService = platformAccessory_1.PlatformAccessory.prototype.getOrAddService.bind(accessory);
+            }
             this.platformAccessory = accessory;
-            this.platformAccessory.context['address'] = this.address;
+            this.platformAccessory.context.address = this.address;
             this.logger.info('Configuring linked platform accessory');
             this.setupServices();
         }
         else {
             this.platformAccessory = new platformAccessory_1.PlatformAccessory(this.displayName, this.UUID, this.category);
-            this.platformAccessory.context['address'] = this.address;
+            this.platformAccessory.context.address = this.address;
             this.setupServices();
             this.platformAccessory.on('identify', () => this.identify.bind(this));
         }
@@ -72,13 +74,16 @@ class ISYAccessory {
         this.informationService.getCharacteristic(hap_nodejs_1.Characteristic.SerialNumber).updateValue((_c = this.device.modelNumber, (_c !== null && _c !== void 0 ? _c : this.device.address)));
         this.informationService.getCharacteristic(hap_nodejs_1.Characteristic.FirmwareRevision).updateValue((_d = this.device.version, (_d !== null && _d !== void 0 ? _d : '1.0')));
         // .setCharacteristic(Characteristic.ProductData, this.device.address);
-        return [this.informationService];
     }
     handleExternalChange(propertyName, value, formattedValue) {
+        var _a;
         const name = propertyName in isy_js_1.Controls ? isy_js_1.Controls[propertyName].label : propertyName;
         this.logger.debug(`Incoming update to ${name}. Device says: ${value} (${formattedValue})`);
-        let m = this.map(propertyName);
-        this.updateCharacteristicValue(value, m.characteristic, m.service);
+        const m = this.map(propertyName);
+        if ((_a = m) === null || _a === void 0 ? void 0 : _a.characteristic) {
+            this.logger.debug('Property mapped to: ', m.characteristic.name);
+            this.updateCharacteristicValue(value, m.characteristic, m.service);
+        }
     }
     updateCharacteristicValue(value, characteristic, service = this.primaryService) {
         var _a;

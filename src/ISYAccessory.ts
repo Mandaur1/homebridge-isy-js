@@ -8,16 +8,12 @@ import ISYConstants from 'isy-js/lib/isyconstants';
 
 import { PlatformName } from './plugin';
 
-
-
-
-export class AccessoryContext
-{
+export class AccessoryContext {
 	public address: string;
 
 }
 
-(PlatformAccessory.prototype).getOrAddService = function (service: WithUUID<typeof Service>): Service {
+(PlatformAccessory.prototype).getOrAddService = function(service: WithUUID<typeof Service>): Service {
 	const acc = this as unknown as PlatformAccessory;
 	const serv = acc.getService(service);
 	if (!serv) {
@@ -41,13 +37,11 @@ export class ISYAccessory<T extends ISYNode, TCategory extends Categories> {
 	public primaryService: Service;
 
 	// tslint:disable-next-line: ban-types
-	public bind<TFunction extends Function>(func: TFunction) : TFunction
-	{
+	public bind<TFunction extends Function>(func: TFunction): TFunction {
 		return func.bind(this.device);
 	}
 
-
-	constructor (device: T) {
+	constructor(device: T) {
 		const s = generate(`${device.isy.address}:${device.address}1`);
 		/// super(device.displayName, s);
 		this.UUID = s;
@@ -64,46 +58,39 @@ export class ISYAccessory<T extends ISYNode, TCategory extends Categories> {
 		this.device.onPropertyChanged(null, this.handleExternalChange.bind(this));
 	}
 
-	public map(propertyName: keyof T): {characteristic: typeof Characteristic, service: Service}
-	{
+	public map(propertyName: keyof T): {characteristic: typeof Characteristic, service: Service} {
 		let output = null;
-		if (propertyName === 'ST')
-		{
+		if (propertyName === 'ST') {
 			output = {characteristic : Characteristic.On};
 
 		}
-		if (output)
-		{
+		if (output) {
 			output.service = output.service ?? this.primaryService;
 		}
 		return output;
 	}
 
-	public configure(accessory?: PlatformAccessory)
-	{
-		if (accessory)
-		{
-			if(!accessory.getOrAddService)
+	public configure(accessory?: PlatformAccessory) {
+		if (accessory) {
+			if (!accessory.getOrAddService) {
 				accessory.getOrAddService = PlatformAccessory.prototype.getOrAddService.bind(accessory);
+			}
 			this.platformAccessory = accessory;
-			this.platformAccessory.context['address'] = this.address;
+			this.platformAccessory.context.address = this.address;
 			this.logger.info('Configuring linked platform accessory');
 			this.setupServices();
 
-		}
-		else
-		{
+		} else {
 			this.platformAccessory = new PlatformAccessory(this.displayName, this.UUID, this.category);
 
-			this.platformAccessory.context['address'] = this.address;
+			this.platformAccessory.context.address = this.address;
 
 			this.setupServices();
 			this.platformAccessory.on('identify', () => this.identify.bind(this));
 		}
 	}
 
-
-	public setupServices(): Service[] {
+	public setupServices() {
 		this.informationService = this.platformAccessory.getOrAddService(Service.AccessoryInformation);
 		this.informationService
 			.getCharacteristic(Characteristic.Manufacturer).updateValue(
@@ -113,20 +100,20 @@ export class ISYAccessory<T extends ISYNode, TCategory extends Categories> {
 		this.informationService.getCharacteristic(Characteristic.FirmwareRevision).updateValue(this.device.version ?? '1.0');
 			// .setCharacteristic(Characteristic.ProductData, this.device.address);
 
-		return [this.informationService];
 	}
 
 	public handleExternalChange(propertyName: string, value: any, formattedValue: string) {
 		const name = propertyName in Controls ? Controls[propertyName].label : propertyName;
 		this.logger.debug(`Incoming update to ${name}. Device says: ${value} (${formattedValue})`);
-		let m = this.map(propertyName);
-
-		this.updateCharacteristicValue(value, m.characteristic, m.service);
+		const m = this.map(propertyName);
+		if (m?.characteristic) {
+			this.logger.debug('Property mapped to: ', m.characteristic.name);
+			this.updateCharacteristicValue(value, m.characteristic, m.service);
+		}
 
 	}
 
-	public updateCharacteristicValue(value:  CharacteristicValue, characteristic: typeof Characteristic , service: Service = this.primaryService)
-	{
+	public updateCharacteristicValue(value: CharacteristicValue, characteristic: typeof Characteristic, service: Service = this.primaryService) {
 		service.getCharacteristic(characteristic.name)?.updateValue(value);
 
 	}

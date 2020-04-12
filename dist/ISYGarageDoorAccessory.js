@@ -1,3 +1,4 @@
+"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const hap_nodejs_1 = require("hap-nodejs");
 const ISYAccessory_1 = require("./ISYAccessory");
@@ -153,7 +154,6 @@ class ISYGarageDoorAccessory extends ISYAccessory_1.ISYAccessory {
         garageDoorService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentDoorState).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getCurrentDoorState.bind(this));
         garageDoorService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentDoorState).on(hap_nodejs_1.CharacteristicEventTypes.SET, this.setCurrentDoorState.bind(this));
         garageDoorService.getCharacteristic(hap_nodejs_1.Characteristic.ObstructionDetected).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getObstructionState.bind(this));
-        return [this.informationService, garageDoorService];
     }
 }
 exports.ISYGarageDoorAccessory = ISYGarageDoorAccessory;

@@ -1,4 +1,4 @@
-import { Categories, Service } from 'hap-nodejs';
+import { Categories } from 'hap-nodejs';
 import { InsteonLockDevice } from 'isy-js';
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
 export declare class ISYLockAccessory extends ISYDeviceAccessory<InsteonLockDevice, Categories.DOOR_LOCK> {
@@ -9,5 +9,6 @@ export declare class ISYLockAccessory extends ISYDeviceAccessory<InsteonLockDevi
     getLockCurrentState(callback: any): void;
     getTargetLockState(callback: any): void;
     handleExternalChange(propertyName: any, value: any, formattedValue: any): void;
-    setupServices(): Service[];
+    setupServices(): void;
 }
+//# sourceMappingURL=ISYLockAccessory.d.ts.map

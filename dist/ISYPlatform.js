@@ -1,5 +1,5 @@
+"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-require("./utils");
 const homebridge_1 = require("homebridge");
 const logger_1 = require("homebridge/lib/logger");
 const isy_js_1 = require("isy-js");
@@ -15,6 +15,7 @@ const ISYRelayAccessory_1 = require("./ISYRelayAccessory");
 const ISYSceneAccessory_1 = require("./ISYSceneAccessory");
 const ISYThermostatAccessory_1 = require("./ISYThermostatAccessory");
 const plugin_1 = require("./plugin");
+require("./utils");
 // tslint:disable-next-line: ordered-imports
 class ISYPlatform {
     constructor(log, config, homebridge) {
@@ -132,14 +133,16 @@ class ISYPlatform {
         // return deviceName;
         // }
         if (this.config.transformNames !== undefined) {
-            if (this.config.transformNames.remove !== undefined)
+            if (this.config.transformNames.remove !== undefined) {
                 for (const removeText of this.config.transformNames.remove) {
                     deviceName.replace(removeText, '');
                 }
-            if (this.config.transformNames.replace !== undefined)
+            }
+            if (this.config.transformNames.replace !== undefined) {
                 for (const replaceRule of this.config.transformNames.replace) {
                     deviceName.replace(replaceRule.replace, replaceRule.with);
                 }
+            }
         }
         if (this.config.renameDevices !== undefined) {
             for (const rule of this.config.renameDevices) {
@@ -215,7 +218,7 @@ class ISYPlatform {
                         results.push(homeKitDevice);
                         // Make sure the device is address to the global map
                         // deviceMap[device.address] = homeKitDevice;
-                        //results.set(id,homeKitDevice);
+                        // results.set(id,homeKitDevice);
                     }
                 }
             }
@@ -225,9 +228,9 @@ class ISYPlatform {
                 }
             }
             if (that.isy.elkEnabled) {
-                //if (results.size >= 100) {
-                //that.logger('Skipping adding Elk Alarm panel as device count already at maximum');
-                //}
+                // if (results.size >= 100) {
+                // that.logger('Skipping adding Elk Alarm panel as device count already at maximum');
+                // }
                 const panelDevice = that.isy.getElkAlarmPanel();
                 panelDevice.name = that.renameDeviceIfNeeded(panelDevice);
                 const panelDeviceHK = new ISYElkAlarmPanelAccessory_1.ISYElkAlarmPanelAccessory(panelDevice);
@@ -239,14 +242,14 @@ class ISYPlatform {
                 this.accessoriesWrappers.set(homeKitDevice.UUID, homeKitDevice);
                 const s = this.accessoriesToConfigure.get(homeKitDevice.UUID);
                 if (s !== null && s !== undefined) {
-                    //that.log("Configuring linked accessory");
+                    // that.log("Configuring linked accessory");
                     homeKitDevice.configure(s);
                     that.accessoriesToConfigure.delete(homeKitDevice.UUID);
                 }
                 else {
                     homeKitDevice.configure();
                     this.accessories.push(homeKitDevice.platformAccessory);
-                    //that.homebridge.registerPlatformAccessories(pluginName, platformName, [homeKitDevice.platformAccessory]);
+                    // that.homebridge.registerPlatformAccessories(pluginName, platformName, [homeKitDevice.platformAccessory]);
                     this.accessoriesToRegister.push(homeKitDevice.platformAccessory);
                 }
             }

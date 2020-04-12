@@ -5,3 +5,4 @@ export declare const PlatformName = "ISY";
 export declare let platformAccessory: typeof PlatformAccessory;
 declare const _default: (homebridge: API) => typeof globalThis;
 export default _default;
+//# sourceMappingURL=plugin.d.ts.map

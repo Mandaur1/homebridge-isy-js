@@ -1,3 +1,4 @@
+"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 require("./utils");
 const hap_nodejs_1 = require("hap-nodejs");
@@ -39,11 +40,10 @@ class ISYOutletAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
     setupServices() {
         super.setupServices();
         const outletService = this.platformAccessory.getOrAddService(hap_nodejs_1.Service.Outlet);
-        this.outletService = outletService;
+        this.primaryService = outletService;
         outletService.getCharacteristic(hap_nodejs_1.Characteristic.On).onSet(this.bind(this.device.updateIsOn));
         outletService.getCharacteristic(hap_nodejs_1.Characteristic.On).onGet(() => this.device.isOn);
         outletService.getCharacteristic(hap_nodejs_1.Characteristic.OutletInUse).onGet(() => true);
-        return [this.informationService, outletService];
     }
 }
 exports.ISYOutletAccessory = ISYOutletAccessory;

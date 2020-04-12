@@ -9,5 +9,6 @@ export declare class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice
     getBrightness(callback: (...any: any[]) => void): void;
     handleExternalChangeToMotor(propertyName: string, value: any, formattedValue: string): void;
     handleExternalChangeToLight(propertyName: string, value: any, formattedValue: string): void;
-    setupServices(): Service[];
+    setupServices(): void;
 }
+//# sourceMappingURL=ISYFanAccessory.d.ts.map

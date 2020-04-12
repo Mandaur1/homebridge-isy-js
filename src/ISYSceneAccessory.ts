@@ -8,7 +8,7 @@ import { onSet } from './utils';
 
 export class ISYSceneAccessory extends ISYAccessory<ISYScene,Categories.LIGHTBULB> {
 	public dimmable: boolean;
-	public lightService: Service;
+
 	public scene: ISYScene;
 	constructor (scene: ISYScene) {
 		super(scene);
@@ -26,9 +26,9 @@ export class ISYSceneAccessory extends ISYAccessory<ISYScene,Categories.LIGHTBUL
 
 	// Mirrors change in the state of the underlying isj-js device object.
 	public handleExternalChange(propertyName: string, value: any, formattedValue: string) {
-		this.lightService.getCharacteristic(Characteristic.On).updateValue(this.scene.isOn);
+		this.primaryService.getCharacteristic(Characteristic.On).updateValue(this.scene.isOn);
 		if (this.dimmable) {
-			this.lightService.getCharacteristic(Characteristic.Brightness).updateValue(this.scene.brightnessLevel);
+			this.primaryService.getCharacteristic(Characteristic.Brightness).updateValue(this.scene.brightnessLevel);
 		}
 	}
 	// Handles request to get the current on state
@@ -40,15 +40,15 @@ export class ISYSceneAccessory extends ISYAccessory<ISYScene,Categories.LIGHTBUL
 		super.setupServices();
 
 		if (this.dimmable) {
-			this.lightService = this.platformAccessory.getOrAddService(Service.Lightbulb);
-			onSet(this.lightService.getCharacteristic(Characteristic.Brightness), this.bind(this.device.updateBrightnessLevel)).onGet(() => this.device.brightnessLevel);
+			this.primaryService = this.platformAccessory.getOrAddService(Service.Lightbulb);
+			onSet(this.primaryService.getCharacteristic(Characteristic.Brightness), this.bind(this.device.updateBrightnessLevel)).onGet(() => this.device.brightnessLevel);
 
 		} else {
-			this.lightService = this.platformAccessory.getOrAddService(Service.Switch);
+			this.primaryService = this.platformAccessory.getOrAddService(Service.Switch);
 		}
-		this.lightService
+		this.primaryService
 			.getCharacteristic(Characteristic.On)
 			.onGet(() => this.device.isOn).onSet(this.bind(this.device.updateIsOn));
-		return [this.informationService, this.lightService];
+
 	}
 }

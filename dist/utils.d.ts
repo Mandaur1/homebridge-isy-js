@@ -35,3 +35,4 @@ declare module 'hap-nodejs/dist/lib/Characteristic' {
 export declare function addGetCallback<T extends CharacteristicValue>(func: (...args: any[]) => Promise<T>): (arg: any, cb: CharacteristicGetCallback) => void;
 export declare function addSetCallback<T extends CharacteristicValue>(func: (...args: any[]) => Promise<T>): (arg: any, cb: CharacteristicSetCallback) => void;
 export declare function addCallback<T>(func: (...args: any[]) => Promise<T>): (arg: any, cb: CharacteristicSetCallback) => void;
+//# sourceMappingURL=utils.d.ts.map

@@ -1,29 +1,9 @@
-import './utils';
-
-import { EventEmitter } from 'events';
-import { API, APIEvent, PlatformConfig, PlatformPlugin, PlatformPluginConstructor } from 'homebridge';
+import { API, APIEvent, PlatformConfig, PlatformPlugin } from 'homebridge';
 import { Logger, Logging } from 'homebridge/lib/logger';
 import { PlatformAccessory } from 'homebridge/lib/platformAccessory';
-import {
-    ElkAlarmSensorDevice,
-    InsteonDimmableDevice,
-    InsteonDoorWindowSensorDevice,
-    InsteonFanDevice,
-    InsteonLockDevice,
-    InsteonMotionSensorDevice,
-    InsteonOutletDevice,
-    InsteonRelayDevice,
-    InsteonThermostatDevice,
-    ISY,
-    ISYDevice,
-    ISYNode,
-    ISYScene,
-    NodeType,
-} from 'isy-js';
-
+import { ElkAlarmSensorDevice, InsteonDimmableDevice, InsteonDoorWindowSensorDevice, InsteonFanDevice, InsteonLockDevice, InsteonMotionSensorDevice, InsteonOutletDevice, InsteonRelayDevice, InsteonThermostatDevice, ISY, ISYDevice, ISYNode, ISYScene } from 'isy-js';
 import { IgnoreDeviceRule } from '../typings/config';
 import { ISYAccessory } from './ISYAccessory';
-import { ISYDeviceAccessory } from './ISYDeviceAccessory';
 import { InsteonDimmableAccessory } from './ISYDimmerAccessory';
 import { ISYDoorWindowSensorAccessory } from './ISYDoorWindowSensorAccessory';
 import { ISYElkAlarmPanelAccessory } from './ISYElkAlarmPanelAccessory';
@@ -36,15 +16,11 @@ import { ISYRelayAccessory } from './ISYRelayAccessory';
 import { ISYSceneAccessory } from './ISYSceneAccessory';
 import { ISYThermostatAccessory } from './ISYThermostatAccessory';
 import { PlatformName, PluginName } from './plugin';
-import { didFinishLaunching, LoggerLike } from './utils';
-
-
+import './utils';
 
 // tslint:disable-next-line: ordered-imports
 
 export class ISYPlatform implements PlatformPlugin {
-
-
 
 	public log: Logging;
 	public config: PlatformConfig;
@@ -64,7 +40,7 @@ export class ISYPlatform implements PlatformPlugin {
 	public accessoriesToConfigure: Map<string, PlatformAccessory> = new Map<string, PlatformAccessory>();
 
 	public isy: ISY;
-	constructor (log: Logging, config: PlatformConfig, homebridge: API){
+	constructor (log: Logging, config: PlatformConfig, homebridge: API) {
 
 		this.log = log;
 		this.config = config;
@@ -77,13 +53,11 @@ export class ISYPlatform implements PlatformPlugin {
 		this.includedScenes = config.includedScenes === undefined ? [] : config.includedScenes;
 		this.ignoreRules = config.ignoreDevices;
 		this.homebridge = homebridge;
-
 		ISYPlatform.Instance = this;
 
 		this.isy = new ISY(this.host, this.username, this.password, config.elkEnabled, null, config.useHttps, true, this.debugLoggingEnabled, null, Logger.withPrefix('isy-js'));
 		const p = this.createAccessories();
 		const self = this;
-
 
 		homebridge.on(APIEvent.DID_FINISH_LAUNCHING, async () => {
 
@@ -91,7 +65,6 @@ export class ISYPlatform implements PlatformPlugin {
 			self.log('Homebridge API Version', self.homebridge.version);
 			self.log('Homebridge Server Version', self.homebridge.serverVersion);
 			await p;
-
 
 			self.logger(`Total Accessories: ${this.accessories.length}`);
 			self.logger(`Total Accessories Identified: ${this.accessoriesWrappers.size}`);
@@ -131,7 +104,6 @@ export class ISYPlatform implements PlatformPlugin {
 					return false;
 				}
 			}
-
 		}
 		if (this.config.ignoreDevices === undefined) {
 			return false;
@@ -191,16 +163,18 @@ export class ISYPlatform implements PlatformPlugin {
 		// return deviceName;
 		// }
 		if (this.config.transformNames !== undefined) {
-			if (this.config.transformNames.remove !== undefined)
+			if (this.config.transformNames.remove !== undefined) {
 				for (const removeText of this.config.transformNames.remove) {
 					deviceName.replace(removeText, '');
 
 				}
-			if (this.config.transformNames.replace !== undefined)
+			}
+			if (this.config.transformNames.replace !== undefined) {
 				for (const replaceRule of this.config.transformNames.replace) {
 					deviceName.replace(replaceRule.replace, replaceRule.with);
 
 				}
+			}
 		}
 		if (this.config.renameDevices !== undefined) {
 			for (const rule of this.config.renameDevices) {
@@ -231,24 +205,19 @@ export class ISYPlatform implements PlatformPlugin {
 		const self = this;
 		try {
 
-
 			const i = this.accessoriesWrappers.get(accessory.UUID);
 			if (i) {
 				self.log('Accessory Wrapper Exists');
 				i.configure(accessory);
 
-			}
-			else {
+			} else {
 
 				this.accessoriesToConfigure.set(accessory.UUID, accessory);
 			}
 			this.accessories.push(accessory);
 
-
-
 			return true;
-		}
-		catch (ex) {
+		} catch (ex) {
 			throw ex;
 
 		}
@@ -259,7 +228,7 @@ export class ISYPlatform implements PlatformPlugin {
 	public async createAccessories() {
 		const that = this;
 		await this.isy.initialize(() => {
-			const results: ISYAccessory<any, any>[] = [];
+			const results: Array<ISYAccessory<any, any>> = [];
 			that.log(`Accessories to configure: ${this.accessoriesToConfigure.size}`);
 			const deviceList = that.isy.deviceList;
 			this.log.info(`ISY has ${deviceList.size} devices and ${that.isy.sceneList.size} scenes`);
@@ -283,7 +252,6 @@ export class ISYPlatform implements PlatformPlugin {
 
 						id = homeKitDevice.UUID;
 
-
 					}
 
 					if (homeKitDevice !== null) {
@@ -291,8 +259,7 @@ export class ISYPlatform implements PlatformPlugin {
 						// Make sure the device is address to the global map
 						// deviceMap[device.address] = homeKitDevice;
 
-						//results.set(id,homeKitDevice);
-
+						// results.set(id,homeKitDevice);
 
 					}
 				}
@@ -304,9 +271,9 @@ export class ISYPlatform implements PlatformPlugin {
 			}
 
 			if (that.isy.elkEnabled) {
-				//if (results.size >= 100) {
-				//that.logger('Skipping adding Elk Alarm panel as device count already at maximum');
-				//}
+				// if (results.size >= 100) {
+				// that.logger('Skipping adding Elk Alarm panel as device count already at maximum');
+				// }
 
 				const panelDevice = that.isy.getElkAlarmPanel();
 				panelDevice.name = that.renameDeviceIfNeeded(panelDevice);
@@ -321,14 +288,13 @@ export class ISYPlatform implements PlatformPlugin {
 				this.accessoriesWrappers.set(homeKitDevice.UUID, homeKitDevice);
 				const s = this.accessoriesToConfigure.get(homeKitDevice.UUID);
 				if (s !== null && s !== undefined) {
-					//that.log("Configuring linked accessory");
+					// that.log("Configuring linked accessory");
 					homeKitDevice.configure(s);
 					that.accessoriesToConfigure.delete(homeKitDevice.UUID);
-				}
-				else {
+				} else {
 					homeKitDevice.configure();
 					this.accessories.push(homeKitDevice.platformAccessory);
-					//that.homebridge.registerPlatformAccessories(pluginName, platformName, [homeKitDevice.platformAccessory]);
+					// that.homebridge.registerPlatformAccessories(pluginName, platformName, [homeKitDevice.platformAccessory]);
 
 					this.accessoriesToRegister.push(homeKitDevice.platformAccessory);
 				}

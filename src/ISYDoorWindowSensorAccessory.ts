@@ -9,7 +9,7 @@ import { ISYDeviceAccessory } from './ISYDeviceAccessory';
 
 export class ISYDoorWindowSensorAccessory extends ISYDeviceAccessory<InsteonDoorWindowSensorDevice,Categories.SENSOR> {
 
-	public sensorService: Service;
+
 	constructor(device: InsteonDoorWindowSensorDevice) {
 		super(device);
 		this.doorWindowState = false;
@@ -27,14 +27,15 @@ export class ISYDoorWindowSensorAccessory extends ISYDeviceAccessory<InsteonDoor
 	// Mirrors change in the state of the underlying isj-js device object.
 	public handleExternalChange(propertyName: string, value: any, formattedValue: string) {
 		super.handleExternalChange(propertyName, value, formattedValue);
-		this.sensorService.getCharacteristic(Characteristic.CurrentDoorState).updateValue(!this.device.isOpen ? 1 : 0);
+		this.primaryService.getCharacteristic(Characteristic.CurrentDoorState).updateValue(!this.device.isOpen ? 1 : 0);
 	}
 	// Returns the set of services supported by this object.
 	public setupServices() {
 		super.setupServices();
+
 		const sensorService = this.platformAccessory.getOrAddService(Service.ContactSensor);
-		this.sensorService = sensorService;
+		this.primaryService = sensorService;
 		sensorService.getCharacteristic(Characteristic.ContactSensorState).onGet(() => this.device.isOpen);
-		return [this.informationService, sensorService];
+
 	}
 }

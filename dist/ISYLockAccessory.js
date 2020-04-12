@@ -1,3 +1,4 @@
+"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const hap_nodejs_1 = require("hap-nodejs");
 const ISYDeviceAccessory_1 = require("./ISYDeviceAccessory");
@@ -42,7 +43,6 @@ class ISYLockAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
         lockMechanismService.getCharacteristic(hap_nodejs_1.Characteristic.LockTargetState).on(hap_nodejs_1.CharacteristicEventTypes.SET, this.setTargetLockState.bind(this));
         lockMechanismService.getCharacteristic(hap_nodejs_1.Characteristic.LockTargetState).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getTargetLockState.bind(this));
         lockMechanismService.getCharacteristic(hap_nodejs_1.Characteristic.LockCurrentState).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getLockCurrentState.bind(this));
-        return [this.informationService, lockMechanismService];
     }
 }
 exports.ISYLockAccessory = ISYLockAccessory;

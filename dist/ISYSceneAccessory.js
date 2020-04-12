@@ -1,3 +1,4 @@
+"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 require("./utils");
 const hap_nodejs_1 = require("hap-nodejs");
@@ -18,9 +19,9 @@ class ISYSceneAccessory extends ISYAccessory_1.ISYAccessory {
     // Handles request to set the current powerstate from homekit. Will ignore redundant commands.
     // Mirrors change in the state of the underlying isj-js device object.
     handleExternalChange(propertyName, value, formattedValue) {
-        this.lightService.getCharacteristic(hap_nodejs_1.Characteristic.On).updateValue(this.scene.isOn);
+        this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.On).updateValue(this.scene.isOn);
         if (this.dimmable) {
-            this.lightService.getCharacteristic(hap_nodejs_1.Characteristic.Brightness).updateValue(this.scene.brightnessLevel);
+            this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.Brightness).updateValue(this.scene.brightnessLevel);
         }
     }
     // Handles request to get the current on state
@@ -31,16 +32,15 @@ class ISYSceneAccessory extends ISYAccessory_1.ISYAccessory {
     setupServices() {
         super.setupServices();
         if (this.dimmable) {
-            this.lightService = this.platformAccessory.getOrAddService(hap_nodejs_1.Service.Lightbulb);
-            utils_1.onSet(this.lightService.getCharacteristic(hap_nodejs_1.Characteristic.Brightness), this.bind(this.device.updateBrightnessLevel)).onGet(() => this.device.brightnessLevel);
+            this.primaryService = this.platformAccessory.getOrAddService(hap_nodejs_1.Service.Lightbulb);
+            utils_1.onSet(this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.Brightness), this.bind(this.device.updateBrightnessLevel)).onGet(() => this.device.brightnessLevel);
         }
         else {
-            this.lightService = this.platformAccessory.getOrAddService(hap_nodejs_1.Service.Switch);
+            this.primaryService = this.platformAccessory.getOrAddService(hap_nodejs_1.Service.Switch);
         }
-        this.lightService
+        this.primaryService
             .getCharacteristic(hap_nodejs_1.Characteristic.On)
             .onGet(() => this.device.isOn).onSet(this.bind(this.device.updateIsOn));
-        return [this.informationService, this.lightService];
     }
 }
 exports.ISYSceneAccessory = ISYSceneAccessory;

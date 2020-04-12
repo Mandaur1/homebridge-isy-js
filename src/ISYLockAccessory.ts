@@ -48,6 +48,6 @@ export class ISYLockAccessory extends ISYDeviceAccessory<InsteonLockDevice,Categ
 		lockMechanismService.getCharacteristic(Characteristic.LockTargetState).on(CharacteristicEventTypes.SET, this.setTargetLockState.bind(this));
 		lockMechanismService.getCharacteristic(Characteristic.LockTargetState).on(CharacteristicEventTypes.GET, this.getTargetLockState.bind(this));
 		lockMechanismService.getCharacteristic(Characteristic.LockCurrentState).on(CharacteristicEventTypes.GET, this.getLockCurrentState.bind(this));
-		return [this.informationService, lockMechanismService];
+
 	}
 }
