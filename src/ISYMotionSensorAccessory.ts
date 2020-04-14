@@ -24,9 +24,7 @@ export class ISYMotionSensorAccessory extends ISYDeviceAccessory<InsteonMotionSe
 	get temperatureSensorService(): TemperatureSensor {
 		return this.platformAccessory?.getOrAddService(Service.TemperatureSensor);
 	}
-
-
-
+	
 	constructor (device: InsteonMotionSensorDevice) {
 		super(device);
 

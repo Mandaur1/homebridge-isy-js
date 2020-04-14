@@ -2,6 +2,7 @@
     "pluginAlias": "ISY",
     "pluginType": "platform",
     "singular": true,
+    "headerDisplay": "Homebridge Plugin for ISY Series of Controllers from Universal Devices, Inc.",
     "schema": {
         "type": "object",
         "definitions": {
@@ -131,13 +132,10 @@
                     },
                     "service": {
                         "type": "string"
-
                     },
                     "characteristic": {
                         "type": "string"
                     }
-
-
                 },
                 "type": "object"
             },
@@ -157,20 +155,22 @@
             }
         },
         "properties": {
-
             "platform": {
                 "type": "string"
             },
-
-
             "name": {
-                "type": "string"
+                "title":"Name",
+                "type": "string",
+                "required":"true",
+                "default":"ISY"
             },
             "host": {
-                "type": "string"
+                "type": "string",
+                "format": "hostname"
             },
             "useHttps": {
-                "type": "boolean"
+                "type": "boolean",
+                "title": "Use HTTPS"
             },
             "username": {
                 "type": "string"
@@ -203,9 +203,6 @@
                 ],
                 "type": "boolean"
             },
-
-
-
             "renameDevices": {
                 "items": {
                     "$ref": "#/definitions/RenameDeviceRule"
@@ -218,5 +215,30 @@
 
         }
 
-    }
+    },
+    "layout": [
+        "name",
+        {
+            "type": "flex",
+            "flex-flow": "row wrap",
+            "items": [
+                "username",
+                {
+                    "key": "password",
+                    "type": "password"
+                }
+            ]
+        },
+        {
+            "type": "fieldset",
+            "title": "Optional Settings",
+            "expandable": true,
+            "expanded": false,
+            "items": [
+                "ignoreDevices",
+                "transformNames"
+
+            ]
+        }
+    ]
 }

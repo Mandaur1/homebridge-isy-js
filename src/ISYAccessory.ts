@@ -53,7 +53,7 @@ export class ISYAccessory<T extends ISYNode, TCategory extends Categories> {
 		this.address = device.address;
 		this.context = new AccessoryContext();
 		this.context.address = this.address;
-
+	
 		// this.getServices();
 		this.device.onPropertyChanged(null, this.handleExternalChange.bind(this));
 	}

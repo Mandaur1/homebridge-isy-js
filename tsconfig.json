@@ -4,7 +4,6 @@
         "target": "ES2018",
         "emitDecoratorMetadata": true,
         "outDir": "./dist/",
-        //"outFile": "../index.js",
         "module": "CommonJS",
         "esModuleInterop": true,
         "rootDir": "./src/",
@@ -20,9 +19,9 @@
                 "homebridge/node_modules/hap-nodejs"
             ],
             "hap-nodejs/dist/lib/util/uuid": [
-                "/usr/local/lib/node_modules/hap-nodejs/dist/lib/util/uuid"
+                "homebridge/node_modules/hap-nodejs/dist/lib/util/uuid"
             ],
-            //"hap-nodejs/dist/accessories/types": ["/usr/local/lib/node_modules/hap-nodejs/dist/accessories/types"],
+            "hap-nodejs/dist/accessories/types": ["homebridge/node_modules/hap-nodejs/dist/accessories/types"],
             //"homebridge": ["/usr/local/lib/node_modules/homebridge"],
             // "homebridge/lib/platformAccessory": ["/usr/local/lib/node_modules/homebridge/lib/platformAccessory"],
             "config": [

@@ -15,10 +15,6 @@ export let platformAccessory : typeof PlatformAccessory;
 
 export default (homebridge: API) => {
 
-	//Characteristic.prototype.onSet = function
-	//const Hap = homebridge.hap;
-
-	//const Characteristic = homebridge.hap.Characteristic;
 	PlatformAccessory.prototype.getOrAddService = function (service: WithUUID<typeof Service>): Service {
 		const acc = this as unknown as PlatformAccessory;
 		const serv = acc.getService(service);
@@ -29,7 +25,7 @@ export default (homebridge: API) => {
 
 	};
 
-	homebridge.registerPlatform(PluginName, PlatformName, ISYPlatform,true);
+	homebridge.registerPlatform(PluginName, PlatformName, ISYPlatform);
 	return this;
 
 };
