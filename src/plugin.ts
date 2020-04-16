@@ -1,3 +1,4 @@
+
 import { Characteristic, CharacteristicEventTypes, CharacteristicProps, CharacteristicValue, Service, WithUUID } from 'hap-nodejs';
 import { API } from 'homebridge';
 import { PlatformAccessory } from 'homebridge/lib/platformAccessory';
@@ -5,17 +6,14 @@ import { PlatformAccessory } from 'homebridge/lib/platformAccessory';
 import { ISYAccessory } from './ISYAccessory';
 import { ISYPlatform } from './ISYPlatform';
 
+export const PluginName = 'homebridge-isy';
+export const PlatformName = 'ISY';
 
-
-
-export const PluginName = 'homebridge-isy'
-export const PlatformName = 'ISY'
-
-export let platformAccessory : typeof PlatformAccessory;
+export let platformAccessory: typeof PlatformAccessory;
 
 export default (homebridge: API) => {
 
-	PlatformAccessory.prototype.getOrAddService = function (service: WithUUID<typeof Service>): Service {
+	PlatformAccessory.prototype.getOrAddService = function(service: WithUUID<typeof Service>): Service {
 		const acc = this as unknown as PlatformAccessory;
 		const serv = acc.getService(service);
 		if (!serv) {

@@ -6,8 +6,8 @@ export declare class ISYElkAlarmPanelAccessory extends ISYAccessory<ElkAlarmSens
     alarmPanelService: any;
     constructor(device: any);
     setAlarmTargetState(targetStateHK: any, callback: any): void;
-    translateAlarmCurrentStateToHK(): 1 | 0 | 2 | 3 | 4;
-    translateAlarmTargetStateToHK(): 1 | 0 | 2 | 3;
+    translateAlarmCurrentStateToHK(): 4 | 3 | 2 | 1 | 0;
+    translateAlarmTargetStateToHK(): 3 | 2 | 1 | 0;
     translateHKToAlarmTargetState(state: any): any;
     getAlarmTargetState(callback: any): void;
     getAlarmCurrentState(callback: any): void;

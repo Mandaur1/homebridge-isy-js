@@ -57,6 +57,7 @@ export class ISYPlatform implements PlatformPlugin {
 
 		this.isy = new ISY(this.host, this.username, this.password, config.elkEnabled, null, config.useHttps, true, this.debugLoggingEnabled, null, Logger.withPrefix('isy-js'));
 		const p = this.createAccessories();
+	
 		const self = this;
 
 		homebridge.on(APIEvent.DID_FINISH_LAUNCHING, async () => {

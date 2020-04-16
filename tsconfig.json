@@ -2,26 +2,20 @@
     "compileOnSave": true,
     "compilerOptions": {
         "target": "ES2018",
+        "lib":["ESNext"],
         "emitDecoratorMetadata": true,
-        "outDir": "./dist/",
+        "outDir": "./tmp/",
         "module": "CommonJS",
         "esModuleInterop": true,
         "rootDir": "./src/",
-        "baseUrl": "./node_modules/",
+        "baseUrl": ".",
         "paths": {
-            "hap-nodejs/dist/lib/Characteristic": [
-                "homebridge/node_modules/hap-nodejs/dist/lib/Characteristic"
-            ],
-            "hap-nodejs/dist/lib/gen/HomeKit": [
-                "homebridge/node_modules/hap-nodejs/dist/lib/gen/Homekit"
+            "hap-nodejs/*": [
+                "node_modules/homebridge/node_modules/hap-nodejs/*"
             ],
             "hap-nodejs": [
-                "homebridge/node_modules/hap-nodejs"
-            ],
-            "hap-nodejs/dist/lib/util/uuid": [
-                "homebridge/node_modules/hap-nodejs/dist/lib/util/uuid"
-            ],
-            "hap-nodejs/dist/accessories/types": ["homebridge/node_modules/hap-nodejs/dist/accessories/types"],
+                 "node_modules/homebridge/node_modules/hap-nodejs"
+             ],
             //"homebridge": ["/usr/local/lib/node_modules/homebridge"],
             // "homebridge/lib/platformAccessory": ["/usr/local/lib/node_modules/homebridge/lib/platformAccessory"],
             "config": [
@@ -32,6 +26,8 @@
         "experimentalDecorators": true,
         "moduleResolution": "node",
         "declaration": true,
+        "declarationDir": "./dist/",
+
         "declarationMap": true,
         "sourceMap": true,
         "allowSyntheticDefaultImports": true

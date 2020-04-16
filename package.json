@@ -1,15 +1,15 @@
 {
   "name": "homebridge-isy",
   "displayName": "Homebridge ISY",
-  "version": "0.5.0-beta.2",
+  "version": "0.5.0-beta.6",
   "description": "Homebridge plugin for ISY series of home controllers from Universal Devices, Inc.",
   "note": "",
   "main": "dist/plugin.js",
   "scripts": {
     "test": "mocha",
     "start": "DEBUG=* homebridge -D -P ./",
-    "build": "tsc",
-    "prepublishOnly": "npm run build",
+    "build": "bash ./build.sh",
+    "prepublishOnly": "npm run build ",
     "debug": "npm prepare npm start"
   },
   "engines": {
@@ -37,12 +37,17 @@
     "Siri"
   ],
   "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
     "@types/node": "",
     "@types/restler": "",
+    "babel-plugin-module-resolver": "^4.0.0",
     "fake-isy-994i": "",
-    "hap-nodejs": "~0.5.12-beta",
-    "homebridge": "~0.4.54-beta",
-    "mocha": ""
+    "homebridge": "^0.4.54-beta.42",
+    "mocha": "",
+    "npm": "^6.14.4",
+    "p-try": "^2.2.0",
+    "path-exists": "^4.0.0"
   },
   "dependencies": {
     "@log4js-node/log4js-api": "^1.0.2",

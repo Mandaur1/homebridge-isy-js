@@ -4,241 +4,318 @@
     "singular": true,
     "headerDisplay": "Homebridge Plugin for ISY Series of Controllers from Universal Devices, Inc.",
     "schema": {
-        "type": "object",
-        "definitions": {
-            "DeviceConfig": {
-                "properties": {
-                    "address": {
-                        "type": "string"
-                    },
-                    "ignore": {
-                        "type": "boolean"
-                    },
-                    "mapping": {
-                        "$ref": "#/definitions/DeviceServiceMapping"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "triggers": {
-                        "items": {
-                            "$ref": "#/definitions/DevicePropertyTrigger"
-                        },
-                        "type": "array"
-                    },
-                    "typeCode": {
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "DevicePropertyTrigger": {
-                "properties": {
-                    "property": {
-                        "type": "string"
-                    },
-                    "target": {
-                        "properties": {
-                            "address": {
-                                "type": "string"
-                            },
-                            "command": {
-                                "type": "string"
-                            },
-                            "name": {
-                                "type": "string"
-                            }
-                        },
-                        "type": "object"
-                    },
-                    "value": {
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "DeviceServiceMapping": {
-                "properties": {
-                    "properties": {
-                        "items": {
-                            "$ref": "#/definitions/PropertyCharacteristicMapping"
-                        },
-                        "type": "array"
-                    },
-                    "service": {
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "GlobalRenameRule": {
-                "properties": {
-                    "remove": {
-                        "items": {
-                            "type": "string"
-                        },
-                        "type": "array"
-                    },
-                    "replace": {
-                        "items": {
-                            "properties": {
-                                "replace": {
-                                    "type": "string"
-                                },
-                                "with": {
-                                    "type": "string"
-                                }
-                            },
-                            "type": "object"
-                        },
-                        "type": "array"
-                    }
-                },
-                "type": "object"
-            },
-            "IgnoreDeviceRule": {
-                "properties": {
-                    "address": {
-                        "type": "string"
-                    },
-                    "family": {
-                        "type": [
-                            "string",
-                            "number"
-                        ]
-                    },
-                    "folder": {
-                        "type": "string"
-                    },
-                    "lastAddressDigit": {
-                        "type": "number"
-                    },
-                    "nameContains": {
-                        "type": "string"
-                    },
-                    "nodeDef": {
-                        "type": "string"
-                    },
-                    "typeCode": {
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "PropertyCharacteristicMapping": {
-                "properties": {
-                    "property": {
-                        "type": "string"
-                    },
-                    "service": {
-                        "type": "string"
-                    },
-                    "characteristic": {
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "RenameDeviceRule": {
-                "properties": {
-                    "address": {
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "newName": {
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            }
-        },
-        "properties": {
-            "platform": {
-                "type": "string"
-            },
-            "name": {
-                "title":"Name",
-                "type": "string",
-                "required":"true",
-                "default":"ISY"
-            },
-            "host": {
-                "type": "string",
-                "format": "hostname"
-            },
-            "useHttps": {
-                "type": "boolean",
-                "title": "Use HTTPS"
-            },
-            "username": {
-                "type": "string"
-            },
-            "password": {
-                "type": "string"
-            },
-            "debugLoggingEnabled": {
-                "type": "boolean"
-            },
-            "deviceConfigs": {
-                "items": {
-                    "$ref": "#/definitions/DeviceConfig"
-                },
-                "type": "array"
-            },
-            "elkEnabled": {
-                "type": "boolean"
-            },
+       "type": "object",
+       "definitions": {
+           "DeviceConfig": {
+               "properties": {
+                   "address": {
+                       "type": "string"
+                   },
+                   "ignore": {
+                       "type": "boolean"
+                   },
+                   "mapping": {
+                       "$ref": "#/definitions/DeviceServiceMapping"
+                   },
+                   "name": {
+                       "type": "string"
+                   },
+                   "triggers": {
+                       "items": {
+                           "$ref": "#/definitions/DevicePropertyTrigger"
+                       },
+                       "type": "array"
+                   },
+                   "typeCode": {
+                       "type": "string"
+                   }
+               },
+               "type": "object"
+           },
+           "DevicePropertyTrigger": {
+               "properties": {
+                   "property": {
+                       "type": "string"
+                   },
+                   "target": {
+                       "properties": {
+                           "address": {
+                               "type": "string"
+                           },
+                           "command": {
+                               "type": "string"
+                           },
+                           "name": {
+                               "type": "string"
+                           }
+                       },
+                       "type": "object"
+                   },
+                   "value": {
+                       "type": "string"
+                   }
+               },
+               "type": "object"
+           },
+           "DeviceServiceMapping": {
+               "properties": {
+                   "properties": {
+                       "items": {
+                           "$ref": "#/definitions/PropertyCharacteristicMapping"
+                       },
+                       "type": "array"
+                   },
+                   "service": {
+                       "type": "string"
+                   }
+               },
+               "type": "object"
+           },
+           "GlobalRenameRule": {
+               "properties": {
+                   "remove": {
+                       "items": {
+                           "type": "string"
+                       },
+                       "type": "array"
+                   },
+                   "replace": {
+                       "items": {
+                           "properties": {
+                               "replace": {
+                                   "type": "string"
+                               },
+                               "with": {
+                                   "type": "string"
+                               }
+                           },
+                           "type": "object"
+                       },
+                       "type": "array"
+                   }
+               },
+               "type": "object"
+           },
+           "IgnoreDeviceRule": {
+               "properties": {
+                   "address": {
+                       "type": "string"
+                   },
+                   "family": {
+                       "type": [
+                           "string",
+                           "number"
+                       ]
+                   },
+                   "folder": {
+                       "type": "string"
+                   },
+                   "lastAddressDigit": {
+                       "type": "number"
+                   },
+                   "nameContains": {
+                       "type": "string"
+                   },
+                   "nodeDef": {
+                       "type": "string"
+                   },
+                   "typeCode": {
+                       "type": "string"
+                   }
+               },
+               "type": "object"
+           },
+           "PropertyCharacteristicMapping": {
+               "properties": {
+                   "property": {
+                       "type": "string"
+                   },
+                   "service": {
+                       "type": "string"
+                   },
+                   "characteristic": {
+                       "type": "string"
+                   }
+               },
+               "type": "object"
+           },
+           "RenameDeviceRule": {
+               "properties": {
+                   "address": {
+                       "type": "string"
+                   },
+                   "name": {
+                       "type": "string"
+                   },
+                   "newName": {
+                       "type": "string"
+                   }
+               },
+               "type": "object"
+           }
+       },
+       "properties": {
+           "name": {
+               "title": "Name",
+               "type": "string",
+               "required": true,
+               "default": "ISY"
+           },
+           "host": {
+               "title": "IP/Hostname of ISY",
+               "type": "string",
+               "format": "hostname",
+               "required": true
+           },
+           "useHttps": {
+               "title": "Use HTTPS",
+               "type": "boolean"
 
-            "ignoreDevices": {
-                "items": {
-                    "$ref": "#/definitions/IgnoreDeviceRule"
-                },
-                "type": "array"
-            },
-            "includeAllScenes": {
-                "enum": [
-                    true
-                ],
-                "type": "boolean"
-            },
-            "renameDevices": {
-                "items": {
-                    "$ref": "#/definitions/RenameDeviceRule"
-                },
-                "type": "array"
-            },
-            "transformNames": {
-                "$ref": "#/definitions/GlobalRenameRule"
-            }
+           },
+           "username": {
+               "type": "string"
+           },
+           "password": {
+               "type": "string"
+           },
+           "debugLoggingEnabled": {
+               "type": "boolean"
+           },
+           "deviceConfigs": {
+               "items": {
+                   "$ref": "#/definitions/DeviceConfig"
+               },
+               "type": "array"
+           },
+           "elkEnabled": {
+               "title": "Enable Elk Devices",
+               "type": "boolean"
+           },
 
-        }
+           "ignoreDevices": {
+               "items": {
+                   "$ref": "#/definitions/IgnoreDeviceRule"
+               },
+               "type": "array"
+           },
+           "includeAllScenes": {
+               "title": "Include All Scenes",
+               "type": "boolean"
+           },
+           "renameDevices": {
+               "items": {
+                   "$ref": "#/definitions/RenameDeviceRule"
+               },
+               "type": "array"
+           },
+           "transformNames": {
+               "$ref": "#/definitions/GlobalRenameRule"
+           },
+           "platform": {
+               "type": "string"
+           }
 
-    },
-    "layout": [
-        "name",
-        {
-            "type": "flex",
-            "flex-flow": "row wrap",
-            "items": [
-                "username",
-                {
-                    "key": "password",
-                    "type": "password"
-                }
-            ]
-        },
-        {
-            "type": "fieldset",
-            "title": "Optional Settings",
-            "expandable": true,
-            "expanded": false,
-            "items": [
-                "ignoreDevices",
-                "transformNames"
+       }
 
-            ]
-        }
-    ]
+   },
+   "layout": [
+       "name",
+       "host",
+       {
+           "type": "flex",
+           "flex-flow": "row wrap",
+           "items": [
+               "username",
+               {
+                   "key": "password",
+                   "type": "password"
+               }
+           ]
+       }, "elkEnabled", "includeAllScenes",
+       {
+           "type": "fieldset",
+           "title": "Optional Settings",
+           "expandable": true,
+           "expanded": false,
+           "items": "ignoreDevices"
+       }
+   ],
+   "data": {
+       "platform": "ISY",
+       "name": "ISY",
+       "host": "192.168.1.1",
+       "username": "admin",
+       "password": "<<PAssword>>",
+       "elkEnabled": true,
+       "debugLoggingEnabled": false,
+       "ignoreDevices": [
+
+
+           {
+               "nameContains": "ApplianceLinc",
+               "lastAddressDigit": "",
+               "address": ""
+           },
+           {
+               "nameContains": "S -",
+               "lastAddressDigit": "",
+               "address": ""
+           },
+           {
+               "nameContains": "ApplianceLink",
+               "lastAddressDigit": "",
+               "address": ""
+           },
+           {
+               "nameContains": "Bedroom.Side Gate",
+               "lastAddressDigit": "",
+               "address": ""
+           },
+           {
+               "nameContains": "Unused",
+               "lastAddressDigit": "",
+               "address": ""
+           },
+           {
+               "nameContains": "Remote",
+               "lastAddressDigit": "",
+               "address": ""
+           },
+           {
+               "nameContains": "Keypad",
+               "lastAddressDigit": "2",
+               "address": ""
+           },
+           {
+               "nameContains": "Keypad",
+               "lastAddressDigit": "3",
+               "address": ""
+           },
+           {
+               "nameContains": "Keypad",
+               "lastAddressDigit": "4",
+               "address": ""
+           },
+           {
+               "nameContains": "Keypad",
+               "lastAddressDigit": "5",
+               "address": ""
+           },
+           {
+               "nameContains": "Keypad",
+               "lastAddressDigit": "6",
+               "address": ""
+           },
+           {
+               "nameContains": "Keypad",
+               "lastAddressDigit": "7",
+               "address": ""
+           },
+           {
+               "nameContains": "Keypad",
+               "lastAddressDigit": "8",
+               "address": ""
+           }
+       ]
+   }
 }

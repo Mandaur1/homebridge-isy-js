@@ -130,7 +130,7 @@
                  "service":
                  {
                     "type": "string"
-                    
+
                  },
                 "characteristic": {
                     "type": "string"
@@ -156,6 +156,7 @@
         }
     },
     "properties": {
+        
         "debugLoggingEnabled": {
             "type": "boolean"
         },

@@ -1,6 +1,12 @@
 {
-    
-    "plugins": [
-        "transform-es2015-modules-commonjs"
-    ]
+
+
+        "plugins": [
+            ["module-resolver", {
+                "root": ["./dist"],
+                "alias": {
+                    "hap-nodejs": "homebridge/node_modules/hap-nodejs"
+                }
+            }]]
+
 }

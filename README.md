@@ -1,4 +1,4 @@
-# homebridge-isy
+# Homebridge ISY
 
 Fork of homebridge-isy-js by [rodtoll](https://github.com/rodtoll/homebridge-isy-js.git)
 
@@ -8,15 +8,16 @@ Fork of homebridge-isy-js by [rodtoll](https://github.com/rodtoll/homebridge-isy
 
 # Major Updates
 
-Requires new version of [isy-js](https://github.com/pradeepmouli/isy-js.git). Please see revised installation notes below.
+Requires Homebridge Beta. Please see revised installation notes below.
 
 ### New Functionality:
 
-- Support for ISY 5.0.12+
-- Support for additional devices:
+- Support for ISY 5.0.16+
+- Configurable using Homebridge Config-UI X (Work in Progress)
+- Support for additional devices (Need Testers):
      Insteon Thermostat/Thermostat Adapters
      Leak Sensors
-     CO/Smoke Bridge
+     CO/Smoke Bridges
      Remotes
 
 ### Bug Fixes:
@@ -28,7 +29,7 @@ Requires new version of [isy-js](https://github.com/pradeepmouli/isy-js.git). Pl
 - Re-add support for non-insteon native devices (ZWave)
 - Add Program/Variable support
 - Incorporate individual device status in scene definitions
-- Create configurable mappings for IOLinc to other types of accessories (e.g. curtains & sprinkler control).
+- Create configurable mappings for IOLinc to other types of accessories (e.g. curtains, sprinkler control & garage door openers).
 
 ### Future Work:
 
@@ -38,10 +39,9 @@ Requires new version of [isy-js](https://github.com/pradeepmouli/isy-js.git). Pl
 
 ## Installation
 
-1. Install homebridge using: npm install -g homebridge
+1. Install homebridge using: npm install -g homebridge@beta
 2. Install this plugin using: npm install -g homebridge-isy
-3. Install ISY-JS v5 (should happen automatically during step #2, but just in case): npm install -g github:pradeepmouli/isy-js
-4. Update your configuration file. See sampleconfig.json in this repository for a sample.
+3. Update your configuration file. See sampleconfig.json in this repository for a sample.
 
 --------
 
