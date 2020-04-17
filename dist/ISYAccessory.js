@@ -12,7 +12,7 @@ const logger_1 = require("homebridge/lib/logger");
 
 const platformAccessory_1 = require("homebridge/lib/platformAccessory");
 
-const isy_js_1 = require("isy-js");
+const isy_nodejs_1 = require("isy-nodejs");
 
 const plugin_1 = require("./plugin");
 
@@ -93,7 +93,7 @@ class ISYAccessory {
     var _a, _b, _c, _d;
 
     this.informationService = this.platformAccessory.getOrAddService(hap_nodejs_1.Service.AccessoryInformation);
-    this.informationService.getCharacteristic(hap_nodejs_1.Characteristic.Manufacturer).updateValue((_a = isy_js_1.Family[this.device.family], _a !== null && _a !== void 0 ? _a : 'Universal Devices, Inc.'));
+    this.informationService.getCharacteristic(hap_nodejs_1.Characteristic.Manufacturer).updateValue((_a = isy_nodejs_1.Family[this.device.family], _a !== null && _a !== void 0 ? _a : 'Universal Devices, Inc.'));
     this.informationService.getCharacteristic(hap_nodejs_1.Characteristic.Model).updateValue((_b = this.device.productName, _b !== null && _b !== void 0 ? _b : this.device.name));
     this.informationService.getCharacteristic(hap_nodejs_1.Characteristic.SerialNumber).updateValue((_c = this.device.modelNumber, _c !== null && _c !== void 0 ? _c : this.device.address));
     this.informationService.getCharacteristic(hap_nodejs_1.Characteristic.FirmwareRevision).updateValue((_d = this.device.version, _d !== null && _d !== void 0 ? _d : '1.0')); // .setCharacteristic(Characteristic.ProductData, this.device.address);
@@ -102,7 +102,7 @@ class ISYAccessory {
   handleExternalChange(propertyName, value, formattedValue) {
     var _a;
 
-    const name = propertyName in isy_js_1.Controls ? isy_js_1.Controls[propertyName].label : propertyName;
+    const name = propertyName in isy_nodejs_1.Controls ? isy_nodejs_1.Controls[propertyName].label : propertyName;
     this.logger.debug(`Incoming update to ${name}. Device says: ${value} (${formattedValue})`);
     const m = this.map(propertyName);
 

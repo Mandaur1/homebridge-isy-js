@@ -1,5 +1,5 @@
 import { Categories } from 'hap-nodejs';
-import { InsteonRelayDevice } from 'isy-js';
+import { InsteonRelayDevice } from 'isy-nodejs';
 import { ISYAccessory } from './ISYAccessory';
 export declare class ISYGarageDoorAccessory extends ISYAccessory<InsteonRelayDevice, Categories.GARAGE_DOOR_OPENER> {
     timeToOpen: any;

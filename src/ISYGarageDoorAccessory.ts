@@ -1,5 +1,5 @@
 import { Categories, Characteristic, CharacteristicEventTypes, Service } from 'hap-nodejs';
-import { InsteonRelayDevice } from 'isy-js';
+import { InsteonRelayDevice } from 'isy-nodejs';
 
 import { ISYAccessory } from './ISYAccessory';
 

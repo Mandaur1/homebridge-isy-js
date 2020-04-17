@@ -8,7 +8,7 @@ require("./utils");
 
 const hap_nodejs_1 = require("homebridge/node_modules/hap-nodejs");
 
-const isy_js_1 = require("isy-js");
+const isy_nodejs_1 = require("isy-nodejs");
 
 const ISYDeviceAccessory_1 = require("./ISYDeviceAccessory"); //import { Service } from 'homebridge/node_modules/hap-nodejs/dist/lib/Service';
 //import { Characteristic } from 'homebridge/node_modules/hap-nodejs/dist/lib/Characteristic';
@@ -60,38 +60,38 @@ class ISYThermostatAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
   getHumidity(callback) {
     this.logger.info(`Getting Current Rel. Humidity - Device says: ${this.device.humidity}`);
     callback(null, this.device.humidity);
-  } // Mirrors change in the state of the underlying isy-js device object.
+  } // Mirrors change in the state of the underlying isy-nodejs device object.
 
 
   handleExternalChange(propertyName, value, formattedValue) {
     super.handleExternalChange(propertyName, value, formattedValue);
 
     switch (propertyName) {
-      case isy_js_1.Props.Climate.Temperature:
+      case isy_nodejs_1.Props.Climate.Temperature:
         this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentTemperature).updateValue(this.toCelsius(this.device.currentTemperature));
         break;
 
-      case isy_js_1.Props.Climate.CoolSetPoint:
+      case isy_nodejs_1.Props.Climate.CoolSetPoint:
         this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.CoolingThresholdTemperature).updateValue(this.toCelsius(this.device.coolSetPoint));
         break;
 
-      case isy_js_1.Props.Climate.HeatSetPoint:
+      case isy_nodejs_1.Props.Climate.HeatSetPoint:
         this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.CoolingThresholdTemperature).updateValue(this.toCelsius(this.device.heatSetPoint));
         break;
 
-      case isy_js_1.Props.Climate.OperatingMode:
+      case isy_nodejs_1.Props.Climate.OperatingMode:
         this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentHeatingCoolingState).updateValue(this.device.operatingMode);
         break;
 
-      case isy_js_1.Props.Climate.Mode:
+      case isy_nodejs_1.Props.Climate.Mode:
         this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.TargetHeatingCoolingState).updateValue(this.device.mode);
         break;
 
-      case isy_js_1.Props.Climate.FanMode:
+      case isy_nodejs_1.Props.Climate.FanMode:
         this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentFanState).updateValue(this.device.fanMode);
         break;
 
-      case isy_js_1.Props.Climate.Humidity:
+      case isy_nodejs_1.Props.Climate.Humidity:
         this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentRelativeHumidity).updateValue(this.device.humidity);
         break;
 

@@ -1,6 +1,6 @@
 import './utils';
 import { Categories } from 'hap-nodejs';
-import { InsteonThermostatDevice } from 'isy-js';
+import { InsteonThermostatDevice } from 'isy-nodejs';
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
 export declare class ISYThermostatAccessory extends ISYDeviceAccessory<InsteonThermostatDevice, Categories.THERMOSTAT> {
     targetTemperature: number;

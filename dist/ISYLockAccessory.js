@@ -39,7 +39,7 @@ class ISYLockAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
 
   getTargetLockState(callback) {
     this.getLockCurrentState(callback);
-  } // Mirrors change in the state of the underlying isy-js device object.
+  } // Mirrors change in the state of the underlying isy-nodejs device object.
 
 
   handleExternalChange(propertyName, value, formattedValue) {

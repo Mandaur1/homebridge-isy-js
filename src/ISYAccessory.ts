@@ -1,10 +1,10 @@
 import { Accessory, Bridged, Categories, Characteristic, CharacteristicValue, Service, TargetCategory, UUID, WithUUID } from 'hap-nodejs';
 import { generate } from 'hap-nodejs/dist/lib/util/uuid';
 import { API } from 'homebridge';
-import { Logger } from 'homebridge/lib/logger';
+import { Logger, Logging } from 'homebridge/lib/logger';
 import { PlatformAccessory } from 'homebridge/lib/platformAccessory';
-import { Controls, Family, ISYNode } from 'isy-js';
-import ISYConstants from 'isy-js/lib/isyconstants';
+import { Controls, Family, ISYNode } from 'isy-nodejs';
+import ISYConstants from 'isy-nodejs/lib/isyconstants';
 
 import { PlatformName } from './plugin';
 
@@ -53,7 +53,7 @@ export class ISYAccessory<T extends ISYNode, TCategory extends Categories> {
 		this.address = device.address;
 		this.context = new AccessoryContext();
 		this.context.address = this.address;
-	
+
 		// this.getServices();
 		this.device.onPropertyChanged(null, this.handleExternalChange.bind(this));
 	}

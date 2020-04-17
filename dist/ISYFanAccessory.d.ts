@@ -1,6 +1,6 @@
 import './ISYPlatform';
 import { Categories, Service } from 'hap-nodejs';
-import { InsteonFanDevice } from 'isy-js';
+import { InsteonFanDevice } from 'isy-nodejs';
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
 export declare class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice, Categories.FAN> {
     fanService: Service;

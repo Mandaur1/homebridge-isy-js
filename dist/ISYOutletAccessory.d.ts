@@ -1,6 +1,6 @@
 import './utils';
 import { Categories } from 'hap-nodejs';
-import { InsteonOutletDevice } from 'isy-js';
+import { InsteonOutletDevice } from 'isy-nodejs';
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
 export declare class ISYOutletAccessory extends ISYDeviceAccessory<InsteonOutletDevice, Categories.OUTLET> {
     constructor(device: InsteonOutletDevice);

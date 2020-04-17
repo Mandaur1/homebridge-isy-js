@@ -1,6 +1,6 @@
 import { Categories, Characteristic, Service } from 'hap-nodejs';
 import { BatteryService, LightSensor, MotionSensor, TemperatureSensor } from 'hap-nodejs/dist/lib/gen/HomeKit';
-import { InsteonMotionSensorDevice } from 'isy-js';
+import { InsteonMotionSensorDevice } from 'isy-nodejs';
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
 export declare class ISYMotionSensorAccessory extends ISYDeviceAccessory<InsteonMotionSensorDevice, Categories.SENSOR> {
     get motionSensorService(): MotionSensor;

@@ -1,7 +1,7 @@
 import * as log4js from '@log4js-node/log4js-api';
 import { CharacteristicEventTypes, CharacteristicGetCallback, CharacteristicSetCallback, CharacteristicValue, Service, WithUUID } from 'hap-nodejs';
 import { Characteristic } from 'hap-nodejs/dist/lib/Characteristic';
-import { Logger } from 'homebridge/lib/logger';
+import { Logger, Logging } from 'homebridge/lib/logger';
 import { PlatformAccessory } from 'homebridge/lib/platformAccessory';
 
 // import * as service from 'homebridge/node_modules/homebridge/node_modules/hap-nodejs/dist/lib/Service';
@@ -80,6 +80,10 @@ declare module 'homebridge/lib/logger' {
 
 	}
 
+	// tslint:disable-next-line: no-empty-interface
+	export interface Logging extends LoggerLike {
+
+	}
 }
 
 declare module 'hap-nodejs/dist/lib/Characteristic' {
@@ -87,7 +91,6 @@ declare module 'hap-nodejs/dist/lib/Characteristic' {
 		 onSet<T extends CharacteristicValue>(func: (...args: any) => Promise<T>): Characteristic;
 		 onGet<T extends CharacteristicValue>(func: () => T): Characteristic;
 	}
-
 }
 
 /* export interface Characteristic {

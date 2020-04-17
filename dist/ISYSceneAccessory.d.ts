@@ -1,6 +1,6 @@
 import './utils';
 import { Categories } from 'hap-nodejs';
-import { ISYScene } from 'isy-js';
+import { ISYScene } from 'isy-nodejs';
 import { ISYAccessory } from './ISYAccessory';
 export declare class ISYSceneAccessory extends ISYAccessory<ISYScene, Categories.LIGHTBULB> {
     dimmable: boolean;

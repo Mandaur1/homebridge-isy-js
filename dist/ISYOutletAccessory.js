@@ -26,7 +26,7 @@ class ISYOutletAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
     } else {
       callback();
     }
-  } // Handles a request to get the current outlet state based on underlying isy-js device object.
+  } // Handles a request to get the current outlet state based on underlying isy-nodejs device object.
 
 
   getOutletState(callback) {

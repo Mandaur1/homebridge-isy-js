@@ -1,5 +1,5 @@
 import { Categories, Characteristic, Service } from 'hap-nodejs';
-import { InsteonDimmableDevice } from 'isy-js';
+import { InsteonDimmableDevice } from 'isy-nodejs';
 import { ISYRelayAccessory } from './ISYRelayAccessory';
 import './utils';
 
@@ -48,6 +48,6 @@ export class InsteonDimmableAccessory<T extends InsteonDimmableDevice> extends I
 		this.primaryService.getCharacteristic(Characteristic.Brightness).onGet(() => this.device.brightnessLevel);
 		this.primaryService.getCharacteristic(Characteristic.Brightness).onSet(this.bind(this.device.updateBrightnessLevel));
 		// this.primaryService.getCharacteristic(Characteristic.Brightness).setProps({maxValue: this.device.OL});
-	
+
 	}
 }

@@ -1,6 +1,6 @@
 import './utils';
 import { Categories } from 'hap-nodejs';
-import { ElkAlarmSensorDevice } from 'isy-js';
+import { ElkAlarmSensorDevice } from 'isy-nodejs';
 import { ISYAccessory } from './ISYAccessory';
 export declare class ISYElkAlarmPanelAccessory extends ISYAccessory<ElkAlarmSensorDevice, Categories.ALARM_SYSTEM> {
     alarmPanelService: any;

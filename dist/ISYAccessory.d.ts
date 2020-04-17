@@ -1,7 +1,7 @@
 import { Categories, Characteristic, CharacteristicValue, Service } from 'hap-nodejs';
 import { Logger } from 'homebridge/lib/logger';
 import { PlatformAccessory } from 'homebridge/lib/platformAccessory';
-import { ISYNode } from 'isy-js';
+import { ISYNode } from 'isy-nodejs';
 export declare class AccessoryContext {
     address: string;
 }

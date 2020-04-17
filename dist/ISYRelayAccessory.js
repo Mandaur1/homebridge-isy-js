@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 
 const hap_nodejs_1 = require("homebridge/node_modules/hap-nodejs");
 
-const isy_js_1 = require("isy-js");
+const isy_nodejs_1 = require("isy-nodejs");
 
 const ISYDeviceAccessory_1 = require("./ISYDeviceAccessory");
 
@@ -16,7 +16,7 @@ class ISYRelayAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
   constructor(device) {
     super(device);
     this.category = hap_nodejs_1.Categories.SWITCH;
-    this.dimmable = device instanceof isy_js_1.InsteonDimmableDevice;
+    this.dimmable = device instanceof isy_nodejs_1.InsteonDimmableDevice;
   }
 
   map(propertyName) {

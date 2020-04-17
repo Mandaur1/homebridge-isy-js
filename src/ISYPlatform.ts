@@ -1,8 +1,8 @@
-import { API, APIEvent, PlatformConfig, PlatformPlugin } from 'homebridge';
+import { API, APIEvent, PlatformPlugin } from 'homebridge';
 import { Logger, Logging } from 'homebridge/lib/logger';
 import { PlatformAccessory } from 'homebridge/lib/platformAccessory';
-import { ElkAlarmSensorDevice, InsteonDimmableDevice, InsteonDoorWindowSensorDevice, InsteonFanDevice, InsteonLockDevice, InsteonMotionSensorDevice, InsteonOutletDevice, InsteonRelayDevice, InsteonThermostatDevice, ISY, ISYDevice, ISYNode, ISYScene } from 'isy-js';
-import { IgnoreDeviceRule } from '../typings/config';
+import { ElkAlarmSensorDevice, InsteonDimmableDevice, InsteonDoorWindowSensorDevice, InsteonFanDevice, InsteonLockDevice, InsteonMotionSensorDevice, InsteonOutletDevice, InsteonRelayDevice, InsteonThermostatDevice, ISY, ISYDevice, ISYNode, ISYScene } from 'isy-nodejs';
+import { IgnoreDeviceRule, PlatformConfig } from '../typings/config';
 import { ISYAccessory } from './ISYAccessory';
 import { InsteonDimmableAccessory } from './ISYDimmerAccessory';
 import { ISYDoorWindowSensorAccessory } from './ISYDoorWindowSensorAccessory';
@@ -55,9 +55,9 @@ export class ISYPlatform implements PlatformPlugin {
 		this.homebridge = homebridge;
 		ISYPlatform.Instance = this;
 
-		this.isy = new ISY(this.host, this.username, this.password, config.elkEnabled, null, config.useHttps, true, this.debugLoggingEnabled, null, Logger.withPrefix('isy-js'));
+		this.isy = new ISY(config, Logger.withPrefix('isy-nodejs'));
 		const p = this.createAccessories();
-	
+
 		const self = this;
 
 		homebridge.on(APIEvent.DID_FINISH_LAUNCHING, async () => {
@@ -225,7 +225,7 @@ export class ISYPlatform implements PlatformPlugin {
 
 	}
 
-	// Calls the isy-js library, retrieves the list of devices, and maps them to appropriate ISYXXXXAccessory devices.
+	// Calls the isy-nodejs library, retrieves the list of devices, and maps them to appropriate ISYXXXXAccessory devices.
 	public async createAccessories() {
 		const that = this;
 		await this.isy.initialize(() => {

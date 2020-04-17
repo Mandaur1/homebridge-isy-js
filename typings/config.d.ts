@@ -16,7 +16,7 @@ export interface RenameDeviceRule {
 
 export interface GlobalRenameRule {
 	remove : string[],
-	replace : 
+	replace :
 		{
 			replace : string,
 			with: string
@@ -68,9 +68,10 @@ export interface PlatformConfig {
 	elkEnabled: boolean;
 	debugLoggingEnabled: boolean;
 	includeAllScenes: true;
-	ignoreDevices: IgnoreDeviceRule[];
-	renameDevices: RenameDeviceRule[];
-	transformNames: GlobalRenameRule;
-	deviceConfigs: DeviceConfig[];
+	includedScenes?: [];
+	ignoreDevices?: IgnoreDeviceRule[];
+	renameDevices?: RenameDeviceRule[];
+	transformNames?: GlobalRenameRule;
+	deviceConfigs?: DeviceConfig[];
 	[x: string]: any;
 }

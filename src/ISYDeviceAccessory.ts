@@ -1,5 +1,5 @@
 import { Categories } from 'hap-nodejs';
-import { InsteonBaseDevice } from 'isy-js';
+import { InsteonBaseDevice } from 'isy-nodejs';
 import { ISYAccessory } from './ISYAccessory';
 
 

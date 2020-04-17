@@ -1,5 +1,5 @@
 import { Categories } from 'hap-nodejs';
-import { InsteonLockDevice } from 'isy-js';
+import { InsteonLockDevice } from 'isy-nodejs';
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
 export declare class ISYLockAccessory extends ISYDeviceAccessory<InsteonLockDevice, Categories.DOOR_LOCK> {
     lockService: any;

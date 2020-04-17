@@ -1,7 +1,7 @@
 import './utils';
 
 import { Categories, Characteristic, CharacteristicEventTypes, Service } from 'hap-nodejs';
-import { InsteonThermostatDevice, Props } from 'isy-js';
+import { InsteonThermostatDevice, Props } from 'isy-nodejs';
 
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
 
@@ -49,7 +49,7 @@ export class ISYThermostatAccessory extends ISYDeviceAccessory<InsteonThermostat
 		this.logger.info(`Getting Current Rel. Humidity - Device says: ${this.device.humidity}`);
 		callback(null, this.device.humidity);
 	}
-	// Mirrors change in the state of the underlying isy-js device object.
+	// Mirrors change in the state of the underlying isy-nodejs device object.
 	public handleExternalChange(propertyName: string, value: any, formattedValue: string) {
 		super.handleExternalChange(propertyName, value, formattedValue);
 		switch (propertyName) {

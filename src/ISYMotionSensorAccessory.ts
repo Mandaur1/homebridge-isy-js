@@ -1,6 +1,6 @@
 import { Categories, Characteristic, CharacteristicEventTypes, Service } from 'hap-nodejs';
 import { BatteryLevel, BatteryService, LightSensor, MotionSensor, TemperatureSensor } from 'hap-nodejs/dist/lib/gen/HomeKit';
-import { Controls, InsteonMotionSensorDevice } from 'isy-js';
+import { Controls, InsteonMotionSensorDevice } from 'isy-nodejs';
 
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
 import { toCelsius } from './utils';
@@ -24,7 +24,7 @@ export class ISYMotionSensorAccessory extends ISYDeviceAccessory<InsteonMotionSe
 	get temperatureSensorService(): TemperatureSensor {
 		return this.platformAccessory?.getOrAddService(Service.TemperatureSensor);
 	}
-	
+
 	constructor (device: InsteonMotionSensorDevice) {
 		super(device);
 

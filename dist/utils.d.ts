@@ -25,6 +25,8 @@ declare module 'homebridge/lib/platformAccessory' {
 declare module 'homebridge/lib/logger' {
     interface Logger extends LoggerLike {
     }
+    interface Logging extends LoggerLike {
+    }
 }
 declare module 'hap-nodejs/dist/lib/Characteristic' {
     interface Characteristic {

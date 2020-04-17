@@ -1,5 +1,5 @@
 import { Characteristic, Service } from 'hap-nodejs';
-import { InsteonDimmableDevice } from 'isy-js';
+import { InsteonDimmableDevice } from 'isy-nodejs';
 import { ISYRelayAccessory } from './ISYRelayAccessory';
 import './utils';
 export declare class InsteonDimmableAccessory<T extends InsteonDimmableDevice> extends ISYRelayAccessory<T> {

@@ -1,7 +1,7 @@
 import './utils';
 
 import { Categories, Characteristic, CharacteristicEventTypes, Service } from 'hap-nodejs';
-import { ISYScene } from 'isy-js';
+import { ISYScene } from 'isy-nodejs';
 
 import { ISYAccessory } from './ISYAccessory';
 import { onSet } from './utils';

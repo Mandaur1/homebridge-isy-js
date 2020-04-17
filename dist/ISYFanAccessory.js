@@ -17,8 +17,8 @@ class ISYFanAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
     device.propertyChanged.removeListener(null, super.handleExternalChange);
     this.device.Motor.onPropertyChanged(null, this.handleExternalChangeToMotor.bind(this));
     this.device.Light.onPropertyChanged(null, this.handleExternalChangeToLight.bind(this)); // this.logger(JSON.stringify(this.device.scenes[0]));
-  } // Translates the fan level from homebridge into the isy-js level. Maps from the 0-100
-  // to the four isy-js fan speed levels.
+  } // Translates the fan level from homebridge into the isy-nodejs level. Maps from the 0-100
+  // to the four isy-nodejs fan speed levels.
   // Handles a request to get the current brightness level for dimmable lights.
 
 

@@ -1,7 +1,7 @@
 import './utils';
 
 import { Categories, Characteristic, Service } from 'hap-nodejs';
-import { ElkAlarmSensorDevice } from 'isy-js';
+import { ElkAlarmSensorDevice } from 'isy-nodejs';
 
 import { ISYAccessory } from './ISYAccessory';
 

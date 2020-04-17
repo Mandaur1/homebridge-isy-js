@@ -1,5 +1,5 @@
 import { Categories, Characteristic, Service } from 'hap-nodejs';
-import { InsteonDimmableDevice, InsteonRelayDevice } from 'isy-js';
+import { InsteonDimmableDevice, InsteonRelayDevice } from 'isy-nodejs';
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
 import './utils';
 

@@ -1,7 +1,7 @@
 import './utils';
 
 import { Categories, Characteristic, Service } from 'hap-nodejs';
-import { InsteonDoorWindowSensorDevice } from 'isy-js';
+import { InsteonDoorWindowSensorDevice } from 'isy-nodejs';
 
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
 

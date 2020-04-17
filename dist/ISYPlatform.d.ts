@@ -1,8 +1,8 @@
-import { API, PlatformConfig, PlatformPlugin } from 'homebridge';
+import { API, PlatformPlugin } from 'homebridge';
 import { Logging } from 'homebridge/lib/logger';
 import { PlatformAccessory } from 'homebridge/lib/platformAccessory';
-import { ISY, ISYDevice, ISYNode } from 'isy-js';
-import { IgnoreDeviceRule } from '../typings/config';
+import { ISY, ISYDevice, ISYNode } from 'isy-nodejs';
+import { IgnoreDeviceRule, PlatformConfig } from '../typings/config';
 import { ISYAccessory } from './ISYAccessory';
 import './utils';
 export declare class ISYPlatform implements PlatformPlugin {
@@ -27,7 +27,7 @@ export declare class ISYPlatform implements PlatformPlugin {
     logger(msg: string): void;
     shouldIgnore(device: ISYNode): boolean;
     getGarageEntry(address: string): any;
-    renameDeviceIfNeeded(device: ISYNode): any;
+    renameDeviceIfNeeded(device: ISYNode): string;
     configureAccessory(accessory: PlatformAccessory): boolean;
     createAccessories(): Promise<void>;
     createAccessory(device: ISYDevice<any>): ISYAccessory<any, any>;

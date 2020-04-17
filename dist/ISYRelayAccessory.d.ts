@@ -1,5 +1,5 @@
 import { Categories, Characteristic, Service } from 'hap-nodejs';
-import { InsteonRelayDevice } from 'isy-js';
+import { InsteonRelayDevice } from 'isy-nodejs';
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
 import './utils';
 export declare class ISYRelayAccessory<T extends InsteonRelayDevice> extends ISYDeviceAccessory<T, Categories.SWITCH | Categories.LIGHTBULB | Categories.OUTLET> {

@@ -1,7 +1,7 @@
 import './utils';
 
 import { Categories, Characteristic, CharacteristicEventTypes, Service } from 'hap-nodejs';
-import { InsteonOutletDevice } from 'isy-js';
+import { InsteonOutletDevice } from 'isy-nodejs';
 
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
 
@@ -24,7 +24,7 @@ export class ISYOutletAccessory extends ISYDeviceAccessory<InsteonOutletDevice,C
 			callback();
 		}
 	}
-	// Handles a request to get the current outlet state based on underlying isy-js device object.
+	// Handles a request to get the current outlet state based on underlying isy-nodejs device object.
 	public getOutletState(callback: (...any: any[]) => void){
 		callback(null, this.device.isOn);
 	}
