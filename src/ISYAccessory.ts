@@ -7,6 +7,7 @@ import { Controls, Family, ISYNode } from 'isy-nodejs';
 import ISYConstants from 'isy-nodejs/lib/isyconstants';
 
 import { PlatformName } from './plugin';
+import { EventEmitter } from 'events';
 
 export class AccessoryContext {
 	public address: string;
@@ -55,7 +56,7 @@ export class ISYAccessory<T extends ISYNode, TCategory extends Categories> {
 		this.context.address = this.address;
 
 		// this.getServices();
-		this.device.onPropertyChanged(null, this.handleExternalChange.bind(this));
+		this.device.on('PropertyChanged', this.handleExternalChange.bind(this));
 	}
 
 	public map(propertyName: keyof T): {characteristic: typeof Characteristic, service: Service} {
@@ -84,7 +85,7 @@ export class ISYAccessory<T extends ISYNode, TCategory extends Categories> {
 			this.platformAccessory = new PlatformAccessory(this.displayName, this.UUID, this.category);
 
 			this.platformAccessory.context.address = this.address;
-
+			this.logger.info('New platform accessory needed');
 			this.setupServices();
 			this.platformAccessory.on('identify', () => this.identify.bind(this));
 		}
@@ -102,12 +103,12 @@ export class ISYAccessory<T extends ISYNode, TCategory extends Categories> {
 
 	}
 
-	public handleExternalChange(propertyName: string, value: any, formattedValue: string) {
+	public handleExternalChange(propertyName: string, value: any, oldValue: any, formattedValue: string) {
 		const name = propertyName in Controls ? Controls[propertyName].label : propertyName;
-		this.logger.debug(`Incoming update to ${name}. Device says: ${value} (${formattedValue})`);
+		this.logger.debug(`Incoming update to ${name}. New Value: ${value} (${formattedValue}) Old Value: ${oldValue}`);
 		const m = this.map(propertyName);
 		if (m?.characteristic) {
-			this.logger.debug('Property mapped to: ', m.characteristic.name);
+			this.logger.debug('Property mapped to: ',m.service.name, m.characteristic.name);
 			this.updateCharacteristicValue(value, m.characteristic, m.service);
 		}
 

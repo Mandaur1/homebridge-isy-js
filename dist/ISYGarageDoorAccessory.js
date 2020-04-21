@@ -109,8 +109,8 @@ class ISYGarageDoorAccessory extends ISYAccessory_1.ISYAccessory {
   } // Mirrors change in the state of the underlying isj-js device object.
 
 
-  handleExternalChange(propertyName, value, formattedValue) {
-    super.handleExternalChange(propertyName, value, formattedValue);
+  handleExternalChange(propertyName, value, oldValue, formattedValue) {
+    super.handleExternalChange(propertyName, value, oldValue, formattedValue);
 
     if (this.getSensorState()) {
       if (this.currentGarageState === hap_nodejs_1.Characteristic.CurrentDoorState.OPEN) {
@@ -157,11 +157,21 @@ class ISYGarageDoorAccessory extends ISYAccessory_1.ISYAccessory {
     super.setupServices();
     const garageDoorService = this.platformAccessory.getOrAddService(hap_nodejs_1.Service.GarageDoorOpener);
     this.garageDoorService = garageDoorService;
-    garageDoorService.getCharacteristic(hap_nodejs_1.Characteristic.TargetDoorState).on(hap_nodejs_1.CharacteristicEventTypes.SET, this.setTargetDoorState.bind(this));
-    garageDoorService.getCharacteristic(hap_nodejs_1.Characteristic.TargetDoorState).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getTargetDoorState.bind(this));
-    garageDoorService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentDoorState).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getCurrentDoorState.bind(this));
-    garageDoorService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentDoorState).on(hap_nodejs_1.CharacteristicEventTypes.SET, this.setCurrentDoorState.bind(this));
-    garageDoorService.getCharacteristic(hap_nodejs_1.Characteristic.ObstructionDetected).on(hap_nodejs_1.CharacteristicEventTypes.GET, this.getObstructionState.bind(this));
+    garageDoorService.getCharacteristic(hap_nodejs_1.Characteristic.TargetDoorState).on("set"
+    /* SET */
+    , this.setTargetDoorState.bind(this));
+    garageDoorService.getCharacteristic(hap_nodejs_1.Characteristic.TargetDoorState).on("get"
+    /* GET */
+    , this.getTargetDoorState.bind(this));
+    garageDoorService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentDoorState).on("get"
+    /* GET */
+    , this.getCurrentDoorState.bind(this));
+    garageDoorService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentDoorState).on("set"
+    /* SET */
+    , this.setCurrentDoorState.bind(this));
+    garageDoorService.getCharacteristic(hap_nodejs_1.Characteristic.ObstructionDetected).on("get"
+    /* GET */
+    , this.getObstructionState.bind(this));
   }
 
 }

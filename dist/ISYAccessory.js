@@ -45,7 +45,7 @@ class ISYAccessory {
     this.context = new AccessoryContext();
     this.context.address = this.address; // this.getServices();
 
-    this.device.onPropertyChanged(null, this.handleExternalChange.bind(this));
+    this.device.on('PropertyChanged', this.handleExternalChange.bind(this));
   } // tslint:disable-next-line: ban-types
 
 
@@ -84,6 +84,7 @@ class ISYAccessory {
     } else {
       this.platformAccessory = new platformAccessory_1.PlatformAccessory(this.displayName, this.UUID, this.category);
       this.platformAccessory.context.address = this.address;
+      this.logger.info('New platform accessory needed');
       this.setupServices();
       this.platformAccessory.on('identify', () => this.identify.bind(this));
     }
@@ -99,15 +100,15 @@ class ISYAccessory {
     this.informationService.getCharacteristic(hap_nodejs_1.Characteristic.FirmwareRevision).updateValue((_d = this.device.version, _d !== null && _d !== void 0 ? _d : '1.0')); // .setCharacteristic(Characteristic.ProductData, this.device.address);
   }
 
-  handleExternalChange(propertyName, value, formattedValue) {
+  handleExternalChange(propertyName, value, oldValue, formattedValue) {
     var _a;
 
     const name = propertyName in isy_nodejs_1.Controls ? isy_nodejs_1.Controls[propertyName].label : propertyName;
-    this.logger.debug(`Incoming update to ${name}. Device says: ${value} (${formattedValue})`);
+    this.logger.debug(`Incoming update to ${name}. New Value: ${value} (${formattedValue}) Old Value: ${oldValue}`);
     const m = this.map(propertyName);
 
     if ((_a = m) === null || _a === void 0 ? void 0 : _a.characteristic) {
-      this.logger.debug('Property mapped to: ', m.characteristic.name);
+      this.logger.debug('Property mapped to: ', m.service.name, m.characteristic.name);
       this.updateCharacteristicValue(value, m.characteristic, m.service);
     }
   }

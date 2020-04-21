@@ -15,7 +15,9 @@ require("./utils");
 class ISYRelayAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
   constructor(device) {
     super(device);
-    this.category = hap_nodejs_1.Categories.SWITCH;
+    this.category = 8
+    /* SWITCH */
+    ;
     this.dimmable = device instanceof isy_nodejs_1.InsteonDimmableDevice;
   }
 

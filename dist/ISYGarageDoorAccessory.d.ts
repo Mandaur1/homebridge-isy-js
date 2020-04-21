@@ -16,7 +16,7 @@ export declare class ISYGarageDoorAccessory extends ISYAccessory<InsteonRelayDev
     setCurrentDoorState(newState: any, callback: any): void;
     getTargetDoorState(callback: any): void;
     completeOpen(): void;
-    handleExternalChange(propertyName: any, value: any, formattedValue: any): void;
+    handleExternalChange(propertyName: any, value: any, oldValue: any, formattedValue: any): void;
     getObstructionState(callback: any): void;
     setupServices(): void;
 }

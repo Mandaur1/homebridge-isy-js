@@ -1,14 +1,16 @@
 import './ISYPlatform';
-import { Categories, Service } from 'hap-nodejs';
+import { Categories, Characteristic, Service } from 'hap-nodejs';
 import { InsteonFanDevice } from 'isy-nodejs';
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
 export declare class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice, Categories.FAN> {
     fanService: Service;
     lightService: Service;
     constructor(device: InsteonFanDevice);
-    getBrightness(callback: (...any: any[]) => void): void;
-    handleExternalChangeToMotor(propertyName: string, value: any, formattedValue: string): void;
-    handleExternalChangeToLight(propertyName: string, value: any, formattedValue: string): void;
+    map(propertyName: any): {
+        characteristic: typeof Characteristic;
+        service: Service;
+    };
+    handleExternalChange(propertyName: any, value: any, formattedValue: any): void;
     setupServices(): void;
 }
 //# sourceMappingURL=ISYFanAccessory.d.ts.map

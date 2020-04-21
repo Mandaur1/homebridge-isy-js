@@ -4,8 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-const homebridge_1 = require("homebridge");
-
 const logger_1 = require("homebridge/lib/logger");
 
 const isy_nodejs_1 = require("isy-nodejs");
@@ -13,6 +11,8 @@ const isy_nodejs_1 = require("isy-nodejs");
 const ISYDimmerAccessory_1 = require("./ISYDimmerAccessory");
 
 const ISYDoorWindowSensorAccessory_1 = require("./ISYDoorWindowSensorAccessory");
+
+const ISYLeakSensorAccessory_1 = require("./ISYLeakSensorAccessory");
 
 const ISYElkAlarmPanelAccessory_1 = require("./ISYElkAlarmPanelAccessory");
 
@@ -55,14 +55,21 @@ class ISYPlatform {
     this.ignoreRules = config.ignoreDevices;
     this.homebridge = homebridge;
     ISYPlatform.Instance = this;
+    config.address = this.host;
     this.isy = new isy_nodejs_1.ISY(config, logger_1.Logger.withPrefix('isy-nodejs'));
     const p = this.createAccessories();
     const self = this;
-    homebridge.on(homebridge_1.APIEvent.DID_FINISH_LAUNCHING, async () => {
+    homebridge.on("didFinishLaunching"
+    /* DID_FINISH_LAUNCHING */
+    , async () => {
       self.logger('Homebridge Launched');
+      await p;
+      self.log('ISY API Initialized');
       self.log('Homebridge API Version', self.homebridge.version);
       self.log('Homebridge Server Version', self.homebridge.serverVersion);
-      await p;
+      self.log('ISY Host Address', self.host);
+      self.log('ISY Model', self.isy.model);
+      self.log('ISY Firmware Version', self.isy.serverVersion);
       self.logger(`Total Accessories: ${this.accessories.length}`);
       self.logger(`Total Accessories Identified: ${this.accessoriesWrappers.size}`);
       self.logger(`Accessories to Register: ${this.accessoriesToRegister.length}`);
@@ -280,7 +287,7 @@ class ISYPlatform {
         }
       }
 
-      if (that.isy.elkEnabled) {
+      if (that.isy.elkEnabled && that.isy.getElkAlarmPanel()) {
         // if (results.size >= 100) {
         // that.logger('Skipping adding Elk Alarm panel as device count already at maximum');
         // }
@@ -330,6 +337,8 @@ class ISYPlatform {
       return new ISYMotionSensorAccessory_1.ISYMotionSensorAccessory(device);
     } else if (device instanceof isy_nodejs_1.InsteonThermostatDevice) {
       return new ISYThermostatAccessory_1.ISYThermostatAccessory(device);
+    } else if (device instanceof isy_nodejs_1.InsteonLeakSensorDevice) {
+      return new ISYLeakSensorAccessory_1.ISYLeakSensorAccessory(device);
     }
 
     return null;

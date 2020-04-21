@@ -39,7 +39,9 @@ class ISYMotionSensorAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
 
   constructor(device) {
     super(device);
-    this.category = hap_nodejs_1.Categories.SENSOR;
+    this.category = 10
+    /* SENSOR */
+    ;
   }
 
   map(propertyName) {

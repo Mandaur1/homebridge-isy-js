@@ -15,7 +15,9 @@ const utils_1 = require("./utils");
 class ISYSceneAccessory extends ISYAccessory_1.ISYAccessory {
   constructor(scene) {
     super(scene);
-    this.category = hap_nodejs_1.Categories.LIGHTBULB;
+    this.category = 5
+    /* LIGHTBULB */
+    ;
     this.scene = scene;
     this.dimmable = scene.isDimmable; // this.logger = function(msg) {log("Scene Accessory: " + scene.name + ": " + msg); };
   } // Handles the identify command

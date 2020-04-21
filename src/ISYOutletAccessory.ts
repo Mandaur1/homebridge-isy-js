@@ -1,9 +1,48 @@
 import './utils';
 
 import { Categories, Characteristic, CharacteristicEventTypes, Service } from 'hap-nodejs';
-import { InsteonOutletDevice } from 'isy-nodejs';
+import { InsteonOutletDevice, InsteonOnOffOutletDevice } from 'isy-nodejs';
 
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
+import { Outlet } from 'hap-nodejs/dist/lib/gen/HomeKit';
+
+export class ISYOnOffOutletAccessory extends ISYDeviceAccessory<InsteonOnOffOutletDevice,Categories.OUTLET>
+{
+	public get outlet1Service() : Service {
+		if(!this.primaryService)
+		{
+			this.primaryService = this.platformAccessory?.getOrAddService(Service.Outlet);
+		}
+			return this.primaryService;
+	}
+
+	_outlet2Service: Service;
+
+	public get outlet2Service(): Service {
+
+		if(!this._outlet2Service)
+			this._outlet2Service = this.platformAccessory.addService(new Service.Outlet('Outlet 2','2'));
+		return this._outlet2Service;
+
+	}
+	constructor(device: InsteonOnOffOutletDevice)
+	{
+		super(device);
+
+		this.category = Categories.OUTLET;
+	}
+	public setupServices()
+	{
+		super.setupServices();
+
+		this.outlet1Service.getCharacteristic(Characteristic.On).onSet((this.device.outlet1.updateIsOn).bind(this.device.outlet1));
+		this.outlet1Service.getCharacteristic(Characteristic.On).onGet(() => this.outlet1.isOn);
+		this.outlet1Service.getCharacteristic(Characteristic.OutletInUse).onGet(() => true);
+		this.outlet2Service.getCharacteristic(Characteristic.On).onSet((this.device.outlet2.updateIsOn).bind(this.device.outlet2));
+		this.outlet2Service.getCharacteristic(Characteristic.On).onGet(() => this.outlet2.isOn);
+		this.outlet2Service.getCharacteristic(Characteristic.OutletInUse).onGet(() => true);
+	}
+}
 
 export class ISYOutletAccessory extends ISYDeviceAccessory<InsteonOutletDevice,Categories.OUTLET> {
 
@@ -34,8 +73,8 @@ export class ISYOutletAccessory extends ISYDeviceAccessory<InsteonOutletDevice,C
 		callback(null, true);
 	}
 	// Mirrors change in the state of the underlying isj-js device object.
-	public handleExternalChange(propertyName: string, value: any, formattedValue: string) {
-		super.handleExternalChange(propertyName, value, formattedValue);
+	public handleExternalChange(propertyName: string, value: any, oldValue: any, formattedValue: string) {
+		super.handleExternalChange(propertyName, value, oldValue, formattedValue);
 		this.outletService.updateCharacteristic(Characteristic.On, this.device.isOn);
 	}
 	// Returns the set of services supported by this object.

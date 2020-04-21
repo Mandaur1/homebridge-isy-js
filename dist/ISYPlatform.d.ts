@@ -1,11 +1,11 @@
-import { API, PlatformPlugin } from 'homebridge';
+import { API, DynamicPlatformPlugin } from 'homebridge';
 import { Logging } from 'homebridge/lib/logger';
 import { PlatformAccessory } from 'homebridge/lib/platformAccessory';
 import { ISY, ISYDevice, ISYNode } from 'isy-nodejs';
 import { IgnoreDeviceRule, PlatformConfig } from '../typings/config';
 import { ISYAccessory } from './ISYAccessory';
 import './utils';
-export declare class ISYPlatform implements PlatformPlugin {
+export declare class ISYPlatform implements DynamicPlatformPlugin {
     log: Logging;
     config: PlatformConfig;
     host: string;

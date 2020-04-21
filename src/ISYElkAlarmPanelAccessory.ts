@@ -86,8 +86,8 @@ export class ISYElkAlarmPanelAccessory extends ISYAccessory<ElkAlarmSensorDevice
 		callback(null, this.translateAlarmCurrentStateToHK());
 	}
 	// Mirrors change in the state of the underlying isj-js device object.
-	public handleExternalChange(propertyName: string, value: any, formattedValue: string) {
-		super.handleExternalChange(propertyName, value, formattedValue);
+	public handleExternalChange(propertyName: string, value: any, oldValue: any, formattedValue: string) {
+		super.handleExternalChange(propertyName, value, oldValue, formattedValue);
 		this.info(`ALARMPANEL: ${this.device.name} Source device. Currenty state locally -${this.device.getAlarmStatusAsText()}`);
 		this.info(`ALARMPANEL: ${this.device.name} Got alarm change notification. Setting HK target state to: ${this.translateAlarmTargetStateToHK()} Setting HK Current state to: ${this.translateAlarmCurrentStateToHK()}`);
 		this.alarmPanelService.setCharacteristic(Characteristic.SecuritySystemTargetState, this.translateAlarmTargetStateToHK());

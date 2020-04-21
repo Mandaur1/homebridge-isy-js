@@ -28,8 +28,8 @@ class ISYDoorWindowSensorAccessory extends ISYDeviceAccessory_1.ISYDeviceAccesso
   } // Mirrors change in the state of the underlying isj-js device object.
 
 
-  handleExternalChange(propertyName, value, oldValue, formattedValue) {
-    super.handleExternalChange(propertyName, value, oldValue, formattedValue);
+  handleExternalChange(propertyName, value, formattedValue) {
+    super.handleExternalChange(propertyName, value, formattedValue);
     this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentDoorState).updateValue(!this.device.isOpen ? 1 : 0);
   } // Returns the set of services supported by this object.
 
@@ -43,4 +43,4 @@ class ISYDoorWindowSensorAccessory extends ISYDeviceAccessory_1.ISYDeviceAccesso
 
 }
 
-exports.ISYDoorWindowSensorAccessory = ISYDoorWindowSensorAccessory;
+exports.ISYDoorWindowSensorAccessory = ISYDoorWindowSensorAccessory; //# sourceMappingURL=ISYDoorWindowSensorAccessory copy.js.map

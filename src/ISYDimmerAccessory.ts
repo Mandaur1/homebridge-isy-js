@@ -20,8 +20,8 @@ export class InsteonDimmableAccessory<T extends InsteonDimmableDevice> extends I
 	}
 
 	// Mirrors change in the state of the underlying isj-js device object.
-	public handleExternalChange(propertyName: string, value, formattedValue) {
-		super.handleExternalChange(propertyName, value, formattedValue);
+	public handleExternalChange(propertyName: string, value, oldValue, formattedValue) {
+		super.handleExternalChange(propertyName, value, oldValue, formattedValue);
 		this.primaryService.getCharacteristic(Characteristic.On).updateValue(this.device.isOn);
 		// this.a
 			// this.primaryService.getCharacteristic(ch.name).updateValue(this.device[propertyName]);

@@ -6,7 +6,7 @@ export declare class ISYDoorWindowSensorAccessory extends ISYDeviceAccessory<Ins
     constructor(device: InsteonDoorWindowSensorDevice);
     translateCurrentDoorWindowState(): boolean;
     getCurrentDoorWindowState(callback: any): void;
-    handleExternalChange(propertyName: string, value: any, oldValue: any, formattedValue: string): void;
+    handleExternalChange(propertyName: string, value: any, formattedValue: string): void;
     setupServices(): void;
 }
-//# sourceMappingURL=ISYDoorWindowSensorAccessory.d.ts.map
+//# sourceMappingURL=ISYDoorWindowSensorAccessory copy.d.ts.map

@@ -25,7 +25,7 @@ export declare class ISYAccessory<T extends ISYNode, TCategory extends Categorie
     };
     configure(accessory?: PlatformAccessory): void;
     setupServices(): void;
-    handleExternalChange(propertyName: string, value: any, formattedValue: string): void;
+    handleExternalChange(propertyName: string, value: any, oldValue: any, formattedValue: string): void;
     updateCharacteristicValue(value: CharacteristicValue, characteristic: typeof Characteristic, service?: Service): void;
     convertToHK(propertyName: string, value: any): any;
     identify(): void;

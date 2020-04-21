@@ -13,7 +13,9 @@ require("./utils");
 class InsteonDimmableAccessory extends ISYRelayAccessory_1.ISYRelayAccessory {
   constructor(device) {
     super(device);
-    this.category = hap_nodejs_1.Categories.LIGHTBULB;
+    this.category = 5
+    /* LIGHTBULB */
+    ;
   } // Handles the identify command
   // Handles request to set the current powerstate from homekit. Will ignore redundant commands.
 
@@ -29,8 +31,8 @@ class InsteonDimmableAccessory extends ISYRelayAccessory_1.ISYRelayAccessory {
   } // Mirrors change in the state of the underlying isj-js device object.
 
 
-  handleExternalChange(propertyName, value, formattedValue) {
-    super.handleExternalChange(propertyName, value, formattedValue);
+  handleExternalChange(propertyName, value, oldValue, formattedValue) {
+    super.handleExternalChange(propertyName, value, oldValue, formattedValue);
     this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.On).updateValue(this.device.isOn); // this.a
     // this.primaryService.getCharacteristic(ch.name).updateValue(this.device[propertyName]);
   } // Handles request to get the current on state

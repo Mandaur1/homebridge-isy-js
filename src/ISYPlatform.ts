@@ -1,11 +1,12 @@
-import { API, APIEvent, PlatformPlugin } from 'homebridge';
+import { API, APIEvent, DynamicPlatformPlugin} from 'homebridge';
 import { Logger, Logging } from 'homebridge/lib/logger';
 import { PlatformAccessory } from 'homebridge/lib/platformAccessory';
-import { ElkAlarmSensorDevice, InsteonDimmableDevice, InsteonDoorWindowSensorDevice, InsteonFanDevice, InsteonLockDevice, InsteonMotionSensorDevice, InsteonOutletDevice, InsteonRelayDevice, InsteonThermostatDevice, ISY, ISYDevice, ISYNode, ISYScene } from 'isy-nodejs';
+import { ElkAlarmSensorDevice, InsteonDimmableDevice, InsteonDoorWindowSensorDevice, InsteonFanDevice, InsteonLockDevice, InsteonMotionSensorDevice, InsteonOutletDevice, InsteonRelayDevice, InsteonLeakSensorDevice, InsteonThermostatDevice, ISY, ISYDevice, ISYNode, ISYScene } from 'isy-nodejs';
 import { IgnoreDeviceRule, PlatformConfig } from '../typings/config';
 import { ISYAccessory } from './ISYAccessory';
 import { InsteonDimmableAccessory } from './ISYDimmerAccessory';
 import { ISYDoorWindowSensorAccessory } from './ISYDoorWindowSensorAccessory';
+import { ISYLeakSensorAccessory } from './ISYLeakSensorAccessory';
 import { ISYElkAlarmPanelAccessory } from './ISYElkAlarmPanelAccessory';
 import { ISYFanAccessory } from './ISYFanAccessory';
 import { ISYGarageDoorAccessory } from './ISYGarageDoorAccessory';
@@ -20,7 +21,7 @@ import './utils';
 
 // tslint:disable-next-line: ordered-imports
 
-export class ISYPlatform implements PlatformPlugin {
+export class ISYPlatform implements DynamicPlatformPlugin {
 
 	public log: Logging;
 	public config: PlatformConfig;
@@ -54,6 +55,7 @@ export class ISYPlatform implements PlatformPlugin {
 		this.ignoreRules = config.ignoreDevices;
 		this.homebridge = homebridge;
 		ISYPlatform.Instance = this;
+		config.address = this.host;
 
 		this.isy = new ISY(config, Logger.withPrefix('isy-nodejs'));
 		const p = this.createAccessories();
@@ -63,10 +65,14 @@ export class ISYPlatform implements PlatformPlugin {
 		homebridge.on(APIEvent.DID_FINISH_LAUNCHING, async () => {
 
 			self.logger('Homebridge Launched');
+
+			await p;
+			self.log('ISY API Initialized');
 			self.log('Homebridge API Version', self.homebridge.version);
 			self.log('Homebridge Server Version', self.homebridge.serverVersion);
-			await p;
-
+			self.log('ISY Host Address',self.host);
+			self.log('ISY Model',self.isy.model);
+			self.log('ISY Firmware Version',self.isy.serverVersion);
 			self.logger(`Total Accessories: ${this.accessories.length}`);
 			self.logger(`Total Accessories Identified: ${this.accessoriesWrappers.size}`);
 			self.logger(`Accessories to Register: ${this.accessoriesToRegister.length}`);
@@ -271,7 +277,7 @@ export class ISYPlatform implements PlatformPlugin {
 				}
 			}
 
-			if (that.isy.elkEnabled) {
+			if (that.isy.elkEnabled && that.isy.getElkAlarmPanel()) {
 				// if (results.size >= 100) {
 				// that.logger('Skipping adding Elk Alarm panel as device count already at maximum');
 				// }
@@ -325,6 +331,9 @@ export class ISYPlatform implements PlatformPlugin {
 			return new ISYMotionSensorAccessory(device);
 		} else if (device instanceof InsteonThermostatDevice) {
 			return new ISYThermostatAccessory(device);
+		}
+		else if (device instanceof InsteonLeakSensorDevice) {
+			return new ISYLeakSensorAccessory(device);
 		}
 		return null;
 	}

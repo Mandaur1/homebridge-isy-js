@@ -4,8 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-const hap_nodejs_1 = require("homebridge/node_modules/hap-nodejs");
-
 const Characteristic_1 = require("homebridge/node_modules/hap-nodejs/dist/lib/Characteristic");
 
 const logger_1 = require("homebridge/lib/logger"); // import * as service from 'homebridge/node_modules/homebridge/node_modules/hap-nodejs/dist/lib/Service';
@@ -16,7 +14,9 @@ exports.didFinishLaunching = Symbol('didFinishLaunching'); // tslint:disable-nex
 
 function onSet(character, func) {
   const cfunc = addSetCallback(func);
-  return character.on(hap_nodejs_1.CharacteristicEventTypes.SET, cfunc);
+  return character.on("set"
+  /* SET */
+  , cfunc);
 }
 
 exports.onSet = onSet;
@@ -41,7 +41,9 @@ function onGet(character, func) {
     cb(null, func());
   };
 
-  return character.on(hap_nodejs_1.CharacteristicEventTypes.GET, cfunc);
+  return character.on("get"
+  /* GET */
+  , cfunc);
 }
 
 exports.onGet = onGet;

@@ -8,7 +8,7 @@ export declare class InsteonDimmableAccessory<T extends InsteonDimmableDevice> e
         characteristic: typeof Characteristic;
         service: Service;
     };
-    handleExternalChange(propertyName: string, value: any, formattedValue: any): void;
+    handleExternalChange(propertyName: string, value: any, oldValue: any, formattedValue: any): void;
     getBrightness(callback: (...any: any[]) => void): void;
     setupServices(): void;
 }

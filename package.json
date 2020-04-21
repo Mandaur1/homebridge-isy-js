@@ -1,7 +1,7 @@
 {
   "name": "homebridge-isy",
   "displayName": "Homebridge ISY",
-  "version": "0.5.0-beta.6",
+  "version": "0.5.0-beta.10",
   "description": "Homebridge plugin for ISY series of home controllers from Universal Devices, Inc.",
   "note": "",
   "main": "dist/plugin.js",
@@ -43,7 +43,8 @@
     "@types/restler": "",
     "babel-plugin-module-resolver": "^4.0.0",
     "fake-isy-994i": "",
-    "homebridge": "^0.4.54-beta.42",
+    "hap-nodejs": "^0.6.4",
+    "homebridge": "^0.4.54-beta.54",
     "mocha": "",
     "npm": "^6.14.4",
     "p-try": "^2.2.0",
@@ -52,7 +53,7 @@
   "dependencies": {
     "@log4js-node/log4js-api": "^1.0.2",
     "faye-websocket": "^0.11.3",
-    "isy-nodejs": "^0.5.0-beta.3",
+    "isy-nodejs": "git://github.com/pradeepmouli/isy-js.git",
     "path": "^0.12.7",
     "restler": "^3.4.0",
     "xmldoc": "^1.1.2"
