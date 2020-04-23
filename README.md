@@ -1,6 +1,6 @@
 # Homebridge ISY
 
-Note: The npm package has been changed to homebridge-ISY[https://www.npmjs.com/package/homebridge-isy] (ISY API lib is now called [isy-nodejs](https://www.npmjs.com/package/isy-nodejs))
+Note: The npm package has been changed to [homebridge-ISY](https://www.npmjs.com/package/homebridge-isy) (ISY API lib is now called [isy-nodejs](https://www.npmjs.com/package/isy-nodejs))
 
 Fork of homebridge-isy-js by [rodtoll](https://github.com/rodtoll/homebridge-isy-js.git)
 
@@ -68,6 +68,8 @@ Only the ISY 994 and newer devices running 5.0.16+ are supported. The ISY 99i de
 ## Configuration
 
 Configuration sample (please refer to the homebridge-config-ui-x readme to add a section for that, and refer to the above if you want to add an additional section for homebridge-isy-js):
+
+```json
      "platforms": [
         {
             "platform": "ISY",
@@ -96,7 +98,7 @@ Configuration sample (please refer to the homebridge-config-ui-x readme to add a
             "renameDevices": [
                 { "nameContains": "BadName", "newName": "Good name" }
             ],
-             "transformNames": {
+            "transformNames": {
              "remove": [
                  "Dimmer",
                  "Switch",
@@ -106,42 +108,10 @@ Configuration sample (please refer to the homebridge-config-ui-x readme to add a
                  "replace": ".",
                  "with": " "
              }]
-         }
-
+            }
         }
      ]
-
-
-Fields:
-* "platform" - Must be set to isy-js
-* "name" - Can be set to whatever you want
-* "host" - IP address of the ISY
-* "username" - Your ISY username
-* "password" - Your ISY password
-* "elkEnabled" - true if there is an elk alarm panel connected to your ISY
-* "useHttps" - true if you want to use a https connection to the ISY. Only use if you have HTTPS setup with a proper cert.
-* "debugLoggingEnabled" - true if you want debug logs to be dumped to the console.
-* "garageDoors" - Specifies a list of devices which are I/O Lincs which should be treated as a garage door opener by HomeKit. The entry takes the form of one entry per device. (NOTE: In ISY an IO Linc is treated as two devices, you only need one entry for each IO Linc).
-Each entry should have the following elements: "address" - the address of the IO Linc primary device (the .1 device), "name" - Name to give the garage door device, "timeToOpen" - The number of ms before a door which is opening should be considered open.
-* "includeAllScenes" - true if you want the platform to expose all the scenes. Setups usually have a LOT of scenes any only 100 devices are supported from a bridge. It is recommended you proactively include the scenes you want in includedScenes.
-* "includedScenes" - An array of the addresses of the scenes you want to include as lighting devices.
-* "ignoreDevices" - Array of objects specifying criteria for screening out devices from the network. nameContains is the only required criteria. If the other criteri are blank all devices will match those criteria (providing they match the name criteria).
-* (Under ignoreDevices) "nameContains" - Specifies a substring to check against the names of the ISY devices. Required field for the criteria.
-* (Under ignoreDevices) "lastAddressDigit" - Specifies a single digit in the ISY address of a device which should be used to match the device. Example use of this is for composite devices like keypads so you can screen out the non-main buttons.
-* (Under ignoreDevices) "address" - ISY address to match.
-* "renameDevices" - Array of objects specifying devices you want to rename based on their address or name.
-* (Under renameDevices) "nameContains" - Specifies a substring to check against the names of the ISY devices. Required field for the criteria.
-* (Under renameDevices) "address" - ISY address to match.
-* (Under renameDevices) "newName" - New name to give to the device.
-
 ```
-Examples:
-
-{ "nameContains": "Keypad", "lastAddressDigit": "2", "address": "" } - Ignore all devices which have the word Keypad in their name and whose last address digit is 2.
-{ "nameContains": "Remote", "lastAddressDigit": "", "address": "" } - Ignore all devices which have the word Remote in their name
-{ "nameContains": "", "lastAddressDigit": "", "address": "15 5 3 2"} - Ignore the device with an ISY address of 15 5 3 2.
-```
-
 ## Implementation Notes
 
 * Scenes will not show as on until all light devices are on. This allows the UI to send an 'on' request to light up the rßest of them.
