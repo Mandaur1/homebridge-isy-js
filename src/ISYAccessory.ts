@@ -8,20 +8,20 @@ import ISYConstants from 'isy-nodejs/lib/isyconstants';
 
 import { PlatformName } from './plugin';
 import { EventEmitter } from 'events';
+import { LightSensor } from 'hap-nodejs/dist/lib/gen/HomeKit';
 
 export class AccessoryContext {
 	public address: string;
-
 }
 
-(PlatformAccessory.prototype).getOrAddService = function(service: WithUUID<typeof Service>): Service {
+(PlatformAccessory.prototype).getOrAddService = function <T extends WithUUID<typeof Service>> (service: T): Service {
 	const acc = this as unknown as PlatformAccessory;
 	const serv = acc.getService(service);
 	if (!serv) {
 		return acc.addService(service);
 	}
-	return serv;
 
+	return serv;
 };
 
 export class ISYAccessory<T extends ISYNode, TCategory extends Categories> {
@@ -54,8 +54,7 @@ export class ISYAccessory<T extends ISYNode, TCategory extends Categories> {
 		this.address = device.address;
 		this.context = new AccessoryContext();
 		this.context.address = this.address;
-
-		// this.getServices();
+		this.getServices();
 		this.device.on('PropertyChanged', this.handleExternalChange.bind(this));
 	}
 

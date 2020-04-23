@@ -1,5 +1,7 @@
 # Homebridge ISY
 
+Note: The npm package has been changed to homebridge-ISY[https://www.npmjs.com/package/homebridge-isy] (ISY API lib is now called [isy-nodejs](https://www.npmjs.com/package/isy-nodejs))
+
 Fork of homebridge-isy-js by [rodtoll](https://github.com/rodtoll/homebridge-isy-js.git)
 
 [![Build Status](https://api.travis-ci.org/rodtoll/homebridge-isy-js.svg?branch=master)](https://api.travis-ci.org/rodtoll/isy-js.svg?branch=master)
@@ -8,32 +10,46 @@ Fork of homebridge-isy-js by [rodtoll](https://github.com/rodtoll/homebridge-isy
 
 # Major Updates
 
-Requires Homebridge Beta. Please see revised installation notes below.
+Requires [Homebridge Beta](https://github.com/homebridge/homebridge/tree/beta). Please see revised installation notes below.
 
 ### New Functionality:
 
 - Support for ISY 5.0.16+
-- Configurable using Homebridge Config-UI X (Work in Progress)
+
+- Configurable using [Homebridge Config-UI X](https://www.npmjs.com/package/homebridge-config-ui-x) (This is a work in progress, but you'll eventually be able to install homebridge-isy from Homebridge Config directly)
+
+- Pulls folders and notes from ISY
+    1. Default behavior is that folder names will be appended to the device name e.g. if "Vent Switch" is in folder "Bathroom", the display name passed to homebridge will be Bathroom Switch Vent.
+    2. If notes are in the ISY and have been populated fully, location and spoken name will be used to render the display name. E.g. if Bathroom.Switch.Vent has been updated with Bathroom as the Location and Vent as the spoken name, then Bathroom Vent will be used as the display name.
+
+- Additional parameters available to filter devices (Device Family (e.g. Insteon, Zigbee, ZWave, etc...), Folder (ref. above), ISY Type Code (e.g. 15.1.1.1) and NodeDef (KeypadButton_ADV) if you want to use either NodeDef or Type Code please let me know)
+
+- Global Renames (TransformNames) - i.e. replace any instance of '.' with ' ' -> Switch.Vent -> Switch Vent or remove any instance of certain words e.g. Bathroom.Switch.Vent -> Bathroom Vent... see config sample below:
+
 - Support for additional devices (Need Testers):
      Insteon Thermostat/Thermostat Adapters
      Leak Sensors
-     CO/Smoke Bridges
+     CO/Smoke Bridges (WIP)
      Remotes
 
-### Bug Fixes:
+### Bug Fixes/Under the hood:
 
-- More robust handling for device status changes from ISY and sending updates to ISY
+- Uses more robust handling for device status changes from ISY and sending updates to ISY (e.g. using updateCharacteristic vs. setCharacteristic to not fire events)
+- Migrated to typescript
+- Upgraded to use latest version of hap-nodejs (requires homebridge-beta).
 
 ### TODO:
 
-- Re-add support for non-insteon native devices (ZWave)
-- Add Program/Variable support
+- Re-add support for non-insteon/elk native devices (ZWave & Zigbee)
+- Test garage door openers & MorningLinc locks (Need Testers)
+- Add support for Zigbee Devices
+- Add Keypad Button support (Keypad Buttons will map to Stateless Programmable Switches)
 - Incorporate individual device status in scene definitions
-- Create configurable mappings for IOLinc to other types of accessories (e.g. curtains, sprinkler control & garage door openers).
+- Create configurable mappings for IOLinc to other types of accessories (e.g. curtains, sprinkler control & garage door openers)
 
 ### Future Work:
 
-- Add NodeServer support. May implement or may implement in ISY-JS only, as using native homebridge plugins may be better solution. E.g. for nest devices, you would use a Nest NodeServer to integrate with the ISY, and the Nest homebridge plugin to integrate with HomeKit.
+- Add NodeServer support. May implement or may implement in ISY-nodejs only, as using native homebridge plugins may be better solution. E.g. for nest devices, you would use a Nest NodeServer to integrate with the ISY, and the Nest homebridge plugin to integrate with HomeKit.
 
 -----------
 
@@ -41,36 +57,21 @@ Requires Homebridge Beta. Please see revised installation notes below.
 
 1. Install homebridge using: npm install -g homebridge@beta
 2. Install this plugin using: npm install -g homebridge-isy
-3. Update your configuration file. See sampleconfig.json in this repository for a sample.
+3. Update your configuration file. See sampleconfig.json in this repository for a sample. Please note that the platform name has been changed to "ISY".
 
---------
-
-# Old Readme
-
-ISY-994 REST / WebSockets based HomeBridge platform.
-
-NOTE: Homebridge-isy-js now includes support for garage door openers. Make sure you ensure a garage door is clear before closing it.
-
-Supports the following Insteon devices: Lights (dimmable and non-dimmable), Fans, Outlets, Door/Window Sensors, MorningLinc locks, Inline Lincs, Motion Sensors and I/O Lincs.
-Also supports ZWave based locks. If elkEnabled is set to true then this will also expose your Elk Alarm Panel and all of your Elk Sensors.
-
-Turns out that HomeBridge platforms can only return a maximum of 100 devices. So if you end up exposing more then 100 devices through HomeBridge the HomeKit
-software will fail adding the HomeBridge to your HomeKit network. To address this issue this platform provides an option to screen out devices based on
-criteria specified in the config.
+IMPORTANT NOTE: Since the package and platform names are different (and the way accessory IDs are assigned), you can have both original version [homebridge-isy-js](https://www.npmjs.com/package/homebridge-isy-js) and homebridge-isy installed (you will have two platform sections (one ISY and the other isy-js) your homebridge config). this is something I recommend if you have a lot of devices configured currently, and anything like the garage door opener/locks/elk that need to be tested. This way, you can wait to uninstall the old version once you've got everything configured and working correctly.
 
 ## Requirements
 
-Only the ISY 994 and newer devices running 5.0.12+ are supported. The ISY 99i device is no longer supported as this library depends on a later version of the REST/Websocket interface.
+Only the ISY 994 and newer devices running 5.0.16+ are supported. The ISY 99i device is no longer supported as this library depends on a later version of the REST/Websocket interface.
 
 ## Configuration
 
-Configuration sample:
-
- ```
+Configuration sample (please refer to the homebridge-config-ui-x readme to add a section for that, and refer to the above if you want to add an additional section for homebridge-isy-js):
      "platforms": [
         {
-            "platform": "isy-js",
-            "name": "isy-js",
+            "platform": "ISY",
+            "name": "ISY",
             "host": "10.0.1.12",
             "username": "admin",
             "password": "password",
@@ -85,17 +86,31 @@ Configuration sample:
                 { "address": "17 79 81 1", "name": "Garage Door", "timeToOpen": 12000 }
             ],
             "ignoreDevices": [
-                { "nameContains": "ApplianceLinc", "lastAddressDigit": "", "address": ""},
-                { "nameContains": "Bedroom.Side Gate", "lastAddressDigit": "", "address": ""},
-                { "nameContains": "Remote", "lastAddressDigit": "", "address": "" },
-                { "nameContains": "Keypad", "lastAddressDigit": "2", "address": "" },
-            ]
+                { "nameContains": "ApplianceLinc"},
+                { "address": "17 79 81 A"},
+                { "family": "ZigBee" },
+                { "folder": "Linking Scenes" },
+                { "nodeDef": "KeypadButton_ADV" },
+                { "nameContains": "Keypad", "lastAddressDigit": "2" }
+            ],
             "renameDevices": [
                 { "nameContains": "BadName", "newName": "Good name" }
-            ]
+            ],
+             "transformNames": {
+             "remove": [
+                 "Dimmer",
+                 "Switch",
+                 "Fan "
+             ],
+             "replace": [{
+                 "replace": ".",
+                 "with": " "
+             }]
+         }
+
         }
      ]
-```
+
 
 Fields:
 * "platform" - Must be set to isy-js

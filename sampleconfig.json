@@ -89,7 +89,18 @@
                 "lastAddressDigit": "8",
                 "address": ""
             }
-        ]
+        ],
+         "transformNames": {
+             "remove": [
+                 "Dimmer",
+                 "Switch",
+                 "Fan "
+             ],
+             "replace": [{
+                 "replace": ".",
+                 "with": " "
+             }]
+         }
     }],
 
     "accessories": []
