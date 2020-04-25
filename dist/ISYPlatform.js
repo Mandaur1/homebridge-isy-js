@@ -12,13 +12,13 @@ const ISYDimmerAccessory_1 = require("./ISYDimmerAccessory");
 
 const ISYDoorWindowSensorAccessory_1 = require("./ISYDoorWindowSensorAccessory");
 
-const ISYLeakSensorAccessory_1 = require("./ISYLeakSensorAccessory");
-
 const ISYElkAlarmPanelAccessory_1 = require("./ISYElkAlarmPanelAccessory");
 
 const ISYFanAccessory_1 = require("./ISYFanAccessory");
 
 const ISYGarageDoorAccessory_1 = require("./ISYGarageDoorAccessory");
+
+const ISYLeakSensorAccessory_1 = require("./ISYLeakSensorAccessory");
 
 const ISYLockAccessory_1 = require("./ISYLockAccessory");
 
@@ -29,6 +29,8 @@ const ISYOutletAccessory_1 = require("./ISYOutletAccessory");
 const ISYRelayAccessory_1 = require("./ISYRelayAccessory");
 
 const ISYSceneAccessory_1 = require("./ISYSceneAccessory");
+
+const ISYSmokeSensorAccessory_1 = require("./ISYSmokeSensorAccessory");
 
 const ISYThermostatAccessory_1 = require("./ISYThermostatAccessory");
 
@@ -244,7 +246,7 @@ class ISYPlatform {
 
   async createAccessories() {
     const that = this;
-    await this.isy.initialize(() => {
+    await this.isy.initialize(() => true).then(() => {
       const results = [];
       that.log(`Accessories to configure: ${this.accessoriesToConfigure.size}`);
       const deviceList = that.isy.deviceList;
@@ -320,13 +322,17 @@ class ISYPlatform {
 
   createAccessory(device) {
     if (device instanceof isy_nodejs_1.InsteonDimmableDevice) {
-      return new ISYDimmerAccessory_1.InsteonDimmableAccessory(device);
+      return new ISYDimmerAccessory_1.ISYDimmableAccessory(device);
     } else if (device instanceof isy_nodejs_1.InsteonRelayDevice) {
       return new ISYRelayAccessory_1.ISYRelayAccessory(device);
     } else if (device instanceof isy_nodejs_1.InsteonLockDevice) {
       return new ISYLockAccessory_1.ISYLockAccessory(device);
     } else if (device instanceof isy_nodejs_1.InsteonOutletDevice) {
       return new ISYOutletAccessory_1.ISYOutletAccessory(device);
+    } else if (device instanceof isy_nodejs_1.InsteonLeakSensorDevice) {
+      return new ISYLeakSensorAccessory_1.ISYLeakSensorAccessory(device);
+    } else if (device instanceof isy_nodejs_1.InsteonSmokeSensorDevice) {
+      return new ISYSmokeSensorAccessory_1.ISYSmokeSensorAccessory(device);
     } else if (device instanceof isy_nodejs_1.InsteonFanDevice) {
       return new ISYFanAccessory_1.ISYFanAccessory(device);
     } else if (device instanceof isy_nodejs_1.InsteonDoorWindowSensorDevice) {

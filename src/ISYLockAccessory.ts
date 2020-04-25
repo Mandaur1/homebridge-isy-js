@@ -36,7 +36,7 @@ export class ISYLockAccessory extends ISYDeviceAccessory<InsteonLockDevice,Categ
 		this.getLockCurrentState(callback);
 	}
 	// Mirrors change in the state of the underlying isy-nodejs device object.
-	public handleExternalChange(propertyName, value, formattedValue) {
+	public handlePropertyChange(propertyName, value, oldValue, formattedValue) {
 		this.lockService.updateCharacteristic(Characteristic.LockTargetState, this.getDeviceCurrentStateAsHK());
 		this.lockService.updateCharacteristic(Characteristic.LockCurrentState, this.getDeviceCurrentStateAsHK());
 	}

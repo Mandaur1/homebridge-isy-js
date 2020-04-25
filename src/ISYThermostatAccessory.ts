@@ -50,8 +50,8 @@ export class ISYThermostatAccessory extends ISYDeviceAccessory<InsteonThermostat
 		callback(null, this.device.humidity);
 	}
 	// Mirrors change in the state of the underlying isy-nodejs device object.
-	public handleExternalChange(propertyName: string, value: any, oldValue: any, formattedValue: string) {
-		super.handleExternalChange(propertyName, value, oldValue, formattedValue);
+	public handlePropertyChange(propertyName: string, value: any, oldValue: any, formattedValue: string) {
+		super.handlePropertyChange(propertyName, value, oldValue, formattedValue);
 		switch (propertyName) {
 			case Props.Climate.Temperature:
 				this.primaryService.getCharacteristic(Characteristic.CurrentTemperature).updateValue(this.toCelsius(this.device.currentTemperature));

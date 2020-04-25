@@ -1,4 +1,4 @@
-import { Categories, Characteristic, Service } from 'hap-nodejs';
+import { Categories, Characteristic, Service, WithUUID } from 'hap-nodejs';
 import { InsteonDimmableDevice, InsteonRelayDevice } from 'isy-nodejs';
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
 import './utils';
@@ -12,11 +12,15 @@ export class ISYRelayAccessory<T extends InsteonRelayDevice> extends ISYDeviceAc
 
 	}
 
-	public map(propertyName: keyof T): { characteristic: typeof Characteristic, service: Service; } {
-		const o = super.map(propertyName);
-		if (o) {
+	public map(propertyName: keyof T, propertyValue: any){
+		const o = super.map(propertyName, propertyValue);
+		if(propertyName === 'ST')
+		{
 			o.characteristic = Characteristic.On;
+			o.service = this.primaryService;
+			o.characteristicValue = this.device.isOn;
 		}
+
 		return o;
 	}
 

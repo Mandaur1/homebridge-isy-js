@@ -29,7 +29,7 @@ class ISYSceneAccessory extends ISYAccessory_1.ISYAccessory {
   // Mirrors change in the state of the underlying isj-js device object.
 
 
-  handleExternalChange(propertyName, value, formattedValue) {
+  handlePropertyChange(propertyName, value, oldValue, formattedValue) {
     this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.On).updateValue(this.scene.isOn);
 
     if (this.dimmable) {

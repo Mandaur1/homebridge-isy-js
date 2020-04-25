@@ -21,11 +21,13 @@ class ISYRelayAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
     this.dimmable = device instanceof isy_nodejs_1.InsteonDimmableDevice;
   }
 
-  map(propertyName) {
-    const o = super.map(propertyName);
+  map(propertyName, propertyValue) {
+    const o = super.map(propertyName, propertyValue);
 
-    if (o) {
+    if (propertyName === 'ST') {
       o.characteristic = hap_nodejs_1.Characteristic.On;
+      o.service = this.primaryService;
+      o.characteristicValue = this.device.isOn;
     }
 
     return o;

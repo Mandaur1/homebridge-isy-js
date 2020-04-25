@@ -42,7 +42,7 @@ class ISYLockAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
   } // Mirrors change in the state of the underlying isy-nodejs device object.
 
 
-  handleExternalChange(propertyName, value, formattedValue) {
+  handlePropertyChange(propertyName, value, oldValue, formattedValue) {
     this.lockService.updateCharacteristic(hap_nodejs_1.Characteristic.LockTargetState, this.getDeviceCurrentStateAsHK());
     this.lockService.updateCharacteristic(hap_nodejs_1.Characteristic.LockCurrentState, this.getDeviceCurrentStateAsHK());
   } // Returns the set of services supported by this object.

@@ -7,7 +7,7 @@ export declare class ISYSceneAccessory extends ISYAccessory<ISYScene, Categories
     scene: ISYScene;
     constructor(scene: ISYScene);
     identify(): void;
-    handleExternalChange(propertyName: string, value: any, formattedValue: string): void;
+    handlePropertyChange(propertyName: string, value: any, oldValue: any, formattedValue: string): void;
     getPowerState(callback: (...any: any[]) => void): void;
     setupServices(): void;
 }

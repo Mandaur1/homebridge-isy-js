@@ -12,7 +12,7 @@ Fork of homebridge-isy-js by [rodtoll](https://github.com/rodtoll/homebridge-isy
 
 Requires [Homebridge Beta](https://github.com/homebridge/homebridge/tree/beta). Please see revised installation notes below.
 
-### New Functionality:
+### New Functionality
 
 - Support for ISY 5.0.16+
 

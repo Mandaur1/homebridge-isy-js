@@ -63,8 +63,8 @@ class ISYThermostatAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
   } // Mirrors change in the state of the underlying isy-nodejs device object.
 
 
-  handleExternalChange(propertyName, value, oldValue, formattedValue) {
-    super.handleExternalChange(propertyName, value, oldValue, formattedValue);
+  handlePropertyChange(propertyName, value, oldValue, formattedValue) {
+    super.handlePropertyChange(propertyName, value, oldValue, formattedValue);
 
     switch (propertyName) {
       case isy_nodejs_1.Props.Climate.Temperature:

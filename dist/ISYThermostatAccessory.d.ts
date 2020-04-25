@@ -14,7 +14,7 @@ export declare class ISYThermostatAccessory extends ISYDeviceAccessory<InsteonTh
     getOperatingMode(callback: (...any: any[]) => void): void;
     getFanMode(callback: (...any: any[]) => void): void;
     getHumidity(callback: (...any: any[]) => void): void;
-    handleExternalChange(propertyName: string, value: any, oldValue: any, formattedValue: string): void;
+    handlePropertyChange(propertyName: string, value: any, oldValue: any, formattedValue: string): void;
     setupServices(): void;
     setCoolSetPoint(temp: number, callback: (...any: any[]) => void): void;
     setHeatSetPoint(temp: number, callback: (...any: any[]) => void): void;

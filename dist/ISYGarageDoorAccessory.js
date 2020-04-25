@@ -109,8 +109,8 @@ class ISYGarageDoorAccessory extends ISYAccessory_1.ISYAccessory {
   } // Mirrors change in the state of the underlying isj-js device object.
 
 
-  handleExternalChange(propertyName, value, oldValue, formattedValue) {
-    super.handleExternalChange(propertyName, value, oldValue, formattedValue);
+  handlePropertyChange(propertyName, value, oldValue, formattedValue) {
+    super.handlePropertyChange(propertyName, value, oldValue, formattedValue);
 
     if (this.getSensorState()) {
       if (this.currentGarageState === hap_nodejs_1.Characteristic.CurrentDoorState.OPEN) {

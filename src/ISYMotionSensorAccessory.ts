@@ -31,27 +31,26 @@ export class ISYMotionSensorAccessory extends ISYDeviceAccessory<InsteonMotionSe
 		this.category = Categories.SENSOR;
 	}
 
-	public map(propertyName: string): { characteristic: typeof Characteristic, service: Service; } {
+	public map(propertyName: string, propertyValue: any){
+		//let o = super(propertyValue,propertyValue);
 		switch (propertyName) {
 			case 'CLITEMP':
-				return { characteristic: Characteristic.CurrentTemperature, service: this.temperatureSensorService };
+				return { characteristicValue: toCelsius(propertyValue), characteristic: Characteristic.CurrentTemperature, service: this.temperatureSensorService };
 			case 'BATLVL':
-				return { characteristic: Characteristic.BatteryLevel, service: this.batteryLevelService };
+				return { characteristicValue: propertyValue, characteristic: Characteristic.BatteryLevel, service: this.batteryLevelService };
 			case 'ST':
-				return { characteristic: Characteristic.Active, service: this.informationService };
+				return { characteristicValue: propertyValue, characteristic: Characteristic.Active, service: this.informationService };
 			case 'LUMIN':
-				return { characteristic: Characteristic.CurrentTemperature, service: this.lightSensorService };
+				return { characteristicValue: propertyValue, characteristic: Characteristic.CurrentTemperature, service: this.lightSensorService };
 			case 'motionDetected':
-				return { characteristic: Characteristic.MotionDetected, service: this.motionSensorService };
+				return { characteristicValue: propertyValue, characteristic: Characteristic.MotionDetected, service: this.motionSensorService };
 		}
 		return null;
 
 	}
 	// Handles the identify command.
 	// Handles the request to get he current motion sensor state.
-	public getCurrentMotionSensorState(callback: (...any: any[]) => void) {
-		callback(null, this.device.isMotionDetected);
-	}
+	
 	// Mirrors change in the state of the underlying isj-js device object.
 	/*ublic handleExternalChange(propertyName: string, value: any, formattedValue: string) {
 		super.handleExternalChange(propertyName, value, formattedValue);

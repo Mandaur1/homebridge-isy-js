@@ -19,7 +19,7 @@ export interface LoggerLike extends Partial<log4js.Logger> {
 }
 declare module 'homebridge/lib/platformAccessory' {
     interface PlatformAccessory {
-        getOrAddService(service: WithUUID<typeof Service>): Service;
+        getOrAddService<T extends WithUUID<typeof Service>>(service: T): Service;
     }
 }
 declare module 'homebridge/lib/logger' {

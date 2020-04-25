@@ -43,9 +43,8 @@ class ISYAccessory {
     this.device = device;
     this.address = device.address;
     this.context = new AccessoryContext();
-    this.context.address = this.address; // this.getServices();
-
-    this.device.on('PropertyChanged', this.handleExternalChange.bind(this));
+    this.context.address = this.address;
+    this.device.on('PropertyChanged', this.handlePropertyChange.bind(this));
   } // tslint:disable-next-line: ban-types
 
 
@@ -53,22 +52,20 @@ class ISYAccessory {
     return func.bind(this.device);
   }
 
-  map(propertyName) {
-    var _a;
-
-    let output = null;
-
+  map(propertyName, propertyValue) {
+    //let output = {characteristic: Characteristic, service: typeof Service};
     if (propertyName === 'ST') {
-      output = {
-        characteristic: hap_nodejs_1.Characteristic.On
+      return {
+        characteristicValue: propertyValue,
+        characteristic: hap_nodejs_1.Characteristic.On,
+        service: this.primaryService
       };
     }
 
-    if (output) {
-      output.service = (_a = output.service, _a !== null && _a !== void 0 ? _a : this.primaryService);
-    }
-
-    return output;
+    return {
+      characteristicValue: propertyValue,
+      service: this.primaryService
+    };
   }
 
   configure(accessory) {
@@ -80,14 +77,15 @@ class ISYAccessory {
       this.platformAccessory = accessory;
       this.platformAccessory.context.address = this.address;
       this.logger.info('Configuring linked platform accessory');
-      this.setupServices();
     } else {
       this.platformAccessory = new platformAccessory_1.PlatformAccessory(this.displayName, this.UUID, this.category);
       this.platformAccessory.context.address = this.address;
       this.logger.info('New platform accessory needed');
-      this.setupServices();
-      this.platformAccessory.on('identify', () => this.identify.bind(this));
     }
+
+    this.setupServices();
+    this.primaryService.isPrimaryService = true;
+    this.platformAccessory.on('identify', () => this.identify.bind(this));
   }
 
   setupServices() {
@@ -100,23 +98,23 @@ class ISYAccessory {
     this.informationService.getCharacteristic(hap_nodejs_1.Characteristic.FirmwareRevision).updateValue((_d = this.device.version, _d !== null && _d !== void 0 ? _d : '1.0')); // .setCharacteristic(Characteristic.ProductData, this.device.address);
   }
 
-  handleExternalChange(propertyName, value, oldValue, formattedValue) {
-    var _a;
-
+  handlePropertyChange(propertyName, value, oldValue, formattedValue) {
     const name = propertyName in isy_nodejs_1.Controls ? isy_nodejs_1.Controls[propertyName].label : propertyName;
     this.logger.debug(`Incoming update to ${name}. New Value: ${value} (${formattedValue}) Old Value: ${oldValue}`);
-    const m = this.map(propertyName);
+    const m = this.map(propertyName, value);
 
-    if ((_a = m) === null || _a === void 0 ? void 0 : _a.characteristic) {
-      this.logger.debug('Property mapped to: ', m.service.name, m.characteristic.name);
-      this.updateCharacteristicValue(value, m.characteristic, m.service);
+    if (m.characteristic) {
+      this.logger.debug('Property mapped to:', m.service.name, m.characteristic.name);
+      this.updateCharacteristicValue(m.characteristicValue, m.characteristic, m.service);
+    } else {
+      this.logger.info('Property not mapped.');
     }
   }
 
   updateCharacteristicValue(value, characteristic, service = this.primaryService) {
     var _a;
 
-    (_a = service.getCharacteristic(characteristic.name)) === null || _a === void 0 ? void 0 : _a.updateValue(value);
+    (_a = service.getCharacteristic(characteristic)) === null || _a === void 0 ? void 0 : _a.updateValue(value);
   }
 
   convertToHK(propertyName, value) {

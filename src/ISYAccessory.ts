@@ -54,20 +54,16 @@ export class ISYAccessory<T extends ISYNode, TCategory extends Categories> {
 		this.address = device.address;
 		this.context = new AccessoryContext();
 		this.context.address = this.address;
-		this.getServices();
-		this.device.on('PropertyChanged', this.handleExternalChange.bind(this));
+		this.device.on('PropertyChanged', this.handlePropertyChange.bind(this));
 	}
 
-	public map(propertyName: keyof T): {characteristic: typeof Characteristic, service: Service} {
-		let output = null;
+	public map(propertyName: keyof T, propertyValue: any): { characteristicValue: CharacteristicValue, characteristic?: WithUUID<new () => Characteristic>, service: Service} {
+		//let output = {characteristic: Characteristic, service: typeof Service};
 		if (propertyName === 'ST') {
-			output = {characteristic : Characteristic.On};
+			return {characteristicValue: propertyValue, characteristic: Characteristic.On, service: this.primaryService};
+		}
 
-		}
-		if (output) {
-			output.service = output.service ?? this.primaryService;
-		}
-		return output;
+		return { characteristicValue: propertyValue, service: this.primaryService};
 	}
 
 	public configure(accessory?: PlatformAccessory) {
@@ -78,16 +74,16 @@ export class ISYAccessory<T extends ISYNode, TCategory extends Categories> {
 			this.platformAccessory = accessory;
 			this.platformAccessory.context.address = this.address;
 			this.logger.info('Configuring linked platform accessory');
-			this.setupServices();
 
 		} else {
 			this.platformAccessory = new PlatformAccessory(this.displayName, this.UUID, this.category);
-
 			this.platformAccessory.context.address = this.address;
 			this.logger.info('New platform accessory needed');
-			this.setupServices();
-			this.platformAccessory.on('identify', () => this.identify.bind(this));
+
 		}
+		this.setupServices();
+		this.primaryService.isPrimaryService = true;
+		this.platformAccessory.on('identify', () => this.identify.bind(this));
 	}
 
 	public setupServices() {
@@ -102,19 +98,23 @@ export class ISYAccessory<T extends ISYNode, TCategory extends Categories> {
 
 	}
 
-	public handleExternalChange(propertyName: string, value: any, oldValue: any, formattedValue: string) {
+	public handlePropertyChange(propertyName: string, value: any, oldValue: any, formattedValue: string) {
 		const name = propertyName in Controls ? Controls[propertyName].label : propertyName;
 		this.logger.debug(`Incoming update to ${name}. New Value: ${value} (${formattedValue}) Old Value: ${oldValue}`);
-		const m = this.map(propertyName);
-		if (m?.characteristic) {
-			this.logger.debug('Property mapped to: ',m.service.name, m.characteristic.name);
-			this.updateCharacteristicValue(value, m.characteristic, m.service);
+		const m = this.map(propertyName,value);
+		if (m.characteristic) {
+			this.logger.debug('Property mapped to:',m.service.name, m.characteristic.name);
+			this.updateCharacteristicValue(m.characteristicValue, m.characteristic, m.service);
+		}
+		else
+		{
+			this.logger.info('Property not mapped.')
 		}
 
 	}
 
-	public updateCharacteristicValue(value: CharacteristicValue, characteristic: typeof Characteristic, service: Service = this.primaryService) {
-		service.getCharacteristic(characteristic.name)?.updateValue(value);
+	public updateCharacteristicValue(value: CharacteristicValue, characteristic:  WithUUID<new () => Characteristic>, service: Service = this.primaryService) {
+		service.getCharacteristic(characteristic)?.updateValue(value);
 
 	}
 

@@ -99,8 +99,8 @@ export class ISYGarageDoorAccessory extends ISYAccessory<InsteonRelayDevice, Cat
 		}
 	}
 	// Mirrors change in the state of the underlying isj-js device object.
-	public handleExternalChange(propertyName, value, oldValue, formattedValue) {
-		super.handleExternalChange(propertyName, value, oldValue, formattedValue);
+	public handlePropertyChange(propertyName, value, oldValue, formattedValue) {
+		super.handlePropertyChange(propertyName, value, oldValue, formattedValue);
 		if (this.getSensorState()) {
 			if (this.currentGarageState === Characteristic.CurrentDoorState.OPEN) {
 				this.logger.info(`GARAGE:  ${this.device.name}Current state of door is open and now sensor matches. No action to take`);

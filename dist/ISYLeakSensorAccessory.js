@@ -16,20 +16,25 @@ class ISYLeakSensorAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
     this.doorWindowState = false;
   } // Handles the identify command.
   // Translates the state of the underlying device object into the corresponding homekit compatible state
-  // Mirrors change in the state of the underlying isj-js device object.
 
 
-  handleExternalChange(propertyName, value, oldValue, formattedValue) {
-    super.handleExternalChange(propertyName, value, oldValue, formattedValue);
-    this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.CurrentDoorState).updateValue(!this.device.leakDetected ? 1 : 0);
+  map(propertyName, propertyValue) {
+    const o = super.map(propertyName, propertyValue);
+    o.characteristic = hap_nodejs_1.Characteristic.LeakDetected;
+    return o;
+  } // Mirrors change in the state of the underlying isj-js device object.
+
+
+  handlePropertyChange(propertyName, value, oldValue, formattedValue) {
+    super.handlePropertyChange(propertyName, value, oldValue, formattedValue);
   } // Returns the set of services supported by this object.
 
 
   setupServices() {
     super.setupServices();
-    const sensorService = this.platformAccessory.getOrAddService(hap_nodejs_1.Service.ContactSensor);
+    const sensorService = this.platformAccessory.getOrAddService(hap_nodejs_1.Service.LeakSensor);
     this.primaryService = sensorService;
-    sensorService.getCharacteristic(hap_nodejs_1.Characteristic.ContactSensorState).onGet(() => this.device.leakDetected);
+    sensorService.getCharacteristic(hap_nodejs_1.Characteristic.LeakDetected).onGet(() => this.device.leakDetected);
   }
 
 }

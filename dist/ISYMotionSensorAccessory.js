@@ -44,34 +44,40 @@ class ISYMotionSensorAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
     ;
   }
 
-  map(propertyName) {
+  map(propertyName, propertyValue) {
+    //let o = super(propertyValue,propertyValue);
     switch (propertyName) {
       case 'CLITEMP':
         return {
+          characteristicValue: utils_1.toCelsius(propertyValue),
           characteristic: hap_nodejs_1.Characteristic.CurrentTemperature,
           service: this.temperatureSensorService
         };
 
       case 'BATLVL':
         return {
+          characteristicValue: propertyValue,
           characteristic: hap_nodejs_1.Characteristic.BatteryLevel,
           service: this.batteryLevelService
         };
 
       case 'ST':
         return {
+          characteristicValue: propertyValue,
           characteristic: hap_nodejs_1.Characteristic.Active,
           service: this.informationService
         };
 
       case 'LUMIN':
         return {
+          characteristicValue: propertyValue,
           characteristic: hap_nodejs_1.Characteristic.CurrentTemperature,
           service: this.lightSensorService
         };
 
       case 'motionDetected':
         return {
+          characteristicValue: propertyValue,
           characteristic: hap_nodejs_1.Characteristic.MotionDetected,
           service: this.motionSensorService
         };
@@ -80,11 +86,7 @@ class ISYMotionSensorAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
     return null;
   } // Handles the identify command.
   // Handles the request to get he current motion sensor state.
-
-
-  getCurrentMotionSensorState(callback) {
-    callback(null, this.device.isMotionDetected);
-  } // Mirrors change in the state of the underlying isj-js device object.
+  // Mirrors change in the state of the underlying isj-js device object.
 
   /*ublic handleExternalChange(propertyName: string, value: any, formattedValue: string) {
       super.handleExternalChange(propertyName, value, formattedValue);

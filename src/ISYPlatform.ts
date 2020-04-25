@@ -1,20 +1,22 @@
-import { API, APIEvent, DynamicPlatformPlugin} from 'homebridge';
+import { LeakSensor } from 'hap-nodejs/dist/lib/gen/HomeKit';
+import { API, APIEvent, DynamicPlatformPlugin } from 'homebridge';
 import { Logger, Logging } from 'homebridge/lib/logger';
 import { PlatformAccessory } from 'homebridge/lib/platformAccessory';
-import { ElkAlarmSensorDevice, InsteonDimmableDevice, InsteonDoorWindowSensorDevice, InsteonFanDevice, InsteonLockDevice, InsteonMotionSensorDevice, InsteonOutletDevice, InsteonRelayDevice, InsteonLeakSensorDevice, InsteonThermostatDevice, ISY, ISYDevice, ISYNode, ISYScene } from 'isy-nodejs';
+import { ElkAlarmSensorDevice, InsteonDimmableDevice, InsteonDoorWindowSensorDevice, InsteonFanDevice, InsteonLeakSensorDevice, InsteonLockDevice, InsteonMotionSensorDevice, InsteonOutletDevice, InsteonRelayDevice, InsteonSmokeSensorDevice, InsteonThermostatDevice, ISY, ISYDevice, ISYNode, ISYScene } from 'isy-nodejs';
 import { IgnoreDeviceRule, PlatformConfig } from '../typings/config';
 import { ISYAccessory } from './ISYAccessory';
-import { InsteonDimmableAccessory } from './ISYDimmerAccessory';
+import { ISYDimmableAccessory } from './ISYDimmerAccessory';
 import { ISYDoorWindowSensorAccessory } from './ISYDoorWindowSensorAccessory';
-import { ISYLeakSensorAccessory } from './ISYLeakSensorAccessory';
 import { ISYElkAlarmPanelAccessory } from './ISYElkAlarmPanelAccessory';
 import { ISYFanAccessory } from './ISYFanAccessory';
 import { ISYGarageDoorAccessory } from './ISYGarageDoorAccessory';
+import { ISYLeakSensorAccessory } from './ISYLeakSensorAccessory';
 import { ISYLockAccessory } from './ISYLockAccessory';
 import { ISYMotionSensorAccessory } from './ISYMotionSensorAccessory';
 import { ISYOutletAccessory } from './ISYOutletAccessory';
 import { ISYRelayAccessory } from './ISYRelayAccessory';
 import { ISYSceneAccessory } from './ISYSceneAccessory';
+import { ISYSmokeSensorAccessory } from './ISYSmokeSensorAccessory';
 import { ISYThermostatAccessory } from './ISYThermostatAccessory';
 import { PlatformName, PluginName } from './plugin';
 import './utils';
@@ -70,9 +72,9 @@ export class ISYPlatform implements DynamicPlatformPlugin {
 			self.log('ISY API Initialized');
 			self.log('Homebridge API Version', self.homebridge.version);
 			self.log('Homebridge Server Version', self.homebridge.serverVersion);
-			self.log('ISY Host Address',self.host);
-			self.log('ISY Model',self.isy.model);
-			self.log('ISY Firmware Version',self.isy.serverVersion);
+			self.log('ISY Host Address', self.host);
+			self.log('ISY Model', self.isy.model);
+			self.log('ISY Firmware Version', self.isy.serverVersion);
 			self.logger(`Total Accessories: ${this.accessories.length}`);
 			self.logger(`Total Accessories Identified: ${this.accessoriesWrappers.size}`);
 			self.logger(`Accessories to Register: ${this.accessoriesToRegister.length}`);
@@ -234,7 +236,7 @@ export class ISYPlatform implements DynamicPlatformPlugin {
 	// Calls the isy-nodejs library, retrieves the list of devices, and maps them to appropriate ISYXXXXAccessory devices.
 	public async createAccessories() {
 		const that = this;
-		await this.isy.initialize(() => {
+		await this.isy.initialize(() => true).then(() => {
 			const results: Array<ISYAccessory<any, any>> = [];
 			that.log(`Accessories to configure: ${this.accessoriesToConfigure.size}`);
 			const deviceList = that.isy.deviceList;
@@ -314,13 +316,17 @@ export class ISYPlatform implements DynamicPlatformPlugin {
 	public createAccessory(device: ISYDevice<any>): ISYAccessory<any, any> {
 
 		if (device instanceof InsteonDimmableDevice) {
-			return new InsteonDimmableAccessory(device);
+			return new ISYDimmableAccessory(device);
 		} else if (device instanceof InsteonRelayDevice) {
 			return new ISYRelayAccessory(device);
 		} else if (device instanceof InsteonLockDevice) {
 			return new ISYLockAccessory(device);
 		} else if (device instanceof InsteonOutletDevice) {
 			return new ISYOutletAccessory(device);
+		} else if (device instanceof InsteonLeakSensorDevice) {
+			return new ISYLeakSensorAccessory(device);
+		} else if (device instanceof InsteonSmokeSensorDevice) {
+			return new ISYSmokeSensorAccessory(device);
 		} else if (device instanceof InsteonFanDevice) {
 			return new ISYFanAccessory(device);
 		} else if (device instanceof InsteonDoorWindowSensorDevice) {
@@ -331,8 +337,7 @@ export class ISYPlatform implements DynamicPlatformPlugin {
 			return new ISYMotionSensorAccessory(device);
 		} else if (device instanceof InsteonThermostatDevice) {
 			return new ISYThermostatAccessory(device);
-		}
-		else if (device instanceof InsteonLeakSensorDevice) {
+		} else if (device instanceof InsteonLeakSensorDevice) {
 			return new ISYLeakSensorAccessory(device);
 		}
 		return null;

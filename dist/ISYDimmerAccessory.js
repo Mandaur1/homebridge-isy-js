@@ -10,7 +10,7 @@ const ISYRelayAccessory_1 = require("./ISYRelayAccessory");
 
 require("./utils");
 
-class InsteonDimmableAccessory extends ISYRelayAccessory_1.ISYRelayAccessory {
+class ISYDimmableAccessory extends ISYRelayAccessory_1.ISYRelayAccessory {
   constructor(device) {
     super(device);
     this.category = 5
@@ -20,19 +20,20 @@ class InsteonDimmableAccessory extends ISYRelayAccessory_1.ISYRelayAccessory {
   // Handles request to set the current powerstate from homekit. Will ignore redundant commands.
 
 
-  map(propertyName) {
-    const o = super.map(propertyName);
+  map(propertyName, propertyValue) {
+    const o = super.map(propertyName, propertyValue);
 
     if (o) {
       o.characteristic = hap_nodejs_1.Characteristic.Brightness;
+      o.characteristicValue = propertyValue;
     }
 
     return o;
   } // Mirrors change in the state of the underlying isj-js device object.
 
 
-  handleExternalChange(propertyName, value, oldValue, formattedValue) {
-    super.handleExternalChange(propertyName, value, oldValue, formattedValue);
+  handlePropertyChange(propertyName, value, oldValue, formattedValue) {
+    super.handlePropertyChange(propertyName, value, oldValue, formattedValue);
     this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.On).updateValue(this.device.isOn); // this.a
     // this.primaryService.getCharacteristic(ch.name).updateValue(this.device[propertyName]);
   } // Handles request to get the current on state
@@ -54,9 +55,9 @@ class InsteonDimmableAccessory extends ISYRelayAccessory_1.ISYRelayAccessory {
     // this.primaryService.getCharacteristic(Characteristic.Brightness).updateValue(this.device['OL']);
 
     this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.Brightness).onGet(() => this.device.brightnessLevel);
-    this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.Brightness).onSet(this.bind(this.device.updateBrightnessLevel)); // this.primaryService.getCharacteristic(Characteristic.Brightness).setProps({maxValue: this.device.OL});
+    this.primaryService.getCharacteristic(hap_nodejs_1.Characteristic.Brightness).onSet(this.bind(this.device.updateBrightnessLevel)).updateValue(this.device.OL); // this.primaryService.getCharacteristic(Characteristic.Brightness).setProps({maxValue: this.device.OL});
   }
 
 }
 
-exports.InsteonDimmableAccessory = InsteonDimmableAccessory;
+exports.ISYDimmableAccessory = ISYDimmableAccessory;

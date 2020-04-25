@@ -11,7 +11,7 @@ export declare class ISYElkAlarmPanelAccessory extends ISYAccessory<ElkAlarmSens
     translateHKToAlarmTargetState(state: any): any;
     getAlarmTargetState(callback: any): void;
     getAlarmCurrentState(callback: any): void;
-    handleExternalChange(propertyName: string, value: any, oldValue: any, formattedValue: string): void;
+    handlePropertyChange(propertyName: string, value: any, oldValue: any, formattedValue: string): void;
     setupServices(): void;
 }
 //# sourceMappingURL=ISYElkAlarmPanelAccessory.d.ts.map

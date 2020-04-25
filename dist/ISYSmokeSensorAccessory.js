@@ -4,13 +4,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-require("./utils");
-
 const hap_nodejs_1 = require("homebridge/node_modules/hap-nodejs");
 
 const ISYDeviceAccessory_1 = require("./ISYDeviceAccessory");
 
-class ISYDoorWindowSensorAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
+class ISYSmokeSensorAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
   constructor(device) {
     super(device);
     this.doorWindowState = false;
@@ -21,7 +19,7 @@ class ISYDoorWindowSensorAccessory extends ISYDeviceAccessory_1.ISYDeviceAccesso
 
   map(propertyName, propertyValue) {
     const o = super.map(propertyName, propertyValue);
-    if (propertyName === 'ST') o.characteristic = hap_nodejs_1.Characteristic.ContactSensorState;
+    if (propertyName === 'ST') o.characteristic = hap_nodejs_1.Characteristic.SmokeDetected;
     return o;
   } // Mirrors change in the state of the underlying isj-js device object.
   // Returns the set of services supported by this object.
@@ -29,11 +27,11 @@ class ISYDoorWindowSensorAccessory extends ISYDeviceAccessory_1.ISYDeviceAccesso
 
   setupServices() {
     super.setupServices();
-    const sensorService = this.platformAccessory.getOrAddService(hap_nodejs_1.Service.ContactSensor);
+    const sensorService = this.platformAccessory.getOrAddService(hap_nodejs_1.Service.SmokeSensor);
     this.primaryService = sensorService;
-    sensorService.getCharacteristic(hap_nodejs_1.Characteristic.ContactSensorState).onGet(() => this.device.isOpen);
+    sensorService.getCharacteristic(hap_nodejs_1.Characteristic.SmokeDetected).onGet(() => this.device.smokeDetected);
   }
 
 }
 
-exports.ISYDoorWindowSensorAccessory = ISYDoorWindowSensorAccessory;
+exports.ISYSmokeSensorAccessory = ISYSmokeSensorAccessory;

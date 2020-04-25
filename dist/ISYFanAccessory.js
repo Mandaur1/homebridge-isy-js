@@ -23,16 +23,17 @@ class ISYFanAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
   // to the four isy-nodejs fan speed levels.
 
 
-  map(propertyName) {
-    super.map(propertyName);
-
+  map(propertyName, propertyValue) {
+    //super.map(propertyName,propertyValue);
     if (propertyName === 'motor.ST') {
       return {
+        characteristicValue: propertyValue,
         characteristic: hap_nodejs_1.Characteristic.RotationSpeed,
         service: this.fanService
       };
     } else if (propertyName === 'light.ST') {
       return {
+        characteristicValue: propertyValue,
         characteristic: hap_nodejs_1.Characteristic.Brightness,
         service: this.lightService
       };
@@ -40,11 +41,10 @@ class ISYFanAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
   } // Handles a request to get the current brightness level for dimmable lights.
 
 
-  handleExternalChange(propertyName, value, formattedValue) {
-    this.handleExternalChange(propertyName, value, formattedValue);
+  handlePropertyChange(propertyName, value, oldValue, formattedValue) {
+    super.handlePropertyChange(propertyName, value, oldValue, formattedValue);
     this.fanService.getCharacteristic(hap_nodejs_1.Characteristic.On).updateValue(this.device.motor.isOn);
-    this.lightService.getCharacteristic(hap_nodejs_1.Characteristic.On).updateValue(this.device.light.isOn);
-    this.fanService.getCharacteristic(hap_nodejs_1.Characteristic.RotationSpeed).updateValue(this.device.motor.fanSpeed);
+    this.lightService.getCharacteristic(hap_nodejs_1.Characteristic.On).updateValue(this.device.light.isOn); //this.fanService.getCharacteristic(Characteristic.RotationSpeed).updateValue(this.device.motor.fanSpeed);
   } // Mirrors change in the state of the underlying isj-js device object.
   // Returns the services supported by the fan device.
 

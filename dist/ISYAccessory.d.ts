@@ -1,4 +1,4 @@
-import { Categories, Characteristic, CharacteristicValue, Service } from 'hap-nodejs';
+import { Categories, Characteristic, CharacteristicValue, Service, WithUUID } from 'hap-nodejs';
 import { Logger } from 'homebridge/lib/logger';
 import { PlatformAccessory } from 'homebridge/lib/platformAccessory';
 import { ISYNode } from 'isy-nodejs';
@@ -19,14 +19,15 @@ export declare class ISYAccessory<T extends ISYNode, TCategory extends Categorie
     primaryService: Service;
     bind<TFunction extends Function>(func: TFunction): TFunction;
     constructor(device: T);
-    map(propertyName: keyof T): {
-        characteristic: typeof Characteristic;
+    map(propertyName: keyof T, propertyValue: any): {
+        characteristicValue: CharacteristicValue;
+        characteristic?: WithUUID<new () => Characteristic>;
         service: Service;
     };
     configure(accessory?: PlatformAccessory): void;
     setupServices(): void;
-    handleExternalChange(propertyName: string, value: any, oldValue: any, formattedValue: string): void;
-    updateCharacteristicValue(value: CharacteristicValue, characteristic: typeof Characteristic, service?: Service): void;
+    handlePropertyChange(propertyName: string, value: any, oldValue: any, formattedValue: string): void;
+    updateCharacteristicValue(value: CharacteristicValue, characteristic: WithUUID<new () => Characteristic>, service?: Service): void;
     convertToHK(propertyName: string, value: any): any;
     identify(): void;
 }

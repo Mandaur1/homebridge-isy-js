@@ -1,40 +1,26 @@
-import './utils';
-
 import { Categories, Characteristic, Service } from 'hap-nodejs';
-import { InsteonDoorWindowSensorDevice } from 'isy-nodejs';
-
+import { InsteonSmokeSensorDevice } from 'isy-nodejs';
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
-import { STATUS_FAULT_CTYPE } from 'hap-nodejs/dist/accessories/types';
-
-
-
-export class ISYDoorWindowSensorAccessory extends ISYDeviceAccessory<InsteonDoorWindowSensorDevice,Categories.SENSOR> {
-
-
-	constructor(device: InsteonDoorWindowSensorDevice) {
+export class ISYSmokeSensorAccessory extends ISYDeviceAccessory<InsteonSmokeSensorDevice, Categories.SENSOR> {
+	constructor (device: InsteonSmokeSensorDevice) {
 		super(device);
 		this.doorWindowState = false;
 	}
 	// Handles the identify command.
 	// Translates the state of the underlying device object into the corresponding homekit compatible state
-
 	// Handles the request to get he current door window state.
 	public map(propertyName, propertyValue) {
 		const o = super.map(propertyName, propertyValue);
-		if(propertyName === 'ST')
-			o.characteristic = Characteristic.ContactSensorState;
+		if (propertyName === 'ST')
+			o.characteristic = Characteristic.SmokeDetected;
 		return o;
 	}
-
 	// Mirrors change in the state of the underlying isj-js device object.
-
 	// Returns the set of services supported by this object.
 	public setupServices() {
 		super.setupServices();
-
-		const sensorService = this.platformAccessory.getOrAddService(Service.ContactSensor);
+		const sensorService = this.platformAccessory.getOrAddService(Service.SmokeSensor);
 		this.primaryService = sensorService;
-		sensorService.getCharacteristic(Characteristic.ContactSensorState).onGet(() => this.device.isOpen);
-
+		sensorService.getCharacteristic(Characteristic.SmokeDetected).onGet(() => this.device.smokeDetected);
 	}
 }
