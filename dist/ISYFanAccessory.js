@@ -50,17 +50,18 @@ class ISYFanAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
 
 
   setupServices() {
-    super.setupServices();
+    super.setupServices(); //this.platformAccessory.removeService(this.primaryService);
+
     const fanService = this.platformAccessory.getOrAddService(hap_nodejs_1.Service.Fan);
     this.fanService = fanService;
     const lightService = this.platformAccessory.getOrAddService(hap_nodejs_1.Service.Lightbulb);
     this.lightService = lightService;
-    fanService.getCharacteristic(hap_nodejs_1.Characteristic.RotationSpeed).onSet(this.device.motor.updateFanSpeed.bind(this.device.motor)).onGet(() => this.device.motor.fanSpeed).setProps({
+    fanService.getCharacteristic(hap_nodejs_1.Characteristic.RotationSpeed).onSet(this.device.motor.updateFanSpeed.bind(this.device.motor)).onGet((() => this.device.motor.fanSpeed).bind(this)).setProps({
       minStep: 25
     });
-    fanService.getCharacteristic(hap_nodejs_1.Characteristic.On).onSet(this.device.motor.updateIsOn.bind(this.device.motor)).onGet(() => this.device.motor.isOn);
-    lightService.getCharacteristic(hap_nodejs_1.Characteristic.On).onSet(this.device.light.updateIsOn.bind(this.device.light)).onGet(() => this.device.light.isOn);
-    lightService.getCharacteristic(hap_nodejs_1.Characteristic.Brightness).onSet(this.device.light.updateBrightnessLevel.bind(this.device.light)).onGet(() => this.device.light.brightnessLevel);
+    fanService.getCharacteristic(hap_nodejs_1.Characteristic.On).onSet(this.device.motor.updateIsOn.bind(this.device.motor)).onGet((() => this.device.motor.isOn).bind(this));
+    lightService.getCharacteristic(hap_nodejs_1.Characteristic.On).onSet(this.device.light.updateIsOn.bind(this.device.light)).onGet((() => this.device.light.isOn).bind(this));
+    lightService.getCharacteristic(hap_nodejs_1.Characteristic.Brightness).onSet(this.device.light.updateBrightnessLevel.bind(this.device.light)).onGet((() => this.device.light.brightnessLevel).bind(this));
     fanService.isPrimaryService = true;
     this.primaryService = fanService;
   }

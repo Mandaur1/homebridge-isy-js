@@ -113,7 +113,7 @@ export class ISYAccessory<T extends ISYNode, TCategory extends Categories> {
 
 	}
 
-	public updateCharacteristicValue(value: CharacteristicValue, characteristic:  WithUUID<new () => Characteristic>, service: Service = this.primaryService) {
+	public updateCharacteristicValue(value: CharacteristicValue, characteristic:  WithUUID<new () => Characteristic>, service: Service) {
 		service.getCharacteristic(characteristic)?.updateValue(value);
 
 	}

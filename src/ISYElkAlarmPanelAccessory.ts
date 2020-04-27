@@ -4,6 +4,7 @@ import { Categories, Characteristic, Service } from 'hap-nodejs';
 import { ElkAlarmSensorDevice } from 'isy-nodejs';
 
 import { ISYAccessory } from './ISYAccessory';
+import { AlarmMode } from 'isy-nodejs/lib/Devices/Elk/ElkAlarmPanelDevice';
 
 
 export class ISYElkAlarmPanelAccessory extends ISYAccessory<ElkAlarmSensorDevice,Categories.ALARM_SYSTEM> {
@@ -40,11 +41,11 @@ export class ISYElkAlarmPanelAccessory extends ISYAccessory<ElkAlarmSensorDevice
 		} else if (sourceAlarmState === this.device.ALARM_STATE_NOT_READY_TO_ARM || sourceAlarmState === this.device.ALARM_STATE_READY_TO_ARM || sourceAlarmState === this.device.ALARM_STATE_READY_TO_ARM_VIOLATION) {
 			return Characteristic.SecuritySystemCurrentState.DISARMED;
 		} else {
-			if (sourceAlarmMode === this.device.ALARM_MODE_STAY || sourceAlarmMode === this.device.ALARM_MODE_STAY_INSTANT) {
+			if (sourceAlarmMode === AlarmMode.STAY || sourceAlarmMode === AlarmMode.STAY_INSTANT) {
 				return Characteristic.SecuritySystemCurrentState.STAY_ARM;
-			} else if (sourceAlarmMode === this.device.ALARM_MODE_AWAY || sourceAlarmMode === this.device.ALARM_MODE_VACATION) {
+			} else if (sourceAlarmMode === AlarmMode.AWAY || sourceAlarmMode === AlarmMode.VACATION) {
 				return Characteristic.SecuritySystemCurrentState.AWAY_ARM;
-			} else if (sourceAlarmMode === this.device.ALARM_MODE_NIGHT || sourceAlarmMode === this.device.ALARM_MODE_NIGHT_INSTANT) {
+			} else if (sourceAlarmMode === AlarmMode.NIGHT || sourceAlarmMode === AlarmMode.NIGHT_INSTANT) {
 				return Characteristic.SecuritySystemCurrentState.NIGHT_ARM;
 			} else {
 				this.logger.info('ALARMSYSTEM: ' + this.device.name + ' Setting to disarmed because sourceAlarmMode is ' + sourceAlarmMode);
@@ -55,11 +56,11 @@ export class ISYElkAlarmPanelAccessory extends ISYAccessory<ElkAlarmSensorDevice
 	// Translates the current target state of hthe underlying alarm into the appropriate homekit value
 	public translateAlarmTargetStateToHK() {
 		const sourceAlarmState = this.device.getAlarmMode();
-		if (sourceAlarmState === this.device.ALARM_MODE_STAY || sourceAlarmState === this.device.ALARM_MODE_STAY_INSTANT) {
+		if (sourceAlarmState === AlarmMode.STAY || sourceAlarmState === AlarmMode.STAY_INSTANT) {
 			return Characteristic.SecuritySystemTargetState.STAY_ARM;
-		} else if (sourceAlarmState === this.device.ALARM_MODE_AWAY || sourceAlarmState === this.device.ALARM_MODE_VACATION) {
+		} else if (sourceAlarmState === AlarmMode.AWAY || sourceAlarmState === AlarmMode.VACATION) {
 			return Characteristic.SecuritySystemTargetState.AWAY_ARM;
-		} else if (sourceAlarmState === this.device.ALARM_MODE_NIGHT || sourceAlarmState === this.device.ALARM_MODE_NIGHT_INSTANT) {
+		} else if (sourceAlarmState === AlarmMode.NIGHT || sourceAlarmState === AlarmMode.NIGHT_INSTANT) {
 			return Characteristic.SecuritySystemTargetState.NIGHT_ARM;
 		} else {
 			return Characteristic.SecuritySystemTargetState.DISARM;
@@ -68,13 +69,13 @@ export class ISYElkAlarmPanelAccessory extends ISYAccessory<ElkAlarmSensorDevice
 	// Translates the homekit version of the alarm target state into the appropriate elk alarm panel state
 	public translateHKToAlarmTargetState(state) {
 		if (state === Characteristic.SecuritySystemTargetState.STAY_ARM) {
-			return this.device.ALARM_MODE_STAY;
+			return AlarmMode.STAY;
 		} else if (state === Characteristic.SecuritySystemTargetState.AWAY_ARM) {
-			return this.device.ALARM_MODE_AWAY;
+			return AlarmMode.AWAY;
 		} else if (state === Characteristic.SecuritySystemTargetState.NIGHT_ARM) {
-			return this.device.ALARM_MODE_NIGHT;
+			return AlarmMode.NIGHT;
 		} else {
-			return this.device.ALARM_MODE_DISARMED;
+			return AlarmMode.DISARMED;
 		}
 	}
 	// Handles request to get the target alarm state

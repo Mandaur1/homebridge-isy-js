@@ -111,7 +111,7 @@ class ISYAccessory {
     }
   }
 
-  updateCharacteristicValue(value, characteristic, service = this.primaryService) {
+  updateCharacteristicValue(value, characteristic, service) {
     var _a;
 
     (_a = service.getCharacteristic(characteristic)) === null || _a === void 0 ? void 0 : _a.updateValue(value);

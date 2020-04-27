@@ -10,6 +10,8 @@ const hap_nodejs_1 = require("homebridge/node_modules/hap-nodejs");
 
 const ISYAccessory_1 = require("./ISYAccessory");
 
+const ElkAlarmPanelDevice_1 = require("isy-nodejs/lib/Devices/Elk/ElkAlarmPanelDevice");
+
 class ISYElkAlarmPanelAccessory extends ISYAccessory_1.ISYAccessory {
   constructor(device) {
     super(device);
@@ -46,11 +48,11 @@ class ISYElkAlarmPanelAccessory extends ISYAccessory_1.ISYAccessory {
     } else if (sourceAlarmState === this.device.ALARM_STATE_NOT_READY_TO_ARM || sourceAlarmState === this.device.ALARM_STATE_READY_TO_ARM || sourceAlarmState === this.device.ALARM_STATE_READY_TO_ARM_VIOLATION) {
       return hap_nodejs_1.Characteristic.SecuritySystemCurrentState.DISARMED;
     } else {
-      if (sourceAlarmMode === this.device.ALARM_MODE_STAY || sourceAlarmMode === this.device.ALARM_MODE_STAY_INSTANT) {
+      if (sourceAlarmMode === ElkAlarmPanelDevice_1.AlarmMode.STAY || sourceAlarmMode === ElkAlarmPanelDevice_1.AlarmMode.STAY_INSTANT) {
         return hap_nodejs_1.Characteristic.SecuritySystemCurrentState.STAY_ARM;
-      } else if (sourceAlarmMode === this.device.ALARM_MODE_AWAY || sourceAlarmMode === this.device.ALARM_MODE_VACATION) {
+      } else if (sourceAlarmMode === ElkAlarmPanelDevice_1.AlarmMode.AWAY || sourceAlarmMode === ElkAlarmPanelDevice_1.AlarmMode.VACATION) {
         return hap_nodejs_1.Characteristic.SecuritySystemCurrentState.AWAY_ARM;
-      } else if (sourceAlarmMode === this.device.ALARM_MODE_NIGHT || sourceAlarmMode === this.device.ALARM_MODE_NIGHT_INSTANT) {
+      } else if (sourceAlarmMode === ElkAlarmPanelDevice_1.AlarmMode.NIGHT || sourceAlarmMode === ElkAlarmPanelDevice_1.AlarmMode.NIGHT_INSTANT) {
         return hap_nodejs_1.Characteristic.SecuritySystemCurrentState.NIGHT_ARM;
       } else {
         this.logger.info('ALARMSYSTEM: ' + this.device.name + ' Setting to disarmed because sourceAlarmMode is ' + sourceAlarmMode);
@@ -63,11 +65,11 @@ class ISYElkAlarmPanelAccessory extends ISYAccessory_1.ISYAccessory {
   translateAlarmTargetStateToHK() {
     const sourceAlarmState = this.device.getAlarmMode();
 
-    if (sourceAlarmState === this.device.ALARM_MODE_STAY || sourceAlarmState === this.device.ALARM_MODE_STAY_INSTANT) {
+    if (sourceAlarmState === ElkAlarmPanelDevice_1.AlarmMode.STAY || sourceAlarmState === ElkAlarmPanelDevice_1.AlarmMode.STAY_INSTANT) {
       return hap_nodejs_1.Characteristic.SecuritySystemTargetState.STAY_ARM;
-    } else if (sourceAlarmState === this.device.ALARM_MODE_AWAY || sourceAlarmState === this.device.ALARM_MODE_VACATION) {
+    } else if (sourceAlarmState === ElkAlarmPanelDevice_1.AlarmMode.AWAY || sourceAlarmState === ElkAlarmPanelDevice_1.AlarmMode.VACATION) {
       return hap_nodejs_1.Characteristic.SecuritySystemTargetState.AWAY_ARM;
-    } else if (sourceAlarmState === this.device.ALARM_MODE_NIGHT || sourceAlarmState === this.device.ALARM_MODE_NIGHT_INSTANT) {
+    } else if (sourceAlarmState === ElkAlarmPanelDevice_1.AlarmMode.NIGHT || sourceAlarmState === ElkAlarmPanelDevice_1.AlarmMode.NIGHT_INSTANT) {
       return hap_nodejs_1.Characteristic.SecuritySystemTargetState.NIGHT_ARM;
     } else {
       return hap_nodejs_1.Characteristic.SecuritySystemTargetState.DISARM;
@@ -77,13 +79,13 @@ class ISYElkAlarmPanelAccessory extends ISYAccessory_1.ISYAccessory {
 
   translateHKToAlarmTargetState(state) {
     if (state === hap_nodejs_1.Characteristic.SecuritySystemTargetState.STAY_ARM) {
-      return this.device.ALARM_MODE_STAY;
+      return ElkAlarmPanelDevice_1.AlarmMode.STAY;
     } else if (state === hap_nodejs_1.Characteristic.SecuritySystemTargetState.AWAY_ARM) {
-      return this.device.ALARM_MODE_AWAY;
+      return ElkAlarmPanelDevice_1.AlarmMode.AWAY;
     } else if (state === hap_nodejs_1.Characteristic.SecuritySystemTargetState.NIGHT_ARM) {
-      return this.device.ALARM_MODE_NIGHT;
+      return ElkAlarmPanelDevice_1.AlarmMode.NIGHT;
     } else {
-      return this.device.ALARM_MODE_DISARMED;
+      return ElkAlarmPanelDevice_1.AlarmMode.DISARMED;
     }
   } // Handles request to get the target alarm state
 

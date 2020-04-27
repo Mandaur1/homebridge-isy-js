@@ -27,7 +27,7 @@ export declare class ISYAccessory<T extends ISYNode, TCategory extends Categorie
     configure(accessory?: PlatformAccessory): void;
     setupServices(): void;
     handlePropertyChange(propertyName: string, value: any, oldValue: any, formattedValue: string): void;
-    updateCharacteristicValue(value: CharacteristicValue, characteristic: WithUUID<new () => Characteristic>, service?: Service): void;
+    updateCharacteristicValue(value: CharacteristicValue, characteristic: WithUUID<new () => Characteristic>, service: Service): void;
     convertToHK(propertyName: string, value: any): any;
     identify(): void;
 }

@@ -43,18 +43,19 @@ export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice, Catego
 	// Returns the services supported by the fan device.
 	public setupServices() {
 		super.setupServices();
+		//this.platformAccessory.removeService(this.primaryService);
 		const fanService = this.platformAccessory.getOrAddService(Service.Fan);
 		this.fanService = fanService;
 		const lightService = this.platformAccessory.getOrAddService(Service.Lightbulb);
 		this.lightService = lightService;
-		fanService.getCharacteristic(Characteristic.RotationSpeed).onSet(this.device.motor.updateFanSpeed.bind(this.device.motor)).onGet(() => this.device.motor.fanSpeed).setProps(
+		fanService.getCharacteristic(Characteristic.RotationSpeed).onSet(this.device.motor.updateFanSpeed.bind(this.device.motor)).onGet((() => this.device.motor.fanSpeed).bind(this)).setProps(
 			{
 				minStep: 25,
 			},
 		);
-		fanService.getCharacteristic(Characteristic.On).onSet(this.device.motor.updateIsOn.bind(this.device.motor)).onGet(() => this.device.motor.isOn);
-		lightService.getCharacteristic(Characteristic.On).onSet(this.device.light.updateIsOn.bind(this.device.light)).onGet(() => this.device.light.isOn);
-		lightService.getCharacteristic(Characteristic.Brightness).onSet(this.device.light.updateBrightnessLevel.bind(this.device.light)).onGet(() => this.device.light.brightnessLevel);
+		fanService.getCharacteristic(Characteristic.On).onSet(this.device.motor.updateIsOn.bind(this.device.motor)).onGet((() => this.device.motor.isOn).bind(this));
+		lightService.getCharacteristic(Characteristic.On).onSet(this.device.light.updateIsOn.bind(this.device.light)).onGet((() => this.device.light.isOn).bind(this));
+		lightService.getCharacteristic(Characteristic.Brightness).onSet(this.device.light.updateBrightnessLevel.bind(this.device.light)).onGet((() => this.device.light.brightnessLevel).bind(this));
 		fanService.isPrimaryService = true;
 		this.primaryService = fanService;
 
