@@ -5,9 +5,7 @@ import { Controls, InsteonMotionSensorDevice } from 'isy-nodejs';
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
 import { toCelsius } from './utils';
 
-
 export class ISYMotionSensorAccessory extends ISYDeviceAccessory<InsteonMotionSensorDevice, Categories.SENSOR> {
-
 
 	get motionSensorService(): MotionSensor {
 		return this.platformAccessory?.getOrAddService(MotionSensor);
@@ -25,14 +23,14 @@ export class ISYMotionSensorAccessory extends ISYDeviceAccessory<InsteonMotionSe
 		return this.platformAccessory?.getOrAddService(Service.TemperatureSensor);
 	}
 
-	constructor (device: InsteonMotionSensorDevice) {
+	constructor(device: InsteonMotionSensorDevice) {
 		super(device);
 
 		this.category = Categories.SENSOR;
 	}
 
-	public map(propertyName: string, propertyValue: any){
-		//let o = super(propertyValue,propertyValue);
+	public map(propertyName: string, propertyValue: any) {
+		// let o = super(propertyValue,propertyValue);
 		switch (propertyName) {
 			case 'CLITEMP':
 				return { characteristicValue: toCelsius(propertyValue), characteristic: Characteristic.CurrentTemperature, service: this.temperatureSensorService };
@@ -48,9 +46,18 @@ export class ISYMotionSensorAccessory extends ISYDeviceAccessory<InsteonMotionSe
 		return null;
 
 	}
+
+	public handleControlTrigger(controlName) {
+		super.handleControlTrigger(controlName);
+		if (controlName === 'DON') {
+			this.updateCharacteristicValue(true, Characteristic.MotionDetected, this.motionSensorService);
+		} else if (controlName === 'DOF') {
+			this.updateCharacteristicValue(false, Characteristic.MotionDetected, this.motionSensorService);
+		}
+	}
 	// Handles the identify command.
 	// Handles the request to get he current motion sensor state.
-	
+
 	// Mirrors change in the state of the underlying isj-js device object.
 	/*ublic handleExternalChange(propertyName: string, value: any, formattedValue: string) {
 		super.handleExternalChange(propertyName, value, formattedValue);

@@ -254,7 +254,6 @@ class ISYPlatform {
 
       for (const device of deviceList.values()) {
         let homeKitDevice = null;
-        let id = '';
         const garageInfo = that.getGarageEntry(device.address);
 
         if (!that.shouldIgnore(device) && !device.hidden) {
@@ -272,7 +271,6 @@ class ISYPlatform {
             homeKitDevice = new ISYGarageDoorAccessory_1.ISYGarageDoorAccessory(device, relayDevice, garageInfo.name, garageInfo.timeToOpen, garageInfo.alternate);
           } else {
             homeKitDevice = that.createAccessory(device);
-            id = homeKitDevice.UUID;
           }
 
           if (homeKitDevice !== null) {

@@ -13,7 +13,7 @@ export class ISYDimmableAccessory<T extends InsteonDimmableDevice> extends ISYRe
 	// Handles request to set the current powerstate from homekit. Will ignore redundant commands.
 	public map(propertyName: keyof T, propertyValue: any) {
 		const o = super.map(propertyName, propertyValue);
-		if (o) {
+		if (o && propertyName === 'ST') {
 			o.characteristic = Characteristic.Brightness;
 			o.characteristicValue = propertyValue;
 		}

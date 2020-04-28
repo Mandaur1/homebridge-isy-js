@@ -243,7 +243,7 @@ export class ISYPlatform implements DynamicPlatformPlugin {
 			this.log.info(`ISY has ${deviceList.size} devices and ${that.isy.sceneList.size} scenes`);
 			for (const device of deviceList.values()) {
 				let homeKitDevice: ISYAccessory<any, any> = null;
-				let id = '';
+				
 				const garageInfo = that.getGarageEntry(device.address);
 				if (!that.shouldIgnore(device) && !device.hidden) {
 					if (results.length >= 100) {
@@ -259,11 +259,11 @@ export class ISYPlatform implements DynamicPlatformPlugin {
 					} else {
 						homeKitDevice = that.createAccessory(device);
 
-						id = homeKitDevice.UUID;
 
 					}
 
 					if (homeKitDevice !== null) {
+
 						results.push(homeKitDevice);
 						// Make sure the device is address to the global map
 						// deviceMap[device.address] = homeKitDevice;

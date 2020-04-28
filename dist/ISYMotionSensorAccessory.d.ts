@@ -13,6 +13,7 @@ export declare class ISYMotionSensorAccessory extends ISYDeviceAccessory<Insteon
         characteristic: typeof import("hap-nodejs/dist/lib/gen/HomeKit").CurrentTemperature;
         service: TemperatureSensor;
     };
+    handleControlTrigger(controlName: any): void;
     setupServices(): void;
 }
 //# sourceMappingURL=ISYMotionSensorAccessory.d.ts.map

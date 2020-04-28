@@ -1,7 +1,7 @@
 {
   "name": "homebridge-isy",
   "displayName": "Homebridge ISY",
-  "version": "0.5.0-beta.16",
+  "version": "0.5.0-beta.17",
   "description": "Homebridge plugin for ISY series of home controllers from Universal Devices, Inc.",
   "note": "",
   "main": "dist/plugin.js",
@@ -53,7 +53,7 @@
   "dependencies": {
     "@log4js-node/log4js-api": "^1.0.2",
     "faye-websocket": "^0.11.3",
-    "isy-nodejs": "^0.5.0-beta.18",
+    "isy-nodejs": "^0.5.0-beta.26",
     "path": "^0.12.7",
     "restler": "^3.4.0",
     "xmldoc": "^1.1.2"

@@ -6,7 +6,7 @@
                 "root": ["./dist"],
                 "alias": {
                    //"homebridge": "/usr/local/lib/node_modules/homebridge",
-                    //"hap-nodejs": "/usr/local/lib/node_modules/homebridge/node_modules/hap-nodejs",
+                   // "hap-nodejs": "/usr/local/lib/node_modules/homebridge/node_modules/hap-nodejs",
                     "hap-nodejs": "homebridge/node_modules/hap-nodejs"
                 }
             }]]

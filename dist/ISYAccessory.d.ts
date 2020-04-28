@@ -24,6 +24,7 @@ export declare class ISYAccessory<T extends ISYNode, TCategory extends Categorie
         characteristic?: WithUUID<new () => Characteristic>;
         service: Service;
     };
+    handleControlTrigger(controlName: string): void;
     configure(accessory?: PlatformAccessory): void;
     setupServices(): void;
     handlePropertyChange(propertyName: string, value: any, oldValue: any, formattedValue: string): void;

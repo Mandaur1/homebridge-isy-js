@@ -45,6 +45,7 @@ class ISYAccessory {
     this.context = new AccessoryContext();
     this.context.address = this.address;
     this.device.on('PropertyChanged', this.handlePropertyChange.bind(this));
+    this.device.on('ControlTriggered', this.handleControlTrigger.bind(this));
   } // tslint:disable-next-line: ban-types
 
 
@@ -66,6 +67,10 @@ class ISYAccessory {
       characteristicValue: propertyValue,
       service: this.primaryService
     };
+  }
+
+  handleControlTrigger(controlName) {
+    this.logger(isy_nodejs_1.Controls[controlName].label + ' triggered');
   }
 
   configure(accessory) {

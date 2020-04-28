@@ -23,7 +23,7 @@ class ISYDimmableAccessory extends ISYRelayAccessory_1.ISYRelayAccessory {
   map(propertyName, propertyValue) {
     const o = super.map(propertyName, propertyValue);
 
-    if (o) {
+    if (o && propertyName === 'ST') {
       o.characteristic = hap_nodejs_1.Characteristic.Brightness;
       o.characteristicValue = propertyValue;
     }

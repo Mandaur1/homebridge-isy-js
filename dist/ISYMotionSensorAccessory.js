@@ -45,7 +45,7 @@ class ISYMotionSensorAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
   }
 
   map(propertyName, propertyValue) {
-    //let o = super(propertyValue,propertyValue);
+    // let o = super(propertyValue,propertyValue);
     switch (propertyName) {
       case 'CLITEMP':
         return {
@@ -84,6 +84,16 @@ class ISYMotionSensorAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
     }
 
     return null;
+  }
+
+  handleControlTrigger(controlName) {
+    super.handleControlTrigger(controlName);
+
+    if (controlName === 'DON') {
+      this.updateCharacteristicValue(true, hap_nodejs_1.Characteristic.MotionDetected, this.motionSensorService);
+    } else if (controlName === 'DOF') {
+      this.updateCharacteristicValue(false, hap_nodejs_1.Characteristic.MotionDetected, this.motionSensorService);
+    }
   } // Handles the identify command.
   // Handles the request to get he current motion sensor state.
   // Mirrors change in the state of the underlying isj-js device object.

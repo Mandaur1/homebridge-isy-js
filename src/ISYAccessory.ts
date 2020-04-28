@@ -55,6 +55,7 @@ export class ISYAccessory<T extends ISYNode, TCategory extends Categories> {
 		this.context = new AccessoryContext();
 		this.context.address = this.address;
 		this.device.on('PropertyChanged', this.handlePropertyChange.bind(this));
+		this.device.on('ControlTriggered',this.handleControlTrigger.bind(this));
 	}
 
 	public map(propertyName: keyof T, propertyValue: any): { characteristicValue: CharacteristicValue, characteristic?: WithUUID<new () => Characteristic>, service: Service} {
@@ -64,6 +65,12 @@ export class ISYAccessory<T extends ISYNode, TCategory extends Categories> {
 		}
 
 		return { characteristicValue: propertyValue, service: this.primaryService};
+	}
+
+	public handleControlTrigger(controlName: string)
+	{
+		this.logger(Controls[controlName].label + ' triggered');
+
 	}
 
 	public configure(accessory?: PlatformAccessory) {
