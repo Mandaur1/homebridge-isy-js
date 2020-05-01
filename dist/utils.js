@@ -4,9 +4,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-const Characteristic_1 = require("homebridge/node_modules/hap-nodejs/dist/lib/Characteristic");
+const Characteristic_1 = require("/usr/local/lib/node_modules/homebridge/node_modules/hap-nodejs/dist/lib/Characteristic.js");
 
-const logger_1 = require("homebridge/lib/logger"); // import * as service from 'homebridge/node_modules/homebridge/node_modules/hap-nodejs/dist/lib/Service';
+const logger_1 = require("/usr/local/lib/node_modules/homebridge/lib/logger.js"); // import * as service from 'homebridge/node_modules/homebridge/node_modules/hap-nodejs/dist/lib/Service';
 
 
 exports.didFinishLaunching = Symbol('didFinishLaunching'); // tslint:disable-next-line: no-namespace

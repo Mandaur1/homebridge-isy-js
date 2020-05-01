@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 
 require("./utils");
 
-const hap_nodejs_1 = require("homebridge/node_modules/hap-nodejs");
+const hap_nodejs_1 = require("/usr/local/lib/node_modules/homebridge/node_modules/hap-nodejs/dist/index.js");
 
 const ISYDeviceAccessory_1 = require("./ISYDeviceAccessory");
 
@@ -31,6 +31,22 @@ class ISYOnOffOutletAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
   get outlet2Service() {
     if (!this._outlet2Service) this._outlet2Service = this.platformAccessory.addService(new hap_nodejs_1.Service.Outlet('Outlet 2', '2'));
     return this._outlet2Service;
+  }
+
+  map(propertyName, propertyValue) {
+    if (propertyName === 'outlet1.ST') {
+      return {
+        characteristicValue: propertyValue,
+        characteristic: hap_nodejs_1.Characteristic.On,
+        service: this.outlet1Service
+      };
+    } else if (propertyName === 'outlet2.ST') {
+      return {
+        characteristicValue: propertyValue,
+        characteristic: hap_nodejs_1.Characteristic.On,
+        service: this.outlet2Service
+      };
+    }
   }
 
   setupServices() {

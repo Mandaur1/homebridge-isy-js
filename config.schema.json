@@ -177,6 +177,21 @@
                 "title": "Enable Elk Devices",
                 "type": "boolean"
             },
+            "deviceNameRules":
+            {
+                 "title": "Device Naming",
+                 "type": "object",
+                 "properties":
+                 {
+                     "format":{
+                         "title": "Format",
+                         "description": "Formatting for device name, using javascript string interpolation syntax.",
+                         "type":"string",
+                         "defaultValue": "{location ?? folder} {spokenName ?? name}"
+                     }
+                 }
+
+            },
             "ignoreDevices": {
                 "items": {
                     "$ref": "#/definitions/IgnoreDeviceRule"
@@ -236,7 +251,7 @@
             "expandable": true,
             "expanded": false,
             "items": [
-
+                "deviceNameFormat",
                 {
                     "key": "ignoreDevices",
                     "type": "array",

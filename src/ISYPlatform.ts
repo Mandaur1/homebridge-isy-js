@@ -1,11 +1,10 @@
-import { LeakSensor } from 'hap-nodejs/dist/lib/gen/HomeKit';
-import { API, APIEvent, DynamicPlatformPlugin } from 'homebridge';
-import { Logger, Logging } from 'homebridge/lib/logger';
-import { PlatformAccessory } from 'homebridge/lib/platformAccessory';
-import { ElkAlarmSensorDevice, InsteonDimmableDevice, InsteonDoorWindowSensorDevice, InsteonFanDevice, InsteonLeakSensorDevice, InsteonLockDevice, InsteonMotionSensorDevice, InsteonOutletDevice, InsteonRelayDevice, InsteonSmokeSensorDevice, InsteonThermostatDevice, ISY, ISYDevice, ISYNode, ISYScene } from 'isy-nodejs';
+import { LeakSensor, Thermostat } from 'hap-nodejs/dist/lib/gen/HomeKit';
+import { API, APIEvent, DynamicPlatformPlugin, Logger, Logging, PlatformAccessory } from 'homebridge';
+
+import { ElkAlarmSensorDevice, InsteonDimmableDevice, InsteonDoorWindowSensorDevice, InsteonFanDevice, InsteonLeakSensorDevice, InsteonLockDevice, InsteonMotionSensorDevice, InsteonOutletDevice, InsteonRelayDevice, InsteonSmokeSensorDevice, InsteonThermostatDevice, ISY, ISYDevice, ISYNode, ISYScene, InsteonBaseDevice, InsteonKeypadDimmerDevice } from 'isy-nodejs';
 import { IgnoreDeviceRule, PlatformConfig } from '../typings/config';
 import { ISYAccessory } from './ISYAccessory';
-import { ISYDimmableAccessory } from './ISYDimmerAccessory';
+import { ISYDimmableAccessory} from './ISYDimmableAccessory';
 import { ISYDoorWindowSensorAccessory } from './ISYDoorWindowSensorAccessory';
 import { ISYElkAlarmPanelAccessory } from './ISYElkAlarmPanelAccessory';
 import { ISYFanAccessory } from './ISYFanAccessory';
@@ -20,6 +19,7 @@ import { ISYSmokeSensorAccessory } from './ISYSmokeSensorAccessory';
 import { ISYThermostatAccessory } from './ISYThermostatAccessory';
 import { PlatformName, PluginName } from './plugin';
 import './utils';
+import { ISYKeypadDimmerAccessory } from './ISYKeypadDimmerAccessory';
 
 // tslint:disable-next-line: ordered-imports
 
@@ -33,7 +33,7 @@ export class ISYPlatform implements DynamicPlatformPlugin {
 	public elkEnabled: boolean;
 	public debugLoggingEnabled: boolean;
 	public includeAllScenes: boolean;
-	public includedScenes: [];
+	public includedScenes: string[];
 	public ignoreRules: IgnoreDeviceRule[];
 	public homebridge: API;
 	public static Instance: ISYPlatform;
@@ -50,14 +50,15 @@ export class ISYPlatform implements DynamicPlatformPlugin {
 		this.host = config.host;
 		this.username = config.username;
 		this.password = config.password;
-		this.elkEnabled = config.elkEnabled;
-		this.debugLoggingEnabled = config.debugLoggingEnabled === undefined ? false : config.debugLoggingEnabled;
-		this.includeAllScenes = config.includeAllScenes === undefined ? false : config.includeAllScenes;
-		this.includedScenes = config.includedScenes === undefined ? [] : config.includedScenes;
+		this.elkEnabled = config.elkEnabled ?? false;
+		this.debugLoggingEnabled = config.debugLoggingEnabled ?? false;
+		this.includeAllScenes = config.includeAllScenes ?? true;
+		this.includedScenes = config.includedScenes ?? [];
 		this.ignoreRules = config.ignoreDevices;
 		this.homebridge = homebridge;
 		ISYPlatform.Instance = this;
 		config.address = this.host;
+		config.displayNameFormat = config.deviceNameRules?.format;
 
 		this.isy = new ISY(config, Logger.withPrefix('isy-nodejs'));
 		const p = this.createAccessories();
@@ -106,42 +107,49 @@ export class ISYPlatform implements DynamicPlatformPlugin {
 	// Checks the device against the configuration to see if it should be ignored.
 	public shouldIgnore(device: ISYNode) {
 		const deviceAddress = device.address;
-		const returnValue = true;
+
 		if (device instanceof ISYScene && this.includeAllScenes === false) {
 			for (const sceneAddress of this.includedScenes) {
 				if (sceneAddress === deviceAddress) {
 					return false;
 				}
 			}
+			return !this.includedScenes.includes(device.address);
 		}
-		if (this.config.ignoreDevices === undefined) {
+		if (this.ignoreRules === undefined) {
 			return false;
 		}
 		if (this.includeAllScenes || device instanceof ISYDevice) {
 			const deviceName = device.name;
 			for (const rule of this.ignoreRules) {
-				if (rule.nameContains !== undefined && rule.nameContains !== '') {
-					if (deviceName.indexOf(rule.nameContains) === -1) {
+				if (rule.nameContains && rule.nameContains !== '') {
+					if (!deviceName.includes(rule.nameContains)) {
 						continue;
 					}
 				}
-				if (rule.lastAddressDigit !== undefined && rule.lastAddressDigit !== null) {
-					if (deviceAddress.indexOf(String(rule.lastAddressDigit), deviceAddress.length - 2) === -1) {
+				if (rule.lastAddressDigit && device instanceof InsteonBaseDevice) {
+					if (device.address.split(' ')[3] === rule.lastAddressDigit)
+					{
 						continue;
 					}
 				}
-				if (rule.address !== undefined && rule.address !== '') {
+				if (rule.address) {
 					if (deviceAddress !== rule.address) {
 						continue;
 					}
 				}
-				if (rule.nodeDef !== undefined) {
+				if (rule.nodeDef) {
 					if (device.nodeDefId !== rule.nodeDef) {
 						continue;
 					}
 				}
-				if (rule.folder !== undefined) {
+				if (rule.folder) {
 					if (device.folder !== rule.folder) {
+						continue;
+					}
+				}
+				if (rule.family) {
+					if (device.family !== rule.family) {
 						continue;
 					}
 				}
@@ -192,7 +200,6 @@ export class ISYPlatform implements DynamicPlatformPlugin {
 						continue;
 					}
 				}
-
 				if (rule.address !== undefined && rule.address !== '') {
 					if (deviceAddress !== rule.address) {
 						continue;
@@ -243,7 +250,7 @@ export class ISYPlatform implements DynamicPlatformPlugin {
 			this.log.info(`ISY has ${deviceList.size} devices and ${that.isy.sceneList.size} scenes`);
 			for (const device of deviceList.values()) {
 				let homeKitDevice: ISYAccessory<any, any> = null;
-				
+
 				const garageInfo = that.getGarageEntry(device.address);
 				if (!that.shouldIgnore(device) && !device.hidden) {
 					if (results.length >= 100) {
@@ -265,11 +272,18 @@ export class ISYPlatform implements DynamicPlatformPlugin {
 					if (homeKitDevice !== null) {
 
 						results.push(homeKitDevice);
+						if(homeKitDevice instanceof ISYKeypadDimmerAccessory)
+							results.push(new ISYDimmableAccessory(device as InsteonDimmableDevice));
+
 						// Make sure the device is address to the global map
 						// deviceMap[device.address] = homeKitDevice;
 
 						// results.set(id,homeKitDevice);
 
+					}
+					else
+					{
+						 that.logger(`Device ${device.displayName} is not supported yet.`);
 					}
 				}
 			}
@@ -315,7 +329,10 @@ export class ISYPlatform implements DynamicPlatformPlugin {
 
 	public createAccessory(device: ISYDevice<any>): ISYAccessory<any, any> {
 
-		if (device instanceof InsteonDimmableDevice) {
+		 if (device instanceof InsteonKeypadDimmerDevice) {
+			return new ISYKeypadDimmerAccessory(device);
+		}
+		else if (device instanceof InsteonDimmableDevice) {
 			return new ISYDimmableAccessory(device);
 		} else if (device instanceof InsteonRelayDevice) {
 			return new ISYRelayAccessory(device);
@@ -340,6 +357,8 @@ export class ISYPlatform implements DynamicPlatformPlugin {
 		} else if (device instanceof InsteonLeakSensorDevice) {
 			return new ISYLeakSensorAccessory(device);
 		}
+
+
 		return null;
 	}
 }

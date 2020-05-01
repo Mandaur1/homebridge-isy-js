@@ -18,6 +18,10 @@ Requires [Homebridge v1.0+](https://github.com/homebridge/homebridge). Please se
 
 - Configurable using [Homebridge Config-UI X](https://www.npmjs.com/package/homebridge-config-ui-x) (This is a work in progress, but you'll eventually be able to install homebridge-isy from Homebridge Config directly)
 
+- NEW: Configurable device naming convention (See sample config below).
+
+    You can now configure how the device name should be passed to its corresponding Accessory (using javascript string interpolation syntax). For example, if "${location ?? folder} ${spokenName : name}" is provided to the config, all devices will be named according to the convention, location unless blank, then folder + spoken name, unless blank, then name.
+
 - Pulls folders and notes from ISY
     1. Default behavior is that folder names will be appended to the device name e.g. if "Vent Switch" is in folder "Bathroom", the display name passed to homebridge will be Bathroom Switch Vent.
     2. If notes are in the ISY and have been populated fully, location and spoken name will be used to render the display name. E.g. if Bathroom.Switch.Vent has been updated with Bathroom as the Location and Vent as the spoken name, then Bathroom Vent will be used as the display name.
@@ -87,6 +91,10 @@ Configuration sample (please refer to the homebridge-config-ui-x readme to add a
             "garageDoors": [
                 { "address": "17 79 81 1", "name": "Garage Door", "timeToOpen": 12000 }
             ],
+            "deviceNameRules":
+            {
+                "format":"{spokenName ?? name}"
+            },
             "ignoreDevices": [
                 { "nameContains": "ApplianceLinc"},
                 { "address": "17 79 81 A"},

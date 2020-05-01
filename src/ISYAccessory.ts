@@ -4,7 +4,7 @@ import { API } from 'homebridge';
 import { Logger, Logging } from 'homebridge/lib/logger';
 import { PlatformAccessory } from 'homebridge/lib/platformAccessory';
 import { Controls, Family, ISYNode } from 'isy-nodejs';
-import ISYConstants from 'isy-nodejs/lib/isyconstants';
+import ISYConstants, { NodeType } from 'isy-nodejs/lib/isyconstants';
 
 import { PlatformName } from './plugin';
 import { EventEmitter } from 'events';
@@ -69,15 +69,17 @@ export class ISYAccessory<T extends ISYNode, TCategory extends Categories> {
 
 	public handleControlTrigger(controlName: string)
 	{
-		this.logger(Controls[controlName].label + ' triggered');
-
+		this.logger.info(`${Controls[controlName].label} triggered.`);
 	}
 
 	public configure(accessory?: PlatformAccessory) {
 		if (accessory) {
 			if (!accessory.getOrAddService) {
 				accessory.getOrAddService = PlatformAccessory.prototype.getOrAddService.bind(accessory);
+
+
 			}
+			accessory.displayName = this.displayName;
 			this.platformAccessory = accessory;
 			this.platformAccessory.context.address = this.address;
 			this.logger.info('Configuring linked platform accessory');
@@ -107,15 +109,15 @@ export class ISYAccessory<T extends ISYNode, TCategory extends Categories> {
 
 	public handlePropertyChange(propertyName: string, value: any, oldValue: any, formattedValue: string) {
 		const name = propertyName in Controls ? Controls[propertyName].label : propertyName;
-		this.logger.debug(`Incoming update to ${name}. New Value: ${value} (${formattedValue}) Old Value: ${oldValue}`);
+		this.logger.info(`Incoming update to ${name}. New Value: ${value} (${formattedValue}) Old Value: ${oldValue}`);
 		const m = this.map(propertyName,value);
 		if (m.characteristic) {
-			this.logger.debug('Property mapped to:',m.service.name, m.characteristic.name);
+			this.logger.debug('Property mapped to:',m.service.displayName, m.characteristic.name);
 			this.updateCharacteristicValue(m.characteristicValue, m.characteristic, m.service);
 		}
 		else
 		{
-			this.logger.info('Property not mapped.')
+			this.logger.info('Property not mapped.');
 		}
 
 	}

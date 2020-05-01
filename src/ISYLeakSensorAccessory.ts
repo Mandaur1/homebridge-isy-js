@@ -4,7 +4,6 @@ import { Categories, Characteristic, Service } from 'hap-nodejs';
 import { InsteonDoorWindowSensorDevice, InsteonLeakSensorDevice } from 'isy-nodejs';
 
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
-import { LeakSensor } from 'hap-nodejs/dist/lib/gen/HomeKit';
 
 
 

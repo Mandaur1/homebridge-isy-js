@@ -4,11 +4,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-const logger_1 = require("homebridge/lib/logger");
+const homebridge_1 = require("/usr/local/lib/node_modules/homebridge/lib/index.js");
 
 const isy_nodejs_1 = require("isy-nodejs");
 
-const ISYDimmerAccessory_1 = require("./ISYDimmerAccessory");
+const ISYDimmableAccessory_1 = require("./ISYDimmableAccessory");
 
 const ISYDoorWindowSensorAccessory_1 = require("./ISYDoorWindowSensorAccessory");
 
@@ -36,11 +36,15 @@ const ISYThermostatAccessory_1 = require("./ISYThermostatAccessory");
 
 const plugin_1 = require("./plugin");
 
-require("./utils"); // tslint:disable-next-line: ordered-imports
+require("./utils");
+
+const ISYKeypadDimmerAccessory_1 = require("./ISYKeypadDimmerAccessory"); // tslint:disable-next-line: ordered-imports
 
 
 class ISYPlatform {
   constructor(log, config, homebridge) {
+    var _a, _b, _c, _d, _e;
+
     this.accessories = [];
     this.accessoriesWrappers = new Map();
     this.accessoriesToRegister = [];
@@ -50,15 +54,16 @@ class ISYPlatform {
     this.host = config.host;
     this.username = config.username;
     this.password = config.password;
-    this.elkEnabled = config.elkEnabled;
-    this.debugLoggingEnabled = config.debugLoggingEnabled === undefined ? false : config.debugLoggingEnabled;
-    this.includeAllScenes = config.includeAllScenes === undefined ? false : config.includeAllScenes;
-    this.includedScenes = config.includedScenes === undefined ? [] : config.includedScenes;
+    this.elkEnabled = (_a = config.elkEnabled, _a !== null && _a !== void 0 ? _a : false);
+    this.debugLoggingEnabled = (_b = config.debugLoggingEnabled, _b !== null && _b !== void 0 ? _b : false);
+    this.includeAllScenes = (_c = config.includeAllScenes, _c !== null && _c !== void 0 ? _c : true);
+    this.includedScenes = (_d = config.includedScenes, _d !== null && _d !== void 0 ? _d : []);
     this.ignoreRules = config.ignoreDevices;
     this.homebridge = homebridge;
     ISYPlatform.Instance = this;
     config.address = this.host;
-    this.isy = new isy_nodejs_1.ISY(config, logger_1.Logger.withPrefix('isy-nodejs'));
+    config.displayNameFormat = (_e = config.deviceNameRules) === null || _e === void 0 ? void 0 : _e.format;
+    this.isy = new isy_nodejs_1.ISY(config, homebridge_1.Logger.withPrefix('isy-nodejs'));
     const p = this.createAccessories();
     const self = this;
     homebridge.on("didFinishLaunching"
@@ -104,7 +109,6 @@ class ISYPlatform {
 
   shouldIgnore(device) {
     const deviceAddress = device.address;
-    const returnValue = true;
 
     if (device instanceof isy_nodejs_1.ISYScene && this.includeAllScenes === false) {
       for (const sceneAddress of this.includedScenes) {
@@ -112,9 +116,11 @@ class ISYPlatform {
           return false;
         }
       }
+
+      return !this.includedScenes.includes(device.address);
     }
 
-    if (this.config.ignoreDevices === undefined) {
+    if (this.ignoreRules === undefined) {
       return false;
     }
 
@@ -122,32 +128,38 @@ class ISYPlatform {
       const deviceName = device.name;
 
       for (const rule of this.ignoreRules) {
-        if (rule.nameContains !== undefined && rule.nameContains !== '') {
-          if (deviceName.indexOf(rule.nameContains) === -1) {
+        if (rule.nameContains && rule.nameContains !== '') {
+          if (!deviceName.includes(rule.nameContains)) {
             continue;
           }
         }
 
-        if (rule.lastAddressDigit !== undefined && rule.lastAddressDigit !== null) {
-          if (deviceAddress.indexOf(String(rule.lastAddressDigit), deviceAddress.length - 2) === -1) {
+        if (rule.lastAddressDigit && device instanceof isy_nodejs_1.InsteonBaseDevice) {
+          if (device.address.split(' ')[3] === rule.lastAddressDigit) {
             continue;
           }
         }
 
-        if (rule.address !== undefined && rule.address !== '') {
+        if (rule.address) {
           if (deviceAddress !== rule.address) {
             continue;
           }
         }
 
-        if (rule.nodeDef !== undefined) {
+        if (rule.nodeDef) {
           if (device.nodeDefId !== rule.nodeDef) {
             continue;
           }
         }
 
-        if (rule.folder !== undefined) {
+        if (rule.folder) {
           if (device.folder !== rule.folder) {
+            continue;
+          }
+        }
+
+        if (rule.family) {
+          if (device.family !== rule.family) {
             continue;
           }
         }
@@ -274,9 +286,12 @@ class ISYPlatform {
           }
 
           if (homeKitDevice !== null) {
-            results.push(homeKitDevice); // Make sure the device is address to the global map
+            results.push(homeKitDevice);
+            if (homeKitDevice instanceof ISYKeypadDimmerAccessory_1.ISYKeypadDimmerAccessory) results.push(new ISYDimmableAccessory_1.ISYDimmableAccessory(device)); // Make sure the device is address to the global map
             // deviceMap[device.address] = homeKitDevice;
             // results.set(id,homeKitDevice);
+          } else {
+            that.logger(`Device ${device.displayName} is not supported yet.`);
           }
         }
       }
@@ -319,8 +334,10 @@ class ISYPlatform {
   }
 
   createAccessory(device) {
-    if (device instanceof isy_nodejs_1.InsteonDimmableDevice) {
-      return new ISYDimmerAccessory_1.ISYDimmableAccessory(device);
+    if (device instanceof isy_nodejs_1.InsteonKeypadDimmerDevice) {
+      return new ISYKeypadDimmerAccessory_1.ISYKeypadDimmerAccessory(device);
+    } else if (device instanceof isy_nodejs_1.InsteonDimmableDevice) {
+      return new ISYDimmableAccessory_1.ISYDimmableAccessory(device);
     } else if (device instanceof isy_nodejs_1.InsteonRelayDevice) {
       return new ISYRelayAccessory_1.ISYRelayAccessory(device);
     } else if (device instanceof isy_nodejs_1.InsteonLockDevice) {

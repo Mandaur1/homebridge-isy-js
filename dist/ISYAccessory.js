@@ -4,13 +4,13 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-const hap_nodejs_1 = require("homebridge/node_modules/hap-nodejs");
+const hap_nodejs_1 = require("/usr/local/lib/node_modules/homebridge/node_modules/hap-nodejs/dist/index.js");
 
-const uuid_1 = require("homebridge/node_modules/hap-nodejs/dist/lib/util/uuid");
+const uuid_1 = require("/usr/local/lib/node_modules/homebridge/node_modules/hap-nodejs/dist/lib/util/uuid.js");
 
-const logger_1 = require("homebridge/lib/logger");
+const logger_1 = require("/usr/local/lib/node_modules/homebridge/lib/logger.js");
 
-const platformAccessory_1 = require("homebridge/lib/platformAccessory");
+const platformAccessory_1 = require("/usr/local/lib/node_modules/homebridge/lib/platformAccessory.js");
 
 const isy_nodejs_1 = require("isy-nodejs");
 
@@ -70,7 +70,7 @@ class ISYAccessory {
   }
 
   handleControlTrigger(controlName) {
-    this.logger(isy_nodejs_1.Controls[controlName].label + ' triggered');
+    this.logger.info(`${isy_nodejs_1.Controls[controlName].label} triggered.`);
   }
 
   configure(accessory) {
@@ -79,6 +79,7 @@ class ISYAccessory {
         accessory.getOrAddService = platformAccessory_1.PlatformAccessory.prototype.getOrAddService.bind(accessory);
       }
 
+      accessory.displayName = this.displayName;
       this.platformAccessory = accessory;
       this.platformAccessory.context.address = this.address;
       this.logger.info('Configuring linked platform accessory');
@@ -105,11 +106,11 @@ class ISYAccessory {
 
   handlePropertyChange(propertyName, value, oldValue, formattedValue) {
     const name = propertyName in isy_nodejs_1.Controls ? isy_nodejs_1.Controls[propertyName].label : propertyName;
-    this.logger.debug(`Incoming update to ${name}. New Value: ${value} (${formattedValue}) Old Value: ${oldValue}`);
+    this.logger.info(`Incoming update to ${name}. New Value: ${value} (${formattedValue}) Old Value: ${oldValue}`);
     const m = this.map(propertyName, value);
 
     if (m.characteristic) {
-      this.logger.debug('Property mapped to:', m.service.name, m.characteristic.name);
+      this.logger.debug('Property mapped to:', m.service.displayName, m.characteristic.name);
       this.updateCharacteristicValue(m.characteristicValue, m.characteristic, m.service);
     } else {
       this.logger.info('Property not mapped.');

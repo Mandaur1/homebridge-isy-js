@@ -16,6 +16,10 @@
         "useHttps": true,
         "elkEnabled": true,
         "debugLoggingEnabled": false,
+        "deviceNameRules":
+        {
+            "format": "{location ?? folder} {spokenName ?? name}"
+        },
         "ignoreDevices": [
             {
                 "nameContains": "ApplianceLinc",

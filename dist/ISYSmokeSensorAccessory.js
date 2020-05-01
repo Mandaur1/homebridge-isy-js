@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-const hap_nodejs_1 = require("homebridge/node_modules/hap-nodejs");
+const hap_nodejs_1 = require("/usr/local/lib/node_modules/homebridge/node_modules/hap-nodejs/dist/index.js");
 
 const ISYDeviceAccessory_1 = require("./ISYDeviceAccessory");
 

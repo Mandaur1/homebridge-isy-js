@@ -4,8 +4,6 @@ import { Categories, Characteristic, Service } from 'hap-nodejs';
 import { InsteonDoorWindowSensorDevice } from 'isy-nodejs';
 
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
-import { STATUS_FAULT_CTYPE } from 'hap-nodejs/dist/accessories/types';
-
 
 
 export class ISYDoorWindowSensorAccessory extends ISYDeviceAccessory<InsteonDoorWindowSensorDevice,Categories.SENSOR> {

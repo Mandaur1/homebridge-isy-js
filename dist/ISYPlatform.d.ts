@@ -1,6 +1,4 @@
-import { API, DynamicPlatformPlugin } from 'homebridge';
-import { Logging } from 'homebridge/lib/logger';
-import { PlatformAccessory } from 'homebridge/lib/platformAccessory';
+import { API, DynamicPlatformPlugin, Logging, PlatformAccessory } from 'homebridge';
 import { ISY, ISYDevice, ISYNode } from 'isy-nodejs';
 import { IgnoreDeviceRule, PlatformConfig } from '../typings/config';
 import { ISYAccessory } from './ISYAccessory';
@@ -14,7 +12,7 @@ export declare class ISYPlatform implements DynamicPlatformPlugin {
     elkEnabled: boolean;
     debugLoggingEnabled: boolean;
     includeAllScenes: boolean;
-    includedScenes: [];
+    includedScenes: string[];
     ignoreRules: IgnoreDeviceRule[];
     homebridge: API;
     static Instance: ISYPlatform;

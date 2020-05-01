@@ -13,7 +13,7 @@ export class ISYDimmableAccessory<T extends InsteonDimmableDevice> extends ISYRe
 	// Handles request to set the current powerstate from homekit. Will ignore redundant commands.
 	public map(propertyName: keyof T, propertyValue: any) {
 		const o = super.map(propertyName, propertyValue);
-		if (o && propertyName === 'ST') {
+		if (o) {
 			o.characteristic = Characteristic.Brightness;
 			o.characteristicValue = propertyValue;
 		}
@@ -21,8 +21,8 @@ export class ISYDimmableAccessory<T extends InsteonDimmableDevice> extends ISYRe
 	}
 
 	// Mirrors change in the state of the underlying isj-js device object.
-	public handlePropertyChange(propertyName: string, value, oldValue, formattedValue) {
-		super.handlePropertyChange(propertyName, value, oldValue, formattedValue);
+	public handleExternalChange(propertyName: string, value, formattedValue) {
+		super.handleExternalChange(propertyName, value, formattedValue);
 		this.primaryService.getCharacteristic(Characteristic.On).updateValue(this.device.isOn);
 		// this.a
 			// this.primaryService.getCharacteristic(ch.name).updateValue(this.device[propertyName]);
@@ -47,9 +47,9 @@ export class ISYDimmableAccessory<T extends InsteonDimmableDevice> extends ISYRe
 		// lightBulbService.getCharacteristic(Characteristic.On).on('get', this.getPowerState.bind(this));
 		// this.primaryService.getCharacteristic(Characteristic.Brightness).updateValue(this.device['OL']);
 		this.primaryService.getCharacteristic(Characteristic.Brightness).onGet(() => this.device.brightnessLevel);
-		this.primaryService.getCharacteristic(Characteristic.Brightness).onSet(this.bind(this.device.updateBrightnessLevel)).updateValue(this.device.OL);
-
-
+		this.primaryService.getCharacteristic(Characteristic.Brightness).onSet(this.bind(this.device.updateBrightnessLevel)).setProps(
+			{}
+		);
 		// this.primaryService.getCharacteristic(Characteristic.Brightness).setProps({maxValue: this.device.OL});
 
 	}

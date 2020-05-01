@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-const platformAccessory_1 = require("homebridge/lib/platformAccessory");
+const homebridge_1 = require("/usr/local/lib/node_modules/homebridge/lib/index.js");
 
 const ISYPlatform_1 = require("./ISYPlatform");
 
@@ -12,7 +12,7 @@ exports.PluginName = 'homebridge-isy';
 exports.PlatformName = 'ISY';
 
 exports.default = homebridge => {
-  platformAccessory_1.PlatformAccessory.prototype.getOrAddService = function (service) {
+  homebridge_1.PlatformAccessory.prototype.getOrAddService = function (service) {
     const acc = this;
     const serv = acc.getService(service);
 

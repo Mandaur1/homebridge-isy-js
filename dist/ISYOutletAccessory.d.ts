@@ -7,6 +7,11 @@ export declare class ISYOnOffOutletAccessory extends ISYDeviceAccessory<InsteonO
     _outlet2Service: Service;
     get outlet2Service(): Service;
     constructor(device: InsteonOnOffOutletDevice);
+    map(propertyName: any, propertyValue: any): {
+        characteristicValue: any;
+        characteristic: typeof import("hap-nodejs/dist/lib/gen/HomeKit").On;
+        service: Service;
+    };
     setupServices(): void;
 }
 export declare class ISYOutletAccessory extends ISYDeviceAccessory<InsteonOutletDevice, Categories.OUTLET> {

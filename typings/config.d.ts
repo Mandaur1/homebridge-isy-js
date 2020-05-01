@@ -1,22 +1,22 @@
 export interface IgnoreDeviceRule {
-	nameContains: string;
-	lastAddressDigit: number;
-	address: string;
-	typeCode: string;
-	family: string|number;
-	nodeDef: string;
-	folder: string;
+	nameContains?: string;
+	lastAddressDigit?: string | number;
+	address?: string;
+	typeCode?: string;
+	family?: string|number;
+	nodeDef?: string;
+	folder?: string;
 }
 
 export interface RenameDeviceRule {
-	name: string;
-	address: string;
+	name?: string;
+	address?: string;
 	newName: string;
 }
 
 export interface GlobalRenameRule {
-	remove : string[],
-	replace :
+	remove? : string[],
+	replace? :
 		{
 			replace : string,
 			with: string
@@ -58,6 +58,17 @@ export interface DevicePropertyTrigger
 	}
 }
 
+export interface DeviceNameRules
+{
+	format: string;
+	remove?: string[],
+	replace?:
+	{
+		replace: string,
+		with: string;
+	}[]
+}
+
 export interface PlatformConfig {
 	platform: string;
 	name: string;
@@ -67,8 +78,9 @@ export interface PlatformConfig {
 	useHttps: boolean;
 	elkEnabled: boolean;
 	debugLoggingEnabled: boolean;
-	includeAllScenes: true;
-	includedScenes?: [];
+	includeAllScenes?: true;
+	includedScenes?: string[];
+	deviceNameRules?: DeviceNameRules;
 	ignoreDevices?: IgnoreDeviceRule[];
 	renameDevices?: RenameDeviceRule[];
 	transformNames?: GlobalRenameRule;

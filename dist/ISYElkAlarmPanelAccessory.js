@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 
 require("./utils");
 
-const hap_nodejs_1 = require("homebridge/node_modules/hap-nodejs");
+const hap_nodejs_1 = require("/usr/local/lib/node_modules/homebridge/node_modules/hap-nodejs/dist/index.js");
 
 const ISYAccessory_1 = require("./ISYAccessory");
 

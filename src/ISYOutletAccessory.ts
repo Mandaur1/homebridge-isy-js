@@ -31,6 +31,15 @@ export class ISYOnOffOutletAccessory extends ISYDeviceAccessory<InsteonOnOffOutl
 
 		this.category = Categories.OUTLET;
 	}
+	public map(propertyName, propertyValue)
+	{
+		if (propertyName === 'outlet1.ST') {
+			return { characteristicValue: propertyValue, characteristic: Characteristic.On, service: this.outlet1Service };
+		} else if (propertyName === 'outlet2.ST') {
+			return { characteristicValue: propertyValue, characteristic: Characteristic.On, service: this.outlet2Service };
+		}
+	}
+
 	public setupServices()
 	{
 		super.setupServices();
