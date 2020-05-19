@@ -1,12 +1,27 @@
+import { NodeType, Family } from 'isy-nodejs';
+import { TunnelConnectionTimeout } from 'hap-nodejs/dist/lib/gen/HomeKit-Bridge';
+
 export interface IgnoreDeviceRule {
 	nameContains?: string;
-	lastAddressDigit?: string | number;
+	lastAddressDigit?: string|number;
 	address?: string;
 	typeCode?: string;
-	family?: string|number;
+	family?: string|number|Family;
 	nodeDef?: string;
 	folder?: string;
 }
+
+export interface DeviceFilterRule {
+	name?: string;
+	lastAddressDigit?: string;
+	address?: string;
+	typeCode?: string;
+	family?: Family;
+	nodeDef?: string;
+	folder?: string;
+	filterType?: 'name' | 'lastAddressDigit' | 'address' | 'typeCode' | 'family' | 'nodeDef' | 'folder';
+}
+
 
 export interface RenameDeviceRule {
 	name?: string;
@@ -14,23 +29,18 @@ export interface RenameDeviceRule {
 	newName: string;
 }
 
-export interface GlobalRenameRule {
-	remove? : string[],
-	replace? :
-		{
-			replace : string,
-			with: string
-		}[]
+export interface DeviceConfig extends DeviceConfigDetail
+{
+	filter: DeviceFilterRule
+
 }
 
-export interface DeviceConfig
+export interface DeviceConfigDetail
 {
-	name: string;
-	address: string;
-	typeCode: string;
-	triggers: DevicePropertyTrigger[];
-	mapping: DeviceServiceMapping;
-	ignore: boolean;
+	triggers?: DevicePropertyTrigger[];
+	mapping?: DeviceServiceMapping;
+	exclude: boolean;
+	newName?: string;
 }
 
 export interface DeviceServiceMapping
@@ -78,12 +88,10 @@ export interface PlatformConfig {
 	useHttps: boolean;
 	elkEnabled: boolean;
 	debugLoggingEnabled: boolean;
-	includeAllScenes?: true;
-	includedScenes?: string[];
-	deviceNameRules?: DeviceNameRules;
-	ignoreDevices?: IgnoreDeviceRule[];
-	renameDevices?: RenameDeviceRule[];
-	transformNames?: GlobalRenameRule;
-	deviceConfigs?: DeviceConfig[];
+	deviceDefaults?: DeviceConfig;
+	deviceNaming?: DeviceNameRules;
+
+	devices?: DeviceConfig[];
+
 	[x: string]: any;
 }

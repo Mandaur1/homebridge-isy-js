@@ -1,17 +1,18 @@
 import './utils';
 
-import { Categories, Characteristic, CharacteristicEventTypes, Service } from 'hap-nodejs';
 import { ISYScene } from 'isy-nodejs';
 
+import { Categories } from 'homebridge';
 import { ISYAccessory } from './ISYAccessory';
+import { Characteristic, Service } from './plugin';
 import { onSet } from './utils';
 
-export class ISYSceneAccessory extends ISYAccessory<ISYScene,Categories.LIGHTBULB> {
+export class ISYSceneAccessory extends ISYAccessory<ISYScene, Categories.LIGHTBULB> {
 	public dimmable: boolean;
 
 	public scene: ISYScene;
-	constructor (scene: ISYScene) {
-		super(scene);
+	constructor(scene: ISYScene, platform) {
+		super(scene, platform);
 		this.category = Categories.LIGHTBULB;
 		this.scene = scene;
 		this.dimmable = scene.isDimmable;

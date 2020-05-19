@@ -1,15 +1,12 @@
-import { Categories, Characteristic, CharacteristicEventTypes, Service } from 'hap-nodejs';
+import { Categories, CharacteristicEventTypes } from 'hap-nodejs';
 import { InsteonLockDevice } from 'isy-nodejs';
 
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
+import { Characteristic, Service } from './plugin';
 
-
-
-export class ISYLockAccessory extends ISYDeviceAccessory<InsteonLockDevice,Categories.DOOR_LOCK> {
+export class ISYLockAccessory extends ISYDeviceAccessory<InsteonLockDevice, Categories.DOOR_LOCK> {
 	public lockService: any;
-	constructor(device: InsteonLockDevice) {
-		super(device);
-	}
+
 	// Handles an identify request
 
 	// Handles a set to the target lock state. Will ignore redundant commands.

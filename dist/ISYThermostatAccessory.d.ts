@@ -1,10 +1,9 @@
 import './utils';
-import { Categories } from 'hap-nodejs';
 import { InsteonThermostatDevice } from 'isy-nodejs';
+import { Categories } from 'hap-nodejs';
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
 export declare class ISYThermostatAccessory extends ISYDeviceAccessory<InsteonThermostatDevice, Categories.THERMOSTAT> {
     targetTemperature: number;
-    constructor(device: InsteonThermostatDevice);
     toCelsius(temp: number): any;
     toFahrenheit(temp: number): any;
     getCurrentTemperature(callback: (...any: any[]) => void): void;

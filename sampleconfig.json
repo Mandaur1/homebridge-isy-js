@@ -16,9 +16,18 @@
         "useHttps": true,
         "elkEnabled": true,
         "debugLoggingEnabled": false,
-        "deviceNameRules":
+        "deviceNaming":
         {
-            "format": "{location ?? folder} {spokenName ?? name}"
+            "format": "${location ?? folder} ${spokenName ?? name}",
+             "remove": [
+                 "Dimmer",
+                 "Switch",
+                 "Fan "
+             ],
+             "replace": [{
+                 "replace": ".",
+                 "with": " "
+             }]
         },
         "ignoreDevices": [
             {
@@ -93,18 +102,7 @@
                 "lastAddressDigit": "8",
                 "address": ""
             }
-        ],
-         "transformNames": {
-             "remove": [
-                 "Dimmer",
-                 "Switch",
-                 "Fan "
-             ],
-             "replace": [{
-                 "replace": ".",
-                 "with": " "
-             }]
-         }
+        ]
     }],
 
     "accessories": []

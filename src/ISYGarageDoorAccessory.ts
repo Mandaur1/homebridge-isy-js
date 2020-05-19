@@ -1,7 +1,8 @@
-import { Categories, Characteristic, CharacteristicEventTypes, Service } from 'hap-nodejs';
+import { Categories, CharacteristicEventTypes } from 'hap-nodejs';
 import { InsteonRelayDevice } from 'isy-nodejs';
 
 import { ISYAccessory } from './ISYAccessory';
+import { Characteristic, Service } from './plugin';
 
 export class ISYGarageDoorAccessory extends ISYAccessory<InsteonRelayDevice, Categories.GARAGE_DOOR_OPENER> {
 	public timeToOpen: any;
@@ -10,8 +11,9 @@ export class ISYGarageDoorAccessory extends ISYAccessory<InsteonRelayDevice, Cat
 	public targetGarageState: any;
 	public currentGarageState: any;
 	public garageDoorService: any;
-	constructor(sensorDevice, relayDevice, name, timeToOpen, alternate) {
-		super(sensorDevice);
+
+	constructor(sensorDevice, relayDevice, name, timeToOpen, alternate, platform) {
+		super(sensorDevice, platform);
 		this.timeToOpen = timeToOpen;
 		this.relayDevice = relayDevice;
 		this.alternate = alternate === undefined ? false : alternate;
@@ -117,14 +119,14 @@ export class ISYGarageDoorAccessory extends ISYAccessory<InsteonRelayDevice, Cat
 			}
 		} else {
 			if (this.currentGarageState === Characteristic.CurrentDoorState.OPEN) {
-				this.logger.info('GARAGE:  ' + this.device.name + 'Current state of door is open and now sensor shows closed. Setting current state to closed');
+				this.logger.info(`GARAGE:  ${this.device.name}Current state of door is open and now sensor shows closed. Setting current state to closed`);
 				this.garageDoorService.setCharacteristic(Characteristic.CurrentDoorState, Characteristic.CurrentDoorState.CLOSED);
 				this.targetGarageState = Characteristic.TargetDoorState.CLOSED;
 				this.garageDoorService.setCharacteristic(Characteristic.TargetDoorState, Characteristic.TargetDoorState.CLOSED);
 			} else if (this.currentGarageState === Characteristic.CurrentDoorState.CLOSED) {
-				this.logger.info('GARAGE:  ' + this.device.name + 'Current state of door is closed and now sensor shows closed. No action to take');
+				this.logger.info(`GARAGE:  ${this.device.name}Current state of door is closed and now sensor shows closed. No action to take`);
 			} else if (this.currentGarageState === Characteristic.CurrentDoorState.OPENING) {
-				this.logger.info('GARAGE:  ' + this.device.name + 'Current state of door is opening and now sensor shows closed. Setting current state to closed');
+				this.logger.info(`GARAGE:  ${this.device.name} Current state of door is opening and now sensor shows closed. Setting current state to closed`);
 				this.garageDoorService.setCharacteristic(Characteristic.CurrentDoorState, Characteristic.CurrentDoorState.CLOSED);
 				this.targetGarageState = Characteristic.TargetDoorState.CLOSED;
 				this.garageDoorService.setCharacteristic(Characteristic.TargetDoorState, Characteristic.TargetDoorState.CLOSED);

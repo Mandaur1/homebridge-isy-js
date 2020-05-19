@@ -1,34 +1,35 @@
-import { Categories, Characteristic, CharacteristicValue, Service, WithUUID } from 'hap-nodejs';
-import { Logger } from 'homebridge/lib/logger';
-import { PlatformAccessory } from 'homebridge/lib/platformAccessory';
+import * as HB from 'homebridge';
+import { Logging } from 'homebridge/lib/logger';
 import { ISYNode } from 'isy-nodejs';
+import { CharacteristicValue, WithUUID } from 'hap-nodejs';
+import { ISYPlatform } from './ISYPlatform';
 export declare class AccessoryContext {
     address: string;
 }
-export declare class ISYAccessory<T extends ISYNode, TCategory extends Categories> {
+export declare class ISYAccessory<T extends ISYNode, TCategory extends HB.Categories> {
     [x: string]: any;
-    logger: Logger;
+    logger: Logging;
     device: T;
     address: any;
     UUID: string;
-    informationService: Service;
+    informationService: HB.Service;
     name: string;
     displayName: string;
-    platformAccessory: PlatformAccessory;
+    platformAccessory: HB.PlatformAccessory;
     category: TCategory;
-    primaryService: Service;
+    primaryService: HB.Service;
     bind<TFunction extends Function>(func: TFunction): TFunction;
-    constructor(device: T);
+    constructor(device: T, platform: ISYPlatform);
     map(propertyName: keyof T, propertyValue: any): {
         characteristicValue: CharacteristicValue;
-        characteristic?: WithUUID<new () => Characteristic>;
-        service: Service;
+        characteristic?: WithUUID<new () => HB.Characteristic>;
+        service: HB.Service;
     };
     handleControlTrigger(controlName: string): void;
-    configure(accessory?: PlatformAccessory): void;
+    configure(accessory?: HB.PlatformAccessory): void;
     setupServices(): void;
     handlePropertyChange(propertyName: string, value: any, oldValue: any, formattedValue: string): void;
-    updateCharacteristicValue(value: CharacteristicValue, characteristic: WithUUID<new () => Characteristic>, service: Service): void;
+    updateCharacteristicValue(value: CharacteristicValue, characteristic: WithUUID<new () => HB.Characteristic>, service: HB.Service): void;
     convertToHK(propertyName: string, value: any): any;
     identify(): void;
 }

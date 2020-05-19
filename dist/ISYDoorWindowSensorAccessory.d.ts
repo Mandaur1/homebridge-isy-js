@@ -1,13 +1,12 @@
 import './utils';
-import { Categories, Characteristic, Service } from 'hap-nodejs';
+import { Categories } from 'hap-nodejs';
 import { InsteonDoorWindowSensorDevice } from 'isy-nodejs';
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
 export declare class ISYDoorWindowSensorAccessory extends ISYDeviceAccessory<InsteonDoorWindowSensorDevice, Categories.SENSOR> {
-    constructor(device: InsteonDoorWindowSensorDevice);
     map(propertyName: any, propertyValue: any): {
         characteristicValue: import("hap-nodejs").CharacteristicValue;
-        characteristic?: import("hap-nodejs").WithUUID<new () => Characteristic>;
-        service: Service;
+        characteristic?: import("hap-nodejs").WithUUID<new () => import("hap-nodejs").Characteristic>;
+        service: import("hap-nodejs").Service;
     };
     setupServices(): void;
 }

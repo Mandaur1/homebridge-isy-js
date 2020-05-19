@@ -1,12 +1,14 @@
-import { Categories, Characteristic, Service } from 'hap-nodejs';
+
+import { Categories } from 'hap-nodejs';
 import { InsteonDimmableDevice } from 'isy-nodejs';
+import { ISYPlatform } from './ISYPlatform';
 import { ISYRelayAccessory } from './ISYRelayAccessory';
+import { Characteristic, Service } from './plugin';
 import './utils';
 
 export class ISYDimmableAccessory<T extends InsteonDimmableDevice> extends ISYRelayAccessory<T> {
-	constructor(device: T) {
-
-		super(device);
+	constructor(device: T, platform: ISYPlatform)  {
+		super(device, platform);
 		this.category = Categories.LIGHTBULB;
 	}
 	// Handles the identify command
@@ -24,18 +26,9 @@ export class ISYDimmableAccessory<T extends InsteonDimmableDevice> extends ISYRe
 	public handleExternalChange(propertyName: string, value, formattedValue) {
 		super.handleExternalChange(propertyName, value, formattedValue);
 		this.primaryService.getCharacteristic(Characteristic.On).updateValue(this.device.isOn);
-		// this.a
-			// this.primaryService.getCharacteristic(ch.name).updateValue(this.device[propertyName]);
 
 	}
-	// Handles request to get the current on state
-	// Handles request to get the current on state
 
-	// Handles a request to get the current brightness level for dimmable lights.
-	public getBrightness(callback: (...any) => void) {
-		callback(null, this.device.level);
-
-	}
 	// Returns the set of services supported by this object.
 	public setupServices() {
 		const s = super.setupServices();
@@ -44,11 +37,9 @@ export class ISYDimmableAccessory<T extends InsteonDimmableDevice> extends ISYRe
 		this.primaryService = this.platformAccessory.getOrAddService(Service.Lightbulb);
 		this.primaryService.getCharacteristic(Characteristic.On).onSet(this.bind(this.device.updateIsOn));
 		this.primaryService.getCharacteristic(Characteristic.On).onGet(() => this.device.isOn);
-		// lightBulbService.getCharacteristic(Characteristic.On).on('get', this.getPowerState.bind(this));
-		// this.primaryService.getCharacteristic(Characteristic.Brightness).updateValue(this.device['OL']);
 		this.primaryService.getCharacteristic(Characteristic.Brightness).onGet(() => this.device.brightnessLevel);
 		this.primaryService.getCharacteristic(Characteristic.Brightness).onSet(this.bind(this.device.updateBrightnessLevel)).setProps(
-			{}
+			{},
 		);
 		// this.primaryService.getCharacteristic(Characteristic.Brightness).setProps({maxValue: this.device.OL});
 

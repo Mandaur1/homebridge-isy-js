@@ -1,26 +1,22 @@
 import './utils';
 
-import { Categories, Characteristic, Service } from 'hap-nodejs';
+import { Categories } from 'hap-nodejs';
 import { InsteonDoorWindowSensorDevice } from 'isy-nodejs';
 
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
+import { Characteristic, Service } from './plugin';
 
+export class ISYDoorWindowSensorAccessory extends ISYDeviceAccessory<InsteonDoorWindowSensorDevice, Categories.SENSOR> {
 
-export class ISYDoorWindowSensorAccessory extends ISYDeviceAccessory<InsteonDoorWindowSensorDevice,Categories.SENSOR> {
-
-
-	constructor(device: InsteonDoorWindowSensorDevice) {
-		super(device);
-		this.doorWindowState = false;
-	}
 	// Handles the identify command.
 	// Translates the state of the underlying device object into the corresponding homekit compatible state
 
 	// Handles the request to get he current door window state.
 	public map(propertyName, propertyValue) {
 		const o = super.map(propertyName, propertyValue);
-		if(propertyName === 'ST')
+		if (propertyName === 'ST') {
 			o.characteristic = Characteristic.ContactSensorState;
+		}
 		return o;
 	}
 

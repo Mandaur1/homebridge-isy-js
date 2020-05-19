@@ -1,18 +1,19 @@
-import { Categories, Characteristic, CharacteristicEventTypes, Service } from 'hap-nodejs';
+import { Categories } from 'hap-nodejs';
 import { BatteryLevel, BatteryService, LightSensor, MotionSensor, TemperatureSensor } from 'hap-nodejs/dist/lib/gen/HomeKit';
 import { Controls, InsteonMotionSensorDevice } from 'isy-nodejs';
 
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
+import { Characteristic, Service } from './plugin';
 import { toCelsius } from './utils';
 
 export class ISYMotionSensorAccessory extends ISYDeviceAccessory<InsteonMotionSensorDevice, Categories.SENSOR> {
 
 	get motionSensorService(): MotionSensor {
-		return this.platformAccessory?.getOrAddService(MotionSensor);
+		return this.platformAccessory?.getOrAddService(Service.MotionSensor);
 	}
 
 	get lightSensorService(): LightSensor {
-		return this.platformAccessory?.getOrAddService(LightSensor);
+		return this.platformAccessory?.getOrAddService(Service.LightSensor);
 	}
 
 	get batteryLevelService(): BatteryService {
@@ -21,12 +22,6 @@ export class ISYMotionSensorAccessory extends ISYDeviceAccessory<InsteonMotionSe
 
 	get temperatureSensorService(): TemperatureSensor {
 		return this.platformAccessory?.getOrAddService(Service.TemperatureSensor);
-	}
-
-	constructor(device: InsteonMotionSensorDevice) {
-		super(device);
-
-		this.category = Categories.SENSOR;
 	}
 
 	public map(propertyName: string, propertyValue: any) {
@@ -55,18 +50,7 @@ export class ISYMotionSensorAccessory extends ISYDeviceAccessory<InsteonMotionSe
 			this.updateCharacteristicValue(false, Characteristic.MotionDetected, this.motionSensorService);
 		}
 	}
-	// Handles the identify command.
-	// Handles the request to get he current motion sensor state.
 
-	// Mirrors change in the state of the underlying isj-js device object.
-	/*ublic handleExternalChange(propertyName: string, value: any, formattedValue: string) {
-		super.handleExternalChange(propertyName, value, formattedValue);
-
-		this.sensorService.getCharacteristic(Characteristic.MotionDetected).updateValue(this.device.isMotionDetected);
-	}
-	// Returns the set of services supported by this object.
-	var undefined = sensorService;
-*/
 	public setupServices() {
 		super.setupServices();
 		this.primaryService = this.motionSensorService;

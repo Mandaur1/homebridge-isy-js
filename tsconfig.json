@@ -4,17 +4,18 @@
         "target": "ES2018",
         "lib":["ESNext"],
         "emitDecoratorMetadata": true,
-        "outDir": "./tmp/",
+        "outDir": "./dist/",
         "module": "CommonJS",
         "esModuleInterop": true,
         "rootDir": "./src/",
+        "skipLibCheck": true,
         "baseUrl": ".",
         "paths": {
-            "hap-nodejs/*": [
-                "node_modules/homebridge/node_modules/hap-nodejs/*"
+           "hap-nodejs/*": [
+               "node_modules/hap-nodejs/*"
             ],
-            "hap-nodejs": [
-                 "node_modules/homebridge/node_modules/hap-nodejs"
+           "hap-nodejs": [
+                 "node_modules/hap-nodejs"
              ],
             //"homebridge": ["/usr/local/lib/node_modules/homebridge"],
             // "homebridge/lib/platformAccessory": ["/usr/local/lib/node_modules/homebridge/lib/platformAccessory"],

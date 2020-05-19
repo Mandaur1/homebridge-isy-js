@@ -1,9 +1,11 @@
-import { Categories, Characteristic, Service } from 'hap-nodejs';
+
+import { Categories } from 'hap-nodejs';
 import { InsteonSmokeSensorDevice } from 'isy-nodejs';
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
+import { Characteristic, Service } from './plugin';
 export class ISYSmokeSensorAccessory extends ISYDeviceAccessory<InsteonSmokeSensorDevice, Categories.SENSOR> {
-	constructor (device: InsteonSmokeSensorDevice) {
-		super(device);
+	constructor(device: InsteonSmokeSensorDevice, platform) {
+		super(device, platform);
 		this.doorWindowState = false;
 	}
 	// Handles the identify command.
@@ -11,8 +13,9 @@ export class ISYSmokeSensorAccessory extends ISYDeviceAccessory<InsteonSmokeSens
 	// Handles the request to get he current door window state.
 	public map(propertyName, propertyValue) {
 		const o = super.map(propertyName, propertyValue);
-		if (propertyName === 'ST')
+		if (propertyName === 'ST') {
 			o.characteristic = Characteristic.SmokeDetected;
+		}
 		return o;
 	}
 	// Mirrors change in the state of the underlying isj-js device object.

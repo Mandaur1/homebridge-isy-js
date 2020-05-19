@@ -1,16 +1,13 @@
-import { Characteristic, Service } from 'hap-nodejs';
 import { InsteonKeypadDimmerDevice } from 'isy-nodejs';
-import './utils';
 import { ISYDimmableAccessory } from './ISYDimmableAccessory';
+import './utils';
 export declare class ISYKeypadDimmerAccessory<T extends InsteonKeypadDimmerDevice> extends ISYDimmableAccessory<T> {
-    constructor(device: T);
+    constructor(device: T, platform: any);
     map(propertyName: keyof T, propertyValue: any): {
         characteristicValue: import("hap-nodejs").CharacteristicValue;
-        characteristic?: import("hap-nodejs").WithUUID<new () => Characteristic>;
-        service: Service;
+        characteristic?: import("hap-nodejs").WithUUID<new () => import("hap-nodejs").Characteristic>;
+        service: import("hap-nodejs").Service;
     };
-    handleExternalChange(propertyName: string, value: any, formattedValue: any): void;
-    getBrightness(callback: (...any: any[]) => void): void;
     setupServices(): void;
 }
 //# sourceMappingURL=ISYKeypadDimmerAccessory.d.ts.map

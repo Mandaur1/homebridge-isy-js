@@ -1,19 +1,16 @@
 import './utils';
 
-import { Categories, Characteristic, CharacteristicEventTypes, Service } from 'hap-nodejs';
 import { InsteonThermostatDevice, Props } from 'isy-nodejs';
 
+import { Categories, CharacteristicEventTypes } from 'hap-nodejs';
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
+import { Characteristic, Service } from './plugin';
 
-
-//import { Service } from 'homebridge/node_modules/hap-nodejs/dist/lib/Service';
-//import { Characteristic } from 'homebridge/node_modules/hap-nodejs/dist/lib/Characteristic';
-export class ISYThermostatAccessory extends ISYDeviceAccessory<InsteonThermostatDevice,Categories.THERMOSTAT> {
+// import { Service } from 'homebridge/node_modules/hap-nodejs/dist/lib/Service';
+// import { Characteristic } from 'homebridge/node_modules/hap-nodejs/dist/lib/Characteristic';
+export class ISYThermostatAccessory extends ISYDeviceAccessory<InsteonThermostatDevice, Categories.THERMOSTAT> {
 	public targetTemperature: number;
 
-	constructor(device: InsteonThermostatDevice) {
-		super(device);
-	}
 	public toCelsius(temp: number): any {
 		return ((temp - 32.0) * 5.0) / 9.0;
 	}
@@ -78,7 +75,7 @@ export class ISYThermostatAccessory extends ISYDeviceAccessory<InsteonThermostat
 				break;
 		}
 	}
-	public setupServices(){
+	public setupServices() {
 		super.setupServices();
 		this.primaryService = this.addService(Service.Thermostat);
 		// primaryService.getCharacteristic(Characteristic.TargetTemperature).on("get", this.getTargetTemperature.bind(this));
@@ -95,7 +92,6 @@ export class ISYThermostatAccessory extends ISYDeviceAccessory<InsteonThermostat
 		this.primaryService.getCharacteristic(Characteristic.TargetHeatingCoolingState).on(CharacteristicEventTypes.GET, this.getMode.bind(this));
 		this.primaryService.getCharacteristic(Characteristic.TargetHeatingCoolingState).on(CharacteristicEventTypes.SET, this.setHeatingCoolingMode.bind(this));
 		this.primaryService.getCharacteristic(Characteristic.CurrentRelativeHumidity).on(CharacteristicEventTypes.GET, this.getHumidity.bind(this));
-
 
 		// primaryService
 		//   .getCharacteristic(Characteristic.RotationSpeed)

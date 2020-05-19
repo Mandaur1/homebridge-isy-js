@@ -1,30 +1,25 @@
 import './utils';
 
-import { Categories, Characteristic, Service } from 'hap-nodejs';
-import { ElkAlarmSensorDevice } from 'isy-nodejs';
+import { Categories } from 'hap-nodejs';
+import { ELKAlarmPanelDevice } from 'isy-nodejs';
 
-import { ISYAccessory } from './ISYAccessory';
 import { AlarmMode } from 'isy-nodejs/lib/Devices/Elk/ElkAlarmPanelDevice';
+import { ISYAccessory } from './ISYAccessory';
+import { Characteristic, Service } from './plugin';
 
-
-export class ISYElkAlarmPanelAccessory extends ISYAccessory<ElkAlarmSensorDevice,Categories.ALARM_SYSTEM> {
+export class ISYElkAlarmPanelAccessory extends ISYAccessory<ELKAlarmPanelDevice, Categories.ALARM_SYSTEM> {
 	public alarmPanelService: any;
-	constructor (device) {
-		super(device);
-	}
-	// Handles the identify command
 
 	// Handles the request to set the alarm target state
 	public setAlarmTargetState(targetStateHK, callback) {
-		this.logger.info('ALARMSYSTEM: ' + this.device.name + 'Sending command to set alarm panel state to: ' + targetStateHK);
+		this.logger.info(`ALARMSYSTEM: ${this.device.name} Sending command to set alarm panel state to: ${targetStateHK}`);
 		const targetState = this.translateHKToAlarmTargetState(targetStateHK);
-		this.logger.info('ALARMSYSTEM: ' + this.device.name + ' Would send the target state of: ' + targetState);
+		this.logger.info(`ALARMSYSTEM: ${this.device.name} Would send the target state of: ${targetState}`);
 		if (this.device.getAlarmMode() !== targetState) {
-			this.device.sendSetAlarmModeCommand(targetState, function (result) {
-				callback();
-			});
+			// tslint:disable-next-line: only-arrow-functions
+			this.device.sendSetAlarmModeCommand(targetState.toString());
 		} else {
-			this.logger.info('ALARMSYSTEM: ' + this.device.name + ' Redundant command, already in that state.');
+			this.logger.info(`ALARMSYSTEM: ${this.device.name} Redundant command, already in that state.`);
 			callback();
 		}
 	}

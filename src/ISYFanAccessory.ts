@@ -1,26 +1,23 @@
 import './ISYPlatform';
 
-import { Categories, Characteristic, CharacteristicEventTypes, Service, WithUUID } from 'hap-nodejs';
+import { Categories } from 'hap-nodejs';
 import { InsteonFanDevice } from 'isy-nodejs';
 
+import { Fan, Lightbulb } from 'hap-nodejs/dist/lib/gen/HomeKit';
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
+import { ISYPlatform } from './ISYPlatform';
+import { Characteristic, Service } from './plugin';
 
 export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice, Categories.FAN> {
-	public fanService: Service;
-	public lightService: Service;
-	constructor (device: InsteonFanDevice) {
-		super(device);
+	public fanService: Fan;
+	public lightService: Lightbulb;
+	constructor(device: InsteonFanDevice, platform: ISYPlatform) {
+		super(device, platform);
 		this.category = Categories.FAN;
-		// device.propertyChanged.removeListener(null, super.handleExternalChange);
-		// this.device.Motor.onPropertyChanged(null, this.handleExternalChangeToMotor.bind(this));
-		// this.device.Light.onPropertyChanged(null, this.handleExternalChangeToLight.bind(this));
-		// this.logger(JSON.stringify(this.device.scenes[0]));
-	}
-	// Translates the fan level from homebridge into the isy-nodejs level. Maps from the 0-100
-	// to the four isy-nodejs fan speed levels.
 
-	public map(propertyName, propertyValue) {
-		//super.map(propertyName,propertyValue);
+	}
+
+	public map(propertyName, propertyValue: any) {
 		if (propertyName === 'motor.ST') {
 			return { characteristicValue: propertyValue, characteristic: Characteristic.RotationSpeed, service: this.fanService };
 		} else if (propertyName === 'light.ST') {
@@ -29,13 +26,10 @@ export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice, Catego
 
 	}
 
-	// Handles a request to get the current brightness level for dimmable lights.
-
 	public handlePropertyChange(propertyName: string, value: any, oldValue: any, formattedValue: any) {
 		super.handlePropertyChange(propertyName, value, oldValue, formattedValue);
 		this.fanService.getCharacteristic(Characteristic.On).updateValue(this.device.motor.isOn);
 		this.lightService.getCharacteristic(Characteristic.On).updateValue(this.device.light.isOn);
-		//this.fanService.getCharacteristic(Characteristic.RotationSpeed).updateValue(this.device.motor.fanSpeed);
 	}
 
 	// Mirrors change in the state of the underlying isj-js device object.
@@ -43,7 +37,6 @@ export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice, Catego
 	// Returns the services supported by the fan device.
 	public setupServices() {
 		super.setupServices();
-		//this.platformAccessory.removeService(this.primaryService);
 		const fanService = this.platformAccessory.getOrAddService(Service.Fan);
 		this.fanService = fanService;
 		const lightService = this.platformAccessory.getOrAddService(Service.Lightbulb);

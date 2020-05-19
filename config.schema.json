@@ -8,17 +8,11 @@
         "definitions": {
             "DeviceConfig": {
                 "properties": {
-                    "address": {
-                        "type": "string"
-                    },
-                    "ignore": {
-                        "type": "boolean"
+                    "filter": {
+                        "$ref": "#/definitions/DeviceFilterRule"
                     },
                     "mapping": {
                         "$ref": "#/definitions/DeviceServiceMapping"
-                    },
-                    "name": {
-                        "type": "string"
                     },
                     "triggers": {
                         "items": {
@@ -26,10 +20,15 @@
                         },
                         "type": "array"
                     },
-                    "typeCode": {
+                    "newName": {
                         "type": "string"
+                    },
+                    "exclude": {
+                        "type": "boolean",
+                        "default": true
                     }
                 },
+
                 "type": "object"
             },
             "DevicePropertyTrigger": {
@@ -71,42 +70,39 @@
                 },
                 "type": "object"
             },
-            "GlobalRenameRule": {
-                "properties": {
-                    "remove": {
-                        "items": {
-                            "type": "string"
-                        },
-                        "type": "array"
-                    },
-                    "replace": {
-                        "items": {
-                            "properties": {
-                                "replace": {
-                                    "type": "string"
-                                },
-                                "with": {
-                                    "type": "string"
-                                }
-                            },
-                            "type": "object"
-                        },
-                        "type": "array"
-                    }
-                },
-                "type": "object"
-            },
-            "IgnoreDeviceRule": {
+
+            "DeviceFilterRule": {
                 "properties": {
                     "filterType": {
                         "type": "string",
-                        "value": ["address", "family", "folder", "name", "nodeDef", "typeCode"]
+                        "enum": ["address", "family", "folder", "name", "nodeDef", "typeCode"],
+                        "default": "name"
                     },
-                    "filterValue": {
+                    "address": {
+                        "type": "string"
+                    },
+                    "family": {
+                        "type": "string",
+                        "enum": ["Scene", "Elk", "Insteon", "ZWave", "ZigBee", "UPB", "UDI", "Poly"
+                        ]
+                    },
+                    "folder": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "nodeDef": {
+                        "type": "string"
+                    },
+                    "typeCode": {
                         "type": "string"
                     },
                     "lastAddressDigit": {
-                        "type": "number"
+                        "type": "string"
+                    },
+                    "nodeServer": {
+                        "type": "string"
                     }
                 },
                 "type": "object"
@@ -155,7 +151,16 @@
             },
             "useHttps": {
                 "title": "Use HTTPS",
-                "type": "boolean"
+                "type": "boolean",
+                "default": true,
+                "required": true,
+                "oneOf": [{
+                    "title": "HTTPS",
+                    "enum": [true]
+                }, {
+                    "title": "HTTP",
+                    "enum": [false]
+                }]
 
             },
             "username": {
@@ -165,56 +170,70 @@
                 "type": "string"
             },
             "debugLoggingEnabled": {
+                "title": "Enable Debug Logging",
                 "type": "boolean"
             },
-            "deviceConfigs": {
-                "items": {
-                    "$ref": "#/definitions/DeviceConfig"
-                },
-                "type": "array"
-            },
+
             "elkEnabled": {
                 "title": "Enable Elk Devices",
                 "type": "boolean"
             },
-            "deviceNameRules":
-            {
-                 "title": "Device Naming",
-                 "type": "object",
-                 "properties":
-                 {
-                     "format":{
-                         "title": "Format",
-                         "description": "Formatting for device name, using javascript string interpolation syntax.",
-                         "type":"string",
-                         "defaultValue": "{location ?? folder} {spokenName ?? name}"
-                     }
-                 }
 
+
+            "deviceNaming": {
+                "title": "Device Naming",
+                "type": "object",
+                "properties": {
+                    "format": {
+                        "title": "Format",
+                        "description": "Formatting for device name, using javascript string interpolation syntax.",
+                        "type": "string",
+                        "default": "${location ?? folder ?? ''} ${spokenName ?? name}",
+                        "examples": ["${location ?? folder ?? ''} ${spokenName ?? name}", "${spokenName ?? name}"]
+                    },
+                    "remove": {
+                        "title": "Text to Remove",
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array"
+                    },
+                    "replace": {
+                        "title": "Text to Replace",
+                        "items": {
+                            "properties": {
+                                "replace": {
+                                    "type": "string"
+                                },
+                                "with": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "type": "array"
+                    }
+
+                }
             },
-            "ignoreDevices": {
+            "deviceDefaults":
+            {
+                "$ref": "#/definitions/DeviceConfig"
+            },
+            "devices": {
+                "title": "Device List (Optional)",
                 "items": {
-                    "$ref": "#/definitions/IgnoreDeviceRule"
+
+                    "$ref": "#/definitions/DeviceConfig"
+
+
                 },
-                "title": "Ignore Devices",
                 "type": "array"
             },
-            "includeAllScenes": {
-                "title": "Include All Scenes",
-                "type": "boolean"
-            },
-            "renameDevices": {
-                "items": {
-                    "$ref": "#/definitions/RenameDeviceRule"
-                },
-                "type": "array"
-            },
-            "transformNames": {
-                "$ref": "#/definitions/GlobalRenameRule",
-                "type": "object"
-            },
+
             "platform": {
-                "type": "string"
+                "type": "string",
+                "default": "ISY"
             }
         }
 
@@ -228,7 +247,8 @@
                 "host",
                 {
                     "key": "useHttps",
-                    "type": "dropdown"
+                    "type": "select",
+                    "title": "Protocol"
                 }
             ]
         },
@@ -242,178 +262,226 @@
                     "type": "password"
                 }
             ]
-        }, "elkEnabled", "includeAllScenes",
-
+        },
+        {
+            "type": "flex",
+            "flex-flow": "row wrap",
+            "items": [
+                "debugLoggingEnabled",
+                "elkEnabled"
+            ]
+        },
 
         {
             "type": "fieldset",
-            "title": "Optional Settings",
-            "expandable": true,
-            "expanded": false,
-            "items": [
-                "deviceNameFormat",
-                {
-                    "key": "ignoreDevices",
-                    "type": "array",
-                    "listItems": 2,
-                    "title": "Ignore Devices",
-                    "items": [{
-                        "type": "div",
-                        "displayFlex": true,
-                        "flex-direction": "row",
-                        "notitle": true,
-                        "items": [{
-                                "key": "ignoreDevices[].filterType",
-                                "flex": "1 1 50px",
-                                "notitle": true,
-                                "placeholder": "Type",
-                                "titleMap": [{
-                                        "value": "name",
-                                        "name": "Name"
-                                    },
-                                    {
-                                        "value": "address",
-                                        "name": "Address"
-                                    },
-                                    {
-                                        "value": "family",
-                                        "name": "Family"
-                                    },
-                                    {
-                                        "value": "folder",
-                                        "name": "Folder"
-                                    },
-                                    {
-                                        "value": "nodeDef",
-                                        "name": "ISY Nodedef Code"
-                                    },
-                                    {
-                                        "value": "type",
-                                        "name": "ISY Type Code"
-                                    }
-                                ]
-                            },
-                            {
-                                "key": "ignoreDevices[].filterValue",
-                                "flex": "4 4 150px",
-
-                                "notitle": true,
-                                "placeholder": "Value"
-                            },
-                            {
-                                "key": "ignoreDevices[].lastAddressDigit",
-                                "flex": "1 1 50px",
-                                "notitle": true,
-                                "placeholder": "Subaddress"
-                            }
-                        ]
-                    }]
-                }
-
-            ]
-
-        },
-        {
-            "key": "transformNames",
-            "type": "array",
-            "listItems": 2,
-            "title": "Rename Devices",
+            "expandable": "true",
+            "expanded": "false",
+            "title": "Device Naming",
             "items": [{
-                "type": "array",
-                "key": "replace",
-                "listitems": 2,
-                "flex-direction": "row",
+                "notitle": true,
+                "description": "Rules used to render the device/accessory display name as seen by HomeKit.",
+                "key": "deviceNaming",
                 "items": [{
-                        "key": "replace[].replace",
-                        "flex": "4 4 150px",
+                        "key": "deviceNaming.format"
+                    }, {
+                        "description": "Text to Remove",
+                        "key": "deviceNaming.remove",
                         "notitle": true,
-                        "placeholder": "Text to Replace"
+                        "type": "array",
+                        "items": "deviceNaming.remove[]"
                     },
                     {
-                        "key": "replace[].with",
-                        "flex": "4 4 150px",
+                        "key": "deviceNaming.replace",
+                        "description": "Text to Replace",
                         "notitle": true,
-                        "placeholder": "Replace With"
+                        "type": "array",
+                        "items": [{
+                            "notitle": true,
+                            "type": "flex",
+                            "flex-flow": "row wrap",
+                            "items": [{
+                                    "key": "deviceNaming.replace[].replace",
+                                    "notitle": true,
+                                    "placeholder": "Text to substitute"
+                                },
+                                {
+                                    "key": "deviceNaming.replace[].with",
+                                    "notitle": true,
+                                    "placeholder": "Replacement text"
+                                }
+                            ]
+                        }]
                     }
                 ]
             }]
+        },
+        {
+            "type":"fieldset",
+            "key": "deviceDefaults",
+            "items": [
+                "exclude"
+            ]
+        },
+        {
+            "type": "fieldset",
+            "expandable": "true",
+            "expanded": "false",
+            "title": "Device List (Optional)",
+            "description": "Optional list of devices to explicitly include/exclude/rename",
+            "items": [
+
+                {
+                    "key": "devices",
+                    "add": "new",
+
+                    "notitle": true,
+                    "type": "array",
+                    "items": [{
+                            "key": "devices[].filter.filterType",
+                            "placeholder": "Identify Using",
+                            "titleMap": [{
+                                    "value": "name",
+                                    "name": "Name"
+                                },
+                                {
+                                    "value": "address",
+                                    "name": "Address"
+                                },
+                                {
+                                    "value": "family",
+                                    "name": "Family"
+                                },
+                                {
+                                    "value": "folder",
+                                    "name": "Folder"
+                                },
+                                {
+                                    "value": "nodeDef",
+                                    "name": "ISY Nodedef Code (Advanced)"
+                                },
+                                {
+                                    "value": "typeCode",
+                                    "name": "ISY Type Code (Advanced)"
+                                }
+                            ],
+                            "required": "true"
+                        },
+                        {
+                            "key": "devices[].filter.name",
+                            "required": true,
+                            "notitle": true,
+                            "condition": "model.devices[arrayIndex].filter.filterType=='name'",
+                            "placeholder": "Device/Scene Name (any part)"
+
+                        },
+                        {
+                            "key": "devices[].filter.folder",
+                            "notitle": true,
+                            "required": true,
+                            "condition": "model.devices[arrayIndex].filter.filterType=='folder'",
+                            "placeholder": "Parent Folder"
+                        },
+                        {
+                            "key": "devices[].filter.family",
+
+                            "required": true,
+                            "notitle": true,
+                            "condition": "model.devices[arrayIndex].filter.filterType=='family'",
+                            "placeholder": "Device Family",
+                            "default": "Scene",
+                            "titleMap": [{
+                                    "value": "Elk",
+                                    "name": "Elk"
+                                },
+                                {
+                                    "value": "Insteon",
+                                    "name": "Insteon"
+                                },
+                                {
+                                    "value": "UPB",
+                                    "name": "UPB"
+                                },
+                                {
+                                    "value": "ZigBee",
+                                    "name": "ZigBee/RCS"
+                                },
+                                {
+                                    "value": "ZWave",
+                                    "name": "Z-Wave"
+                                },
+                                {
+                                    "value": "Scene",
+                                    "name": "Scene"
+                                },
+                                {
+                                    "value": "Poly",
+                                    "name": "Poly/NodeServer"
+                                }
+                            ]
+
+                        },
+                        {
+                            "key": "devices[].filter.address",
+                            "required": true,
+                            "notitle": true,
+                            "condition": "model.devices[arrayIndex].filter.filterType=='address'"
+                        },
+                        {
+                            "key": "devices[].filter.nodeDef",
+
+                            "required": true,
+                            "notitle": true,
+                            "condition": "model.devices[arrayIndex].filter.filterType=='nodeDef'"
+                        },
+                        {
+                            "key": "devices[].filter.typeCode",
+                            "required": true,
+                            "notitle": true,
+                            "condition": "model.devices[arrayIndex].filter.filterType=='typeCode'"
+                        },
+                        {
+                            "key": "devices[].filter.lastAddressDigit",
+                            "placeholder": "Last Digit of Address",
+                            "notitle": true,
+                            "flex": "1 1 50px",
+                            "condition": "model.devices[arrayIndex].filter.filterType=='name'"
+                        },
+                        {
+                            "key": "devices[].filter.nodeServer",
+                            "title": "NodeServer",
+                            "flex": "1 1 50px",
+                            "condition": "model.devices[arrayIndex].filter.family=='Poly'"
+                        },
+                        {
+                            "key": "devices[].exclude",
+                            "title": "Exclude",
+                            "flex": "1 1 50px",
+                            "required": true
+                        },
+                        {
+                            "key": "devices[].newName",
+                            "title": "New Name",
+                            "flex": "1 1 50px",
+                            "required": false,
+                            "condition": "model.devices[arrayIndex].filter.filterType=='name'"
+                        }
+                    ]
+
+                }
+            ]
         }
     ],
     "data": {
         "platform": "ISY",
         "name": "ISY",
-        "host": "192.168.1.1",
+        "host": "<<IP Address>>",
         "username": "admin",
-        "password": "<<PAssword>>",
+        "password": "<<Password>>",
+        "useHttps": true,
         "elkEnabled": true,
         "debugLoggingEnabled": false,
-        "ignoreDevices": [{
-                "filterType": "name",
-                "filterValue": "ApplianceLinc",
-                "lastAddressDigit": ""
-            },
-            {
-                "nameContains": "S -",
-                "lastAddressDigit": "",
-                "address": ""
-            },
-            {
-                "nameContains": "ApplianceLink",
-                "lastAddressDigit": "",
-                "address": ""
-            },
-            {
-                "nameContains": "Bedroom.Side Gate",
-                "lastAddressDigit": "",
-                "address": ""
-            },
-            {
-                "nameContains": "Unused",
-                "lastAddressDigit": "",
-                "address": ""
-            },
-            {
-                "nameContains": "Remote",
-                "lastAddressDigit": "",
-                "address": ""
-            },
-            {
-                "nameContains": "Keypad",
-                "lastAddressDigit": "2",
-                "address": ""
-            },
-            {
-                "nameContains": "Keypad",
-                "lastAddressDigit": "3",
-                "address": ""
-            },
-            {
-                "nameContains": "Keypad",
-                "lastAddressDigit": "4",
-                "address": ""
-            },
-            {
-                "nameContains": "Keypad",
-                "lastAddressDigit": "5",
-                "address": ""
-            },
-            {
-                "nameContains": "Keypad",
-                "lastAddressDigit": "6",
-                "address": ""
-            },
-            {
-                "nameContains": "Keypad",
-                "lastAddressDigit": "7",
-                "address": ""
-            },
-            {
-                "nameContains": "Keypad",
-                "lastAddressDigit": "8",
-                "address": ""
-            }
-        ],
-        "transformNames": {
+        "deviceNaming": {
+            "format": "${location ?? folder} ${spokenName ?? name}",
             "remove": [
                 "Dimmer",
                 "Switch",
@@ -423,6 +491,145 @@
                 "replace": ".",
                 "with": " "
             }]
-        }
+        },
+       "devices": [{
+               "filter": {
+                   "filterType": "family",
+                   "family": "Scene"
+               },
+               "exclude": true
+           },
+           {
+               "filter": {
+                   "filterType": "nodeDef",
+                   "nodeDef": "KeypadButton"
+               },
+               "exclude": true
+           },
+           {
+               "filter": {
+                   "filterType": "name"
+               },
+               "exclude": true
+           },
+           {
+               "filter": {
+                   "name": "ApplianceLinc",
+                   "filterType": "name"
+               },
+               "exclude": true
+           },
+           {
+               "filter": {
+                   "name": "S -",
+                   "filterType": "name"
+               },
+               "exclude": true
+           },
+           {
+               "filter": {
+                   "name": "ApplianceLink",
+                   "filterType": "name"
+               },
+               "exclude": true
+           },
+           {
+               "filter": {
+                   "address": "1 24 A5 1",
+                   "filterType": "address"
+               },
+               "exclude": true
+           },
+           {
+               "filter": {
+                   "filterType": "family"
+               },
+               "exclude": true
+           },
+           {
+               "filter": {
+                   "folder": "Old Stuff",
+                   "filterType": "folder"
+               },
+               "exclude": true
+           },
+           {
+               "filter": {
+                   "nodeDef": "KeypadButton",
+                   "filterType": "nodeDef"
+               },
+               "exclude": true
+           },
+           {
+               "filter": {
+                   "name": "Unused",
+                   "filterType": "name"
+               },
+               "exclude": true
+           },
+           {
+               "filter": {
+                   "name": "Remote",
+                   "filterType": "name"
+               },
+               "exclude": true
+           },
+           {
+               "filter": {
+                   "name": "Keypad",
+                   "filterType": "name",
+                   "lastAddressDigit": "2"
+               },
+               "exclude": true
+           },
+           {
+               "filter": {
+                   "name": "Keypad",
+                   "filterType": "name",
+                   "lastAddressDigit": "3"
+               },
+               "exclude": true
+           },
+           {
+               "filter": {
+                   "name": "Keypad",
+                   "filterType": "name",
+                   "lastAddressDigit": "4"
+               },
+               "exclude": true
+           },
+           {
+               "filter": {
+                   "name": "Keypad",
+                   "filterType": "name",
+                   "lastAddressDigit": "5"
+               },
+               "exclude": true
+           },
+           {
+               "filter": {
+                   "name": "Keypad",
+                   "filterType": "name",
+                   "lastAddressDigit": "6"
+               },
+               "exclude": true
+           },
+           {
+               "filter": {
+                   "name": "Keypad",
+                   "filterType": "name",
+                   "lastAddressDigit": "7"
+               },
+               "exclude": true
+           },
+           {
+               "filter": {
+                   "name": "Keypad",
+                   "filterType": "name",
+                   "lastAddressDigit": "8"
+               },
+               "exclude": true
+           }
+       ]
     }
 }

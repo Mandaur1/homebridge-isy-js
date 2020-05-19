@@ -1,14 +1,13 @@
 import './utils';
 import { Categories } from 'hap-nodejs';
-import { ElkAlarmSensorDevice } from 'isy-nodejs';
-import { ISYAccessory } from './ISYAccessory';
+import { ELKAlarmPanelDevice } from 'isy-nodejs';
 import { AlarmMode } from 'isy-nodejs/lib/Devices/Elk/ElkAlarmPanelDevice';
-export declare class ISYElkAlarmPanelAccessory extends ISYAccessory<ElkAlarmSensorDevice, Categories.ALARM_SYSTEM> {
+import { ISYAccessory } from './ISYAccessory';
+export declare class ISYElkAlarmPanelAccessory extends ISYAccessory<ELKAlarmPanelDevice, Categories.ALARM_SYSTEM> {
     alarmPanelService: any;
-    constructor(device: any);
     setAlarmTargetState(targetStateHK: any, callback: any): void;
-    translateAlarmCurrentStateToHK(): 4 | 3 | 2 | 1 | 0;
-    translateAlarmTargetStateToHK(): 3 | 2 | 1 | 0;
+    translateAlarmCurrentStateToHK(): 4 | 3 | 0 | 1 | 2;
+    translateAlarmTargetStateToHK(): 3 | 0 | 1 | 2;
     translateHKToAlarmTargetState(state: any): AlarmMode.DISARMED | AlarmMode.AWAY | AlarmMode.STAY | AlarmMode.NIGHT;
     getAlarmTargetState(callback: any): void;
     getAlarmCurrentState(callback: any): void;

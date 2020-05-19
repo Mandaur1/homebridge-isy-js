@@ -8,7 +8,7 @@ export declare class ISYGarageDoorAccessory extends ISYAccessory<InsteonRelayDev
     targetGarageState: any;
     currentGarageState: any;
     garageDoorService: any;
-    constructor(sensorDevice: any, relayDevice: any, name: any, timeToOpen: any, alternate: any);
+    constructor(sensorDevice: any, relayDevice: any, name: any, timeToOpen: any, alternate: any, platform: any);
     getSensorState(): any;
     sendGarageDoorCommand(callback: any): void;
     setTargetDoorState(targetState: any, callback: any): void;

@@ -1,83 +1,64 @@
-import { Accessory, Bridged, Categories, Characteristic, CharacteristicValue, Service, TargetCategory, UUID, WithUUID } from 'hap-nodejs';
-import { generate } from 'hap-nodejs/dist/lib/util/uuid';
-import { API } from 'homebridge';
-import { Logger, Logging } from 'homebridge/lib/logger';
-import { PlatformAccessory } from 'homebridge/lib/platformAccessory';
-import { Controls, Family, ISYNode } from 'isy-nodejs';
-import ISYConstants, { NodeType } from 'isy-nodejs/lib/isyconstants';
 
+import * as HB from 'homebridge';
+import { Logging } from 'homebridge/lib/logger';
+import { PlatformAccessory, Service, Characteristic, generate } from './plugin';
+import { Controls, Family, ISYNode } from 'isy-nodejs';
 import { PlatformName } from './plugin';
-import { EventEmitter } from 'events';
-import { LightSensor } from 'hap-nodejs/dist/lib/gen/HomeKit';
+import { CharacteristicValue, WithUUID } from 'hap-nodejs';
+import { ISYPlatform } from './ISYPlatform';
 
 export class AccessoryContext {
 	public address: string;
 }
 
-(PlatformAccessory.prototype).getOrAddService = function <T extends WithUUID<typeof Service>> (service: T): Service {
-	const acc = this as unknown as PlatformAccessory;
-	const serv = acc.getService(service);
-	if (!serv) {
-		return acc.addService(service);
-	}
-
-	return serv;
-};
-
-export class ISYAccessory<T extends ISYNode, TCategory extends Categories> {
+export class ISYAccessory<T extends ISYNode, TCategory extends HB.Categories> {
 	[x: string]: any;
-	public logger: Logger;
+	public logger: Logging;
 	public device: T;
 	public address: any;
 	public UUID: string;
-	public informationService: Service;
+	public informationService: HB.Service;
 	public name: string;
 	public displayName: string;
-	public platformAccessory: PlatformAccessory;
+	public platformAccessory: HB.PlatformAccessory;
 	public category: TCategory;
-	public primaryService: Service;
+	public primaryService: HB.Service;
 
 	// tslint:disable-next-line: ban-types
 	public bind<TFunction extends Function>(func: TFunction): TFunction {
 		return func.bind(this.device);
 	}
 
-	constructor(device: T) {
+	constructor(device: T, platform: ISYPlatform) {
 		const s = generate(`${device.isy.address}:${device.address}1`);
-		/// super(device.displayName, s);
+
 		this.UUID = s;
 		this.name = device.name;
 		this.displayName = device.displayName;
-		// super(device.name,hapNodeJS.uuid.generate(device.isy.address + ":" + device.address))
-		this.logger = new Logger(`${PlatformName}: ${this.name}`);
+		this.logger = platform.log;
 		this.device = device;
 		this.address = device.address;
 		this.context = new AccessoryContext();
 		this.context.address = this.address;
 		this.device.on('PropertyChanged', this.handlePropertyChange.bind(this));
-		this.device.on('ControlTriggered',this.handleControlTrigger.bind(this));
+		this.device.on('ControlTriggered', this.handleControlTrigger.bind(this));
 	}
 
-	public map(propertyName: keyof T, propertyValue: any): { characteristicValue: CharacteristicValue, characteristic?: WithUUID<new () => Characteristic>, service: Service} {
-		//let output = {characteristic: Characteristic, service: typeof Service};
+	public map(propertyName: keyof T, propertyValue: any): { characteristicValue: CharacteristicValue, characteristic?: WithUUID<new () => HB.Characteristic>, service: HB.Service; } {
 		if (propertyName === 'ST') {
-			return {characteristicValue: propertyValue, characteristic: Characteristic.On, service: this.primaryService};
+			return { characteristicValue: propertyValue, characteristic: Characteristic.On, service: this.primaryService };
 		}
-
-		return { characteristicValue: propertyValue, service: this.primaryService};
+		return { characteristicValue: propertyValue, service: this.primaryService };
 	}
 
-	public handleControlTrigger(controlName: string)
-	{
+	public handleControlTrigger(controlName: string) {
 		this.logger.info(`${Controls[controlName].label} triggered.`);
 	}
 
-	public configure(accessory?: PlatformAccessory) {
+	public configure(accessory?: HB.PlatformAccessory) {
 		if (accessory) {
 			if (!accessory.getOrAddService) {
 				accessory.getOrAddService = PlatformAccessory.prototype.getOrAddService.bind(accessory);
-
-
 			}
 			accessory.displayName = this.displayName;
 			this.platformAccessory = accessory;
@@ -103,26 +84,22 @@ export class ISYAccessory<T extends ISYNode, TCategory extends Categories> {
 		this.informationService.getCharacteristic(Characteristic.Model).updateValue(this.device.productName ?? this.device.name);
 		this.informationService.getCharacteristic(Characteristic.SerialNumber).updateValue(this.device.modelNumber ?? this.device.address);
 		this.informationService.getCharacteristic(Characteristic.FirmwareRevision).updateValue(this.device.version ?? '1.0');
-			// .setCharacteristic(Characteristic.ProductData, this.device.address);
-
+		// .setCharacteristic(Characteristic.ProductData, this.device.address);
 	}
 
 	public handlePropertyChange(propertyName: string, value: any, oldValue: any, formattedValue: string) {
 		const name = propertyName in Controls ? Controls[propertyName].label : propertyName;
 		this.logger.info(`Incoming update to ${name}. New Value: ${value} (${formattedValue}) Old Value: ${oldValue}`);
-		const m = this.map(propertyName,value);
+		const m = this.map(propertyName, value);
 		if (m.characteristic) {
-			this.logger.debug('Property mapped to:',m.service.displayName, m.characteristic.name);
+			this.logger.debug('Property mapped to:', m.service.displayName, m.characteristic.name);
 			this.updateCharacteristicValue(m.characteristicValue, m.characteristic, m.service);
-		}
-		else
-		{
+		} else {
 			this.logger.info('Property not mapped.');
 		}
-
 	}
 
-	public updateCharacteristicValue(value: CharacteristicValue, characteristic:  WithUUID<new () => Characteristic>, service: Service) {
+	public updateCharacteristicValue(value: CharacteristicValue, characteristic: WithUUID<new () => HB.Characteristic>, service: HB.Service) {
 		service.getCharacteristic(characteristic)?.updateValue(value);
 
 	}

@@ -1,21 +1,22 @@
-import { Categories, Characteristic, Service, WithUUID } from 'hap-nodejs';
+
+import { Categories } from 'homebridge';
 import { InsteonDimmableDevice, InsteonRelayDevice } from 'isy-nodejs';
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
+import { Characteristic, Service } from './plugin';
 import './utils';
 
 export class ISYRelayAccessory<T extends InsteonRelayDevice> extends ISYDeviceAccessory<T, Categories.SWITCH | Categories.LIGHTBULB | Categories.OUTLET> {
 
-	constructor(device: T) {
-		super(device);
+	constructor(device: T, platform) {
+		super(device, platform);
 		this.category = Categories.SWITCH;
 		this.dimmable = device instanceof InsteonDimmableDevice;
 
 	}
 
-	public map(propertyName: keyof T, propertyValue: any){
+	public map(propertyName: keyof T, propertyValue: any) {
 		const o = super.map(propertyName, propertyValue);
-		if(propertyName === 'ST')
-		{
+		if (propertyName === 'ST') {
 			o.characteristic = Characteristic.On;
 			o.service = this.primaryService;
 			o.characteristicValue = this.device.isOn;
@@ -36,7 +37,6 @@ export class ISYRelayAccessory<T extends InsteonRelayDevice> extends ISYDeviceAc
 		super.setupServices();
 		this.primaryService = this.platformAccessory.getOrAddService(Service.Switch);
 		this.primaryService.getCharacteristic(Characteristic.On).onGet(() => this.device.isOn).onSet(this.bind(this.device.updateIsOn));
-
 
 	}
 }

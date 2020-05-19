@@ -1,26 +1,17 @@
 import './utils';
 
-import { Categories, Characteristic, Service } from 'hap-nodejs';
+import { Categories } from 'hap-nodejs';
 import { InsteonDoorWindowSensorDevice, InsteonLeakSensorDevice } from 'isy-nodejs';
 
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
+import { Characteristic, Service } from './plugin';
 
+export class ISYLeakSensorAccessory extends ISYDeviceAccessory<InsteonLeakSensorDevice, Categories.SENSOR> {
 
-
-
-
-export class ISYLeakSensorAccessory extends ISYDeviceAccessory<InsteonLeakSensorDevice,Categories.SENSOR> {
-
-
-	constructor (device: InsteonLeakSensorDevice) {
-		super(device);
-		this.doorWindowState = false;
-	}
 	// Handles the identify command.
 	// Translates the state of the underlying device object into the corresponding homekit compatible state
 
-	public map(propertyName, propertyValue)
-	{
+	public map(propertyName, propertyValue) {
 		const o = super.map(propertyName, propertyValue);
 		o.characteristic = Characteristic.LeakDetected;
 		return o;

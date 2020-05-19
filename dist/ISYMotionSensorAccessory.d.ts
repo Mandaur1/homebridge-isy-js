@@ -7,7 +7,6 @@ export declare class ISYMotionSensorAccessory extends ISYDeviceAccessory<Insteon
     get lightSensorService(): LightSensor;
     get batteryLevelService(): BatteryService;
     get temperatureSensorService(): TemperatureSensor;
-    constructor(device: InsteonMotionSensorDevice);
     map(propertyName: string, propertyValue: any): {
         characteristicValue: any;
         characteristic: typeof import("hap-nodejs/dist/lib/gen/HomeKit").CurrentTemperature;
