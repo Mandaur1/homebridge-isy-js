@@ -108,6 +108,7 @@ export class ISYPlatform implements DynamicPlatformPlugin {
 				this.log(`Device: ${device.displayName}`, ' will be included due to rule: ', JSON.stringify(include));
 				return false;
 			}
+			return true;
 		} else {
 			const ignore = configs?.find((p, q, r) => p.exclude);
 			if (ignore) {
@@ -141,7 +142,7 @@ export class ISYPlatform implements DynamicPlatformPlugin {
 					}
 				}
 				if (this.config.deviceNaming.replace) {
-					for (const replaceRule of this.config.devicenaming.replace) {
+					for (const replaceRule of this.config.deviceNaming.replace) {
 						device.displayName.replace(replaceRule.replace, replaceRule.with);
 
 					}

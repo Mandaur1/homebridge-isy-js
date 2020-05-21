@@ -75,7 +75,7 @@
                 "properties": {
                     "filterType": {
                         "type": "string",
-                        "enum": ["address", "family", "folder", "name", "nodeDef", "typeCode"],
+                        "enum": ["address", "family", "folder", "name", "nodeDef", "typeCode", "custom"],
                         "default": "name"
                     },
                     "address": {
@@ -83,8 +83,7 @@
                     },
                     "family": {
                         "type": "string",
-                        "enum": ["Scene", "Elk", "Insteon", "ZWave", "ZigBee", "UPB", "UDI", "Poly"
-                        ]
+                        "enum": ["Scene", "Elk", "Insteon", "ZWave", "ZigBee", "UPB", "UDI", "Poly"]
                     },
                     "folder": {
                         "type": "string"
@@ -102,6 +101,10 @@
                         "type": "string"
                     },
                     "nodeServer": {
+                        "type": "string"
+                    }
+                    ,
+                    "function": {
                         "type": "string"
                     }
                 },
@@ -188,8 +191,8 @@
                         "title": "Format",
                         "description": "Formatting for device name, using javascript string interpolation syntax.",
                         "type": "string",
-                        "default": "${location ?? folder ?? ''} ${spokenName ?? name}",
-                        "examples": ["${location ?? folder ?? ''} ${spokenName ?? name}", "${spokenName ?? name}"]
+                        "default": "${location ?? folder} ${spokenName ?? name}",
+                        "examples": ["${location ?? folder} ${spokenName ?? name}", "${spokenName ?? name}"]
                     },
                     "remove": {
                         "title": "Text to Remove",
@@ -216,8 +219,7 @@
 
                 }
             },
-            "deviceDefaults":
-            {
+            "deviceDefaults": {
                 "$ref": "#/definitions/DeviceConfig"
             },
             "devices": {
@@ -271,69 +273,79 @@
                 "elkEnabled"
             ]
         },
-
         {
             "type": "fieldset",
             "expandable": "true",
             "expanded": "false",
-            "title": "Device Naming",
+            "title": "Defaults",
             "items": [{
-                "notitle": true,
-                "description": "Rules used to render the device/accessory display name as seen by HomeKit.",
-                "key": "deviceNaming",
-                "items": [{
-                        "key": "deviceNaming.format"
+                    "key": "deviceDefaults.exclude",
+                    "type": "select",
+                    "title": "Device Availability",
+                    "required": true,
+                    "default": false,
+                    "titleMap": [{
+                        "name": "Hidden by Default",
+                        "value": true
                     }, {
-                        "description": "Text to Remove",
-                        "key": "deviceNaming.remove",
-                        "notitle": true,
-                        "type": "array",
-                        "items": "deviceNaming.remove[]"
-                    },
-                    {
-                        "key": "deviceNaming.replace",
-                        "description": "Text to Replace",
-                        "notitle": true,
-                        "type": "array",
-                        "items": [{
+                        "name": "Exposed by Default",
+                        "value": false
+                    }]
+                },
+
+                {
+
+
+                    "description": "Rules used to render the device/accessory display name as seen by HomeKit.",
+                    "key": "deviceNaming",
+                    "items": [{
+                            "key": "deviceNaming.format"
+                        }, {
+                            "description": "Text to Remove",
+                            "key": "deviceNaming.remove",
                             "notitle": true,
-                            "type": "flex",
-                            "flex-flow": "row wrap",
+                            "type": "array",
+                            "items": "deviceNaming.remove[]"
+                        },
+                        {
+                            "key": "deviceNaming.replace",
+                            "description": "Text to Replace",
+                            "notitle": true,
+                            "type": "array",
                             "items": [{
-                                    "key": "deviceNaming.replace[].replace",
-                                    "notitle": true,
-                                    "placeholder": "Text to substitute"
-                                },
-                                {
-                                    "key": "deviceNaming.replace[].with",
-                                    "notitle": true,
-                                    "placeholder": "Replacement text"
-                                }
-                            ]
-                        }]
-                    }
-                ]
-            }]
-        },
-        {
-            "type":"fieldset",
-            "key": "deviceDefaults",
-            "items": [
-                "exclude"
+                                "notitle": true,
+                                "type": "flex",
+                                "flex-flow": "row wrap",
+                                "items": [{
+                                        "key": "deviceNaming.replace[].replace",
+                                        "notitle": true,
+                                        "placeholder": "Text to substitute"
+                                    },
+                                    {
+                                        "key": "deviceNaming.replace[].with",
+                                        "notitle": true,
+                                        "placeholder": "Replacement text"
+                                    }
+                                ]
+                            }]
+                        }
+                    ]
+                }
             ]
         },
+
         {
             "type": "fieldset",
             "expandable": "true",
             "expanded": "false",
             "title": "Device List (Optional)",
-            "description": "Optional list of devices to explicitly include/exclude/rename",
+            "description": "Optional list of devices to explicitly exclude or include and rename/configure",
             "items": [
 
                 {
                     "key": "devices",
                     "add": "new",
-
+                    "buttonText": "Add Device",
                     "notitle": true,
                     "type": "array",
                     "items": [{
@@ -362,6 +374,10 @@
                                 {
                                     "value": "typeCode",
                                     "name": "ISY Type Code (Advanced)"
+                                },
+                                {
+                                    "value": "custom",
+                                    "name": "Custom Function (Advanced)"
                                 }
                             ],
                             "required": "true"
@@ -453,6 +469,13 @@
                             "condition": "model.devices[arrayIndex].filter.family=='Poly'"
                         },
                         {
+                            "key": "devices[].filter.custom",
+                            "notitle": true,
+                            "description": "body of function which returns true or false",
+                            "flex": "1 1 100px",
+                            "condition": "model.devices[arrayIndex].filter.filterType=='Custom'"
+                        },
+                        {
                             "key": "devices[].exclude",
                             "title": "Exclude",
                             "flex": "1 1 50px",
@@ -480,6 +503,10 @@
         "useHttps": true,
         "elkEnabled": true,
         "debugLoggingEnabled": false,
+        "deviceDefaults":
+        {
+            "exclude":false
+        },
         "deviceNaming": {
             "format": "${location ?? folder} ${spokenName ?? name}",
             "remove": [
@@ -492,144 +519,144 @@
                 "with": " "
             }]
         },
-       "devices": [{
-               "filter": {
-                   "filterType": "family",
-                   "family": "Scene"
-               },
-               "exclude": true
-           },
-           {
-               "filter": {
-                   "filterType": "nodeDef",
-                   "nodeDef": "KeypadButton"
-               },
-               "exclude": true
-           },
-           {
-               "filter": {
-                   "filterType": "name"
-               },
-               "exclude": true
-           },
-           {
-               "filter": {
-                   "name": "ApplianceLinc",
-                   "filterType": "name"
-               },
-               "exclude": true
-           },
-           {
-               "filter": {
-                   "name": "S -",
-                   "filterType": "name"
-               },
-               "exclude": true
-           },
-           {
-               "filter": {
-                   "name": "ApplianceLink",
-                   "filterType": "name"
-               },
-               "exclude": true
-           },
-           {
-               "filter": {
-                   "address": "1 24 A5 1",
-                   "filterType": "address"
-               },
-               "exclude": true
-           },
-           {
-               "filter": {
-                   "filterType": "family"
-               },
-               "exclude": true
-           },
-           {
-               "filter": {
-                   "folder": "Old Stuff",
-                   "filterType": "folder"
-               },
-               "exclude": true
-           },
-           {
-               "filter": {
-                   "nodeDef": "KeypadButton",
-                   "filterType": "nodeDef"
-               },
-               "exclude": true
-           },
-           {
-               "filter": {
-                   "name": "Unused",
-                   "filterType": "name"
-               },
-               "exclude": true
-           },
-           {
-               "filter": {
-                   "name": "Remote",
-                   "filterType": "name"
-               },
-               "exclude": true
-           },
-           {
-               "filter": {
-                   "name": "Keypad",
-                   "filterType": "name",
-                   "lastAddressDigit": "2"
-               },
-               "exclude": true
-           },
-           {
-               "filter": {
-                   "name": "Keypad",
-                   "filterType": "name",
-                   "lastAddressDigit": "3"
-               },
-               "exclude": true
-           },
-           {
-               "filter": {
-                   "name": "Keypad",
-                   "filterType": "name",
-                   "lastAddressDigit": "4"
-               },
-               "exclude": true
-           },
-           {
-               "filter": {
-                   "name": "Keypad",
-                   "filterType": "name",
-                   "lastAddressDigit": "5"
-               },
-               "exclude": true
-           },
-           {
-               "filter": {
-                   "name": "Keypad",
-                   "filterType": "name",
-                   "lastAddressDigit": "6"
-               },
-               "exclude": true
-           },
-           {
-               "filter": {
-                   "name": "Keypad",
-                   "filterType": "name",
-                   "lastAddressDigit": "7"
-               },
-               "exclude": true
-           },
-           {
-               "filter": {
-                   "name": "Keypad",
-                   "filterType": "name",
-                   "lastAddressDigit": "8"
-               },
-               "exclude": true
-           }
-       ]
+        "devices": [{
+                "filter": {
+                    "filterType": "family",
+                    "family": "Scene"
+                },
+                "exclude": true
+            },
+            {
+                "filter": {
+                    "filterType": "nodeDef",
+                    "nodeDef": "KeypadButton"
+                },
+                "exclude": true
+            },
+            {
+                "filter": {
+                    "filterType": "name"
+                },
+                "exclude": true
+            },
+            {
+                "filter": {
+                    "name": "ApplianceLinc",
+                    "filterType": "name"
+                },
+                "exclude": true
+            },
+            {
+                "filter": {
+                    "name": "S -",
+                    "filterType": "name"
+                },
+                "exclude": true
+            },
+            {
+                "filter": {
+                    "name": "ApplianceLink",
+                    "filterType": "name"
+                },
+                "exclude": true
+            },
+            {
+                "filter": {
+                    "address": "1 24 A5 1",
+                    "filterType": "address"
+                },
+                "exclude": true
+            },
+            {
+                "filter": {
+                    "filterType": "family"
+                },
+                "exclude": true
+            },
+            {
+                "filter": {
+                    "folder": "Old Stuff",
+                    "filterType": "folder"
+                },
+                "exclude": true
+            },
+            {
+                "filter": {
+                    "nodeDef": "KeypadButton",
+                    "filterType": "nodeDef"
+                },
+                "exclude": true
+            },
+            {
+                "filter": {
+                    "name": "Unused",
+                    "filterType": "name"
+                },
+                "exclude": true
+            },
+            {
+                "filter": {
+                    "name": "Remote",
+                    "filterType": "name"
+                },
+                "exclude": true
+            },
+            {
+                "filter": {
+                    "name": "Keypad",
+                    "filterType": "name",
+                    "lastAddressDigit": "2"
+                },
+                "exclude": true
+            },
+            {
+                "filter": {
+                    "name": "Keypad",
+                    "filterType": "name",
+                    "lastAddressDigit": "3"
+                },
+                "exclude": true
+            },
+            {
+                "filter": {
+                    "name": "Keypad",
+                    "filterType": "name",
+                    "lastAddressDigit": "4"
+                },
+                "exclude": true
+            },
+            {
+                "filter": {
+                    "name": "Keypad",
+                    "filterType": "name",
+                    "lastAddressDigit": "5"
+                },
+                "exclude": true
+            },
+            {
+                "filter": {
+                    "name": "Keypad",
+                    "filterType": "name",
+                    "lastAddressDigit": "6"
+                },
+                "exclude": true
+            },
+            {
+                "filter": {
+                    "name": "Keypad",
+                    "filterType": "name",
+                    "lastAddressDigit": "7"
+                },
+                "exclude": true
+            },
+            {
+                "filter": {
+                    "name": "Keypad",
+                    "filterType": "name",
+                    "lastAddressDigit": "8"
+                },
+                "exclude": true
+            }
+        ]
     }
 }

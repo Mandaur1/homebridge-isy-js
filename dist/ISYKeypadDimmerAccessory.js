@@ -6,6 +6,7 @@ require("./utils");
 const plugin_1 = require("./plugin");
 class ISYKeypadDimmerAccessory extends ISYDimmableAccessory_1.ISYDimmableAccessory {
     constructor(device, platform) {
+        ``;
         super(device, platform);
         this.UUID = plugin_1.generate(`${device.isy.address}:${device.address}0`);
         this.category = 5 /* LIGHTBULB */;
@@ -30,10 +31,12 @@ class ISYKeypadDimmerAccessory extends ISYDimmableAccessory_1.ISYDimmableAccesso
         const s = super.setupServices();
         const self = this;
         // this.platformAccessory.removeService(this.primaryService);
+        let index = 1;
         for (const child of this.device.children) {
             const serv = this.platformAccessory.getServiceByUUIDAndSubType(plugin_1.Service.StatelessProgrammableSwitch, child.address);
             const service = serv !== null && serv !== void 0 ? serv : this.platformAccessory.addService(new plugin_1.Service.StatelessProgrammableSwitch(child.displayName, child.address));
-            service.getCharacteristic(plugin_1.Characteristic.ServiceLabelIndex).updateValue(child.displayName);
+            index++;
+            service.getCharacteristic(plugin_1.Characteristic.ServiceLabelIndex).updateValue(index);
             child.on('ControlTriggered', (controlName) => {
                 switch (controlName) {
                     case 'DON':
@@ -52,7 +55,7 @@ class ISYKeypadDimmerAccessory extends ISYDimmableAccessory_1.ISYDimmableAccesso
             });
         }
         const s1 = (_a = this.platformAccessory.getServiceByUUIDAndSubType(plugin_1.Service.StatelessProgrammableSwitch, this.device.address)) !== null && _a !== void 0 ? _a : this.platformAccessory.addService(new plugin_1.Service.StatelessProgrammableSwitch(this.device.displayName + ' (Button)', this.device.address));
-        s1.getCharacteristic(plugin_1.Characteristic.ServiceLabelIndex).updateValue(this.device.displayName);
+        s1.getCharacteristic(plugin_1.Characteristic.ServiceLabelIndex).updateValue(1);
         this.device.on('ControlTriggered', (controlName) => {
             switch (controlName) {
                 case 'DON':

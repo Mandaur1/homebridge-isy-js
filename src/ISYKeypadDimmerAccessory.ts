@@ -10,7 +10,7 @@ import { Characteristic, generate, Service } from './plugin';
 
 export class ISYKeypadDimmerAccessory<T extends  InsteonKeypadDimmerDevice> extends ISYDimmableAccessory<T> {
 	constructor(device: T, platform) {
-
+		``
 		super(device, platform);
 		this.UUID = generate(`${device.isy.address}:${device.address}0`);
 		this.category = Categories.LIGHTBULB;
@@ -39,10 +39,12 @@ export class ISYKeypadDimmerAccessory<T extends  InsteonKeypadDimmerDevice> exte
 		const s = super.setupServices();
 		const self = this;
 		// this.platformAccessory.removeService(this.primaryService);
+		let index = 1;
 		for (const child of this.device.children) {
 			const serv = this.platformAccessory.getServiceByUUIDAndSubType(Service.StatelessProgrammableSwitch, child.address);
 			const service = serv ?? this.platformAccessory.addService(new Service.StatelessProgrammableSwitch(child.displayName, child.address));
-			service.getCharacteristic(Characteristic.ServiceLabelIndex).updateValue(child.displayName);
+			index++;
+			service.getCharacteristic(Characteristic.ServiceLabelIndex).updateValue(index);
 			child.on('ControlTriggered', (controlName: string) => {
 
 				switch (controlName) {
@@ -63,7 +65,7 @@ export class ISYKeypadDimmerAccessory<T extends  InsteonKeypadDimmerDevice> exte
 			});
 		}
 		const s1 = this.platformAccessory.getServiceByUUIDAndSubType(Service.StatelessProgrammableSwitch, this.device.address) ?? this.platformAccessory.addService(new Service.StatelessProgrammableSwitch(this.device.displayName + ' (Button)', this.device.address));
-		s1.getCharacteristic(Characteristic.ServiceLabelIndex).updateValue(this.device.displayName);
+		s1.getCharacteristic(Characteristic.ServiceLabelIndex).updateValue(1);
 		this.device.on('ControlTriggered',  (controlName) => {
 			switch (controlName) {
 				case 'DON':

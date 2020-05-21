@@ -85,6 +85,7 @@ class ISYPlatform {
                 this.log(`Device: ${device.displayName}`, ' will be included due to rule: ', JSON.stringify(include));
                 return false;
             }
+            return true;
         }
         else {
             const ignore = configs === null || configs === void 0 ? void 0 : configs.find((p, q, r) => p.exclude);
@@ -118,7 +119,7 @@ class ISYPlatform {
                     }
                 }
                 if (this.config.deviceNaming.replace) {
-                    for (const replaceRule of this.config.devicenaming.replace) {
+                    for (const replaceRule of this.config.deviceNaming.replace) {
                         device.displayName.replace(replaceRule.replace, replaceRule.with);
                     }
                 }

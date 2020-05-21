@@ -19,7 +19,8 @@ export interface DeviceFilterRule {
 	family?: Family;
 	nodeDef?: string;
 	folder?: string;
-	filterType?: 'name' | 'lastAddressDigit' | 'address' | 'typeCode' | 'family' | 'nodeDef' | 'folder';
+	function?: string;
+	filterType?: 'name' | 'lastAddressDigit' | 'address' | 'typeCode' | 'family' | 'nodeDef' | 'folder' | 'custom';
 }
 
 

@@ -16,94 +16,161 @@
         "useHttps": true,
         "elkEnabled": true,
         "debugLoggingEnabled": false,
-        "deviceNaming":
-        {
-            "format": "${location ?? folder} ${spokenName ?? name}",
-             "remove": [
-                 "Dimmer",
-                 "Switch",
-                 "Fan "
-             ],
-             "replace": [{
-                 "replace": ".",
-                 "with": " "
-             }]
+        "deviceDefaults": {
+            "exclude": false
         },
-        "ignoreDevices": [
-            {
-                "nameContains": "ApplianceLinc",
-                "lastAddressDigit": "",
-                "address": ""
+        "deviceNaming": {
+            "format": "${location ?? folder} ${spokenName ?? name}",
+            "remove": [
+                "Dimmer",
+                "Switch",
+                "Fan "
+            ],
+            "replace": [{
+                "replace": ".",
+                "with": " "
+            }]
+        },
+        "devices": [{
+                "filter": {
+                    "filterType": "family",
+                    "family": "Scene"
+                },
+                "exclude": true
             },
             {
-                "nameContains": "S -",
-                "lastAddressDigit": "",
-                "address": ""
+                "filter": {
+                    "filterType": "nodeDef",
+                    "nodeDef": "KeypadButton"
+                },
+                "exclude": true
             },
             {
-                "nameContains": "ApplianceLink",
-                "lastAddressDigit": "",
-                "address": ""
+                "filter": {
+                    "filterType": "name"
+                },
+                "exclude": true
             },
             {
-                "address": "1 24 A5 1"
+                "filter": {
+                    "name": "ApplianceLinc",
+                    "filterType": "name"
+                },
+                "exclude": true
             },
             {
-                "family": "Generic"
+                "filter": {
+                    "name": "S -",
+                    "filterType": "name"
+                },
+                "exclude": true
             },
             {
-                "folder": "Old Stuff"
+                "filter": {
+                    "name": "ApplianceLink",
+                    "filterType": "name"
+                },
+                "exclude": true
             },
             {
-                "nodeDef": "KeypadButton"
+                "filter": {
+                    "address": "1 24 A5 1",
+                    "filterType": "address"
+                },
+                "exclude": true
             },
             {
-                "nameContains": "Unused",
-                "lastAddressDigit": "",
-                "address": ""
+                "filter": {
+                    "filterType": "family"
+                },
+                "exclude": true
             },
             {
-                "nameContains": "Remote",
-                "lastAddressDigit": "",
-                "address": ""
+                "filter": {
+                    "folder": "Old Stuff",
+                    "filterType": "folder"
+                },
+                "exclude": true
             },
             {
-                "nameContains": "Keypad",
-                "lastAddressDigit": "2",
-                "address": ""
+                "filter": {
+                    "nodeDef": "KeypadButton",
+                    "filterType": "nodeDef"
+                },
+                "exclude": true
             },
             {
-                "nameContains": "Keypad",
-                "lastAddressDigit": "3",
-                "address": ""
+                "filter": {
+                    "name": "Unused",
+                    "filterType": "name"
+                },
+                "exclude": true
             },
             {
-                "nameContains": "Keypad",
-                "lastAddressDigit": "4",
-                "address": ""
+                "filter": {
+                    "name": "Remote",
+                    "filterType": "name"
+                },
+                "exclude": true
             },
             {
-                "nameContains": "Keypad",
-                "lastAddressDigit": "5",
-                "address": ""
+                "filter": {
+                    "name": "Keypad",
+                    "filterType": "name",
+                    "lastAddressDigit": "2"
+                },
+                "exclude": true
             },
             {
-                "nameContains": "Keypad",
-                "lastAddressDigit": "6",
-                "address": ""
+                "filter": {
+                    "name": "Keypad",
+                    "filterType": "name",
+                    "lastAddressDigit": "3"
+                },
+                "exclude": true
             },
             {
-                "nameContains": "Keypad",
-                "lastAddressDigit": "7",
-                "address": ""
+                "filter": {
+                    "name": "Keypad",
+                    "filterType": "name",
+                    "lastAddressDigit": "4"
+                },
+                "exclude": true
             },
             {
-                "nameContains": "Keypad",
-                "lastAddressDigit": "8",
-                "address": ""
+                "filter": {
+                    "name": "Keypad",
+                    "filterType": "name",
+                    "lastAddressDigit": "5"
+                },
+                "exclude": true
+            },
+            {
+                "filter": {
+                    "name": "Keypad",
+                    "filterType": "name",
+                    "lastAddressDigit": "6"
+                },
+                "exclude": true
+            },
+            {
+                "filter": {
+                    "name": "Keypad",
+                    "filterType": "name",
+                    "lastAddressDigit": "7"
+                },
+                "exclude": true
+            },
+            {
+                "filter": {
+                    "name": "Keypad",
+                    "filterType": "name",
+                    "lastAddressDigit": "8"
+                },
+                "exclude": true
             }
         ]
-    }],
+        }],
 
     "accessories": []
 }
