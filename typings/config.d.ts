@@ -20,7 +20,7 @@ export interface DeviceFilterRule {
 	nodeDef?: string;
 	folder?: string;
 	function?: string;
-	filterType?: 'name' | 'lastAddressDigit' | 'address' | 'typeCode' | 'family' | 'nodeDef' | 'folder' | 'custom';
+	filterType?: 'name' | 'lastAddressDigit' | 'address' | 'typeCode' | 'family' | 'nodeDef' | 'folder' | 'function';
 }
 
 

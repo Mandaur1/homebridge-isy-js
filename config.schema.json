@@ -75,7 +75,7 @@
                 "properties": {
                     "filterType": {
                         "type": "string",
-                        "enum": ["address", "family", "folder", "name", "nodeDef", "typeCode", "custom"],
+                        "enum": ["address", "family", "folder", "name", "nodeDef", "typeCode", "function"],
                         "default": "name"
                     },
                     "address": {
@@ -469,11 +469,11 @@
                             "condition": "model.devices[arrayIndex].filter.family=='Poly'"
                         },
                         {
-                            "key": "devices[].filter.custom",
+                            "key": "devices[].filter.function",
                             "notitle": true,
                             "description": "body of function which returns true or false",
                             "flex": "1 1 100px",
-                            "condition": "model.devices[arrayIndex].filter.filterType=='Custom'"
+                            "condition": "model.devices[arrayIndex].filter.filterType=='function'"
                         },
                         {
                             "key": "devices[].exclude",
