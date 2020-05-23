@@ -1,7 +1,7 @@
 {
   "name": "homebridge-isy",
   "displayName": "Homebridge ISY",
-  "version": "0.5.0-rc4",
+  "version": "0.5.0-rc5",
   "description": "Homebridge plugin for ISY series of home controllers from Universal Devices, Inc.",
   "note": "",
   "main": "dist/plugin.js",
@@ -30,6 +30,7 @@
     "install.sh",
     "LICENSE",
     "README.md",
+    "CHANGELOG.md",
     "babel.config.js"
   ],
   "keywords": [
@@ -43,7 +44,6 @@
   ],
   "devDependencies": {
     "@types/node": "",
-    "@types/restler": "",
     "fake-isy-994i": "",
     "hap-nodejs": "^0.7.3",
     "homebridge": "^1.1.0",
@@ -57,10 +57,8 @@
     "@babel/core": "^7.9.0",
     "@log4js-node/log4js-api": "^1.0.2",
     "babel-plugin-module-resolver": "^4.0.0",
-    "faye-websocket": "^0.11.3",
-    "isy-nodejs": "0.5.0-beta.48",
+    "isy-nodejs": "^0.5.0-beta.52",
     "path": "^0.12.7",
-    "restler": "^3.4.0",
     "xmldoc": "^1.1.2"
   },
   "author": "rodtoll",

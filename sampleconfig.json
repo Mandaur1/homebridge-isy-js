@@ -1,4 +1,5 @@
 {
+    "$schema": "./ConfigSchema.json",
     "bridge": {
         "name": "Homebridge-Test",
         "username": "CC:22:3D:E3:CE:39",
@@ -8,6 +9,7 @@
 
     "description": "My sample config file",
     "platforms": [{
+
         "platform": "ISY",
         "name": "ISY",
         "host": "<<IP Address>>",
@@ -19,6 +21,7 @@
         "deviceDefaults": {
             "exclude": false
         },
+
         "deviceNaming": {
             "format": "${location ?? folder} ${spokenName ?? name}",
             "remove": [

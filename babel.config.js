@@ -7,7 +7,7 @@ module.exports = function(api) {
             extensions: [".js"],
             resolvePath(sourcePath, currentFile, opts) {
 
-                let s = "asda";
+               
                 let homebridgeSearchPaths = ['/homebridge/', '/usr/local/lib/node_modules/', '/usr/lib/node_modules/', '../'];
                 let hapnodejsSearchPaths = homebridgeSearchPaths.concat(homebridgeSearchPaths.map(p => p + 'homebridge/node_modules/'));
 

@@ -1,8 +1,10 @@
 {
     "compileOnSave": true,
+    
     "compilerOptions": {
         "target": "ES2018",
         "lib":["ESNext"],
+
         "emitDecoratorMetadata": true,
         "outDir": "./dist/",
         "module": "CommonJS",
@@ -10,6 +12,7 @@
         "rootDir": "./src/",
         "skipLibCheck": true,
         "baseUrl": ".",
+
         "paths": {
            "hap-nodejs/*": [
                "node_modules/hap-nodejs/*"

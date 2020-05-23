@@ -15,6 +15,7 @@
        "prefer-template": true,
         "interface-name": false
     },
+    
 
     "rulesDirectory": []
 }

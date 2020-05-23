@@ -3,7 +3,9 @@
     "pluginType": "platform",
     "singular": true,
     "headerDisplay": "Homebridge Plugin for ISY Series of Controllers from Universal Devices, Inc.",
+
     "schema": {
+           "$schema": "http://json-schema.org/schema",
         "type": "object",
         "definitions": {
             "DeviceConfig": {
@@ -157,6 +159,7 @@
                 "type": "boolean",
                 "default": true,
                 "required": true,
+
                 "oneOf": [{
                     "title": "HTTPS",
                     "enum": [true]

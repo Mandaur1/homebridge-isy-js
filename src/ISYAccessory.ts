@@ -1,11 +1,11 @@
 
+import { CharacteristicValue, WithUUID } from 'hap-nodejs';
 import * as HB from 'homebridge';
 import { Logging } from 'homebridge/lib/logger';
-import { PlatformAccessory, Service, Characteristic, generate } from './plugin';
 import { Controls, Family, ISYNode } from 'isy-nodejs';
-import { PlatformName } from './plugin';
-import { CharacteristicValue, WithUUID } from 'hap-nodejs';
 import { ISYPlatform } from './ISYPlatform';
+import { Characteristic, generate, PlatformAccessory, Service } from './plugin';
+import { PlatformName } from './plugin';
 
 export class AccessoryContext {
 	public address: string;

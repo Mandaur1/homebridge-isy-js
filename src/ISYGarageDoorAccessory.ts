@@ -84,7 +84,7 @@ export class ISYGarageDoorAccessory extends ISYAccessory<InsteonRelayDevice, Cat
 	public getCurrentDoorState(callback) {
 		callback(null, this.currentGarageState);
 	}
-	public setCurrentDoorState(newState, callback) {
+	public setCurrentDoorState(newState: any, callback: () => void) {
 		this.currentGarageState = newState;
 		callback();
 	}

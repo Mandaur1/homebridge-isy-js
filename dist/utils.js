@@ -33,7 +33,7 @@ function isMatch(device, filter) {
         }
     }
     if (filter.address) {
-        return device.address.includes(filter.address);
+        return device.address.toString().includes(filter.address);
     }
     return false;
 }

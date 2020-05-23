@@ -9,7 +9,6 @@ class ISYSceneAccessory extends ISYAccessory_1.ISYAccessory {
     constructor(scene, platform) {
         super(scene, platform);
         this.category = 5 /* LIGHTBULB */;
-        this.scene = scene;
         this.dimmable = scene.isDimmable;
         // this.logger = function(msg) {log("Scene Accessory: " + scene.name + ": " + msg); };
     }
@@ -26,9 +25,6 @@ class ISYSceneAccessory extends ISYAccessory_1.ISYAccessory {
         }
     }
     // Handles request to get the current on state
-    getPowerState(callback) {
-        callback(null, this.scene.isOn);
-    }
     // Returns the set of services supported by this object.
     setupServices() {
         super.setupServices();

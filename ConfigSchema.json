@@ -1,21 +1,15 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "additionalProperties": {
-    },
+    "type": "object",
+   
     "definitions": {
         "DeviceConfig": {
             "properties": {
-                "address": {
-                    "type": "string"
-                },
-                "ignore": {
-                    "type": "boolean"
+                "filter": {
+                    "$ref": "#/definitions/DeviceFilterRule"
                 },
                 "mapping": {
                     "$ref": "#/definitions/DeviceServiceMapping"
-                },
-                "name": {
-                    "type": "string"
                 },
                 "triggers": {
                     "items": {
@@ -23,10 +17,15 @@
                     },
                     "type": "array"
                 },
-                "typeCode": {
+                "newName": {
                     "type": "string"
+                },
+                "exclude": {
+                    "type": "boolean",
+                    "default": true
                 }
             },
+
             "type": "object"
         },
         "DevicePropertyTrigger": {
@@ -68,49 +67,25 @@
             },
             "type": "object"
         },
-        "GlobalRenameRule": {
+
+        "DeviceFilterRule": {
             "properties": {
-                "remove": {
-                    "items": {
-                        "type": "string"
-                    },
-                    "type": "array"
+                "filterType": {
+                    "type": "string",
+                    "enum": ["address", "family", "folder", "name", "nodeDef", "typeCode", "function"],
+                    "default": "name"
                 },
-                "replace": {
-                    "items": {
-                        "properties": {
-                            "replace": {
-                                "type": "string"
-                            },
-                            "with": {
-                                "type": "string"
-                            }
-                        },
-                        "type": "object"
-                    },
-                    "type": "array"
-                }
-            },
-            "type": "object"
-        },
-        "IgnoreDeviceRule": {
-            "properties": {
                 "address": {
                     "type": "string"
                 },
                 "family": {
-                    "type": [
-                        "string",
-                        "number"
-                    ]
+                    "type": "string",
+                    "enum": ["Scene", "Elk", "Insteon", "ZWave", "ZigBee", "UPB", "UDI", "Poly"]
                 },
                 "folder": {
                     "type": "string"
                 },
-                "lastAddressDigit": {
-                    "type": "number"
-                },
-                "nameContains": {
+                "name": {
                     "type": "string"
                 },
                 "nodeDef": {
@@ -118,25 +93,30 @@
                 },
                 "typeCode": {
                     "type": "string"
+                },
+                "lastAddressDigit": {
+                    "type": "string"
+                },
+                "nodeServer": {
+                    "type": "string"
+                },
+                "function": {
+                    "type": "string"
                 }
             },
             "type": "object"
         },
         "PropertyCharacteristicMapping": {
             "properties": {
-                 "property": {
-                     "type": "string"
-                 },
-                 "service":
-                 {
+                "property": {
                     "type": "string"
-
-                 },
+                },
+                "service": {
+                    "type": "string"
+                },
                 "characteristic": {
                     "type": "string"
                 }
-
-
             },
             "type": "object"
         },
@@ -156,58 +136,111 @@
         }
     },
     "properties": {
-        
-        "debugLoggingEnabled": {
-            "type": "boolean"
-        },
-        "deviceConfigs": {
-            "items": {
-                "$ref": "#/definitions/DeviceConfig"
-            },
-            "type": "array"
-        },
-        "elkEnabled": {
-            "type": "boolean"
-        },
-        "host": {
-            "type": "string"
-        },
-        "ignoreDevices": {
-            "items": {
-                "$ref": "#/definitions/IgnoreDeviceRule"
-            },
-            "type": "array"
-        },
-        "includeAllScenes": {
-            "enum": [
-                true
-            ],
-            "type": "boolean"
-        },
-        "name": {
-            "type": "string"
-        },
-        "password": {
-            "type": "string"
-        },
-        "platform": {
-            "type": "string"
-        },
-        "renameDevices": {
-            "items": {
-                "$ref": "#/definitions/RenameDeviceRule"
-            },
-            "type": "array"
-        },
-        "transformNames": {
-            "$ref": "#/definitions/GlobalRenameRule"
-        },
-        "useHttps": {
-            "type": "boolean"
-        },
-        "username": {
-            "type": "string"
+        "platforms": {
+            "type": "array",
+            "items": [{
+                "type": "object",
+
+                "properties": {
+                    "name": {
+                        "title": "Name",
+                        "type": "string",
+
+                        "default": "ISY"
+                    },
+                    "host": {
+                        "title": "IP/Hostname of ISY",
+                        "type": "string",
+                        "format": "hostname"
+                    },
+                    "useHttps": {
+                        "title": "Use HTTPS",
+                        "type": "boolean",
+                        "default": true,
+                        "required": true,
+                        "oneOf": [{
+                            "title": "HTTPS",
+                            "enum": [true]
+                        }, {
+                            "title": "HTTP",
+                            "enum": [false]
+                        }]
+
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "debugLoggingEnabled": {
+                        "title": "Enable Debug Logging",
+                        "type": "boolean"
+                    },
+
+                    "elkEnabled": {
+                        "title": "Enable Elk Devices",
+                        "type": "boolean"
+                    },
+
+
+                    "deviceNaming": {
+                        "title": "Device Naming",
+                        "type": "object",
+                        "properties": {
+                            "format": {
+                                "title": "Format",
+                                "description": "Formatting for device name, using javascript string interpolation syntax.",
+                                "type": "string",
+                                "default": "${location ?? folder} ${spokenName ?? name}",
+                                "examples": ["${location ?? folder} ${spokenName ?? name}", "${spokenName ?? name}"]
+                            },
+                            "remove": {
+                                "title": "Text to Remove",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "type": "array"
+                            },
+                            "replace": {
+                                "title": "Text to Replace",
+                                "items": {
+                                    "properties": {
+                                        "replace": {
+                                            "type": "string"
+                                        },
+                                        "with": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "type": "array"
+                            }
+
+                        }
+                    },
+                    "deviceDefaults": {
+                        "$ref": "#/definitions/DeviceConfig"
+                    },
+                    "devices": {
+                        "title": "Device List (Optional)",
+                        "items": {
+
+                            "$ref": "#/definitions/DeviceConfig"
+
+
+                        },
+                        "type": "array"
+                    },
+
+                    "platform": {
+                        "type": "string",
+                        "default": "ISY"
+                    }
+                }
+            }]
         }
-    },
-    "type": "object"
+    }
+
 }

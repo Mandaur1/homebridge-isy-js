@@ -49,7 +49,7 @@ export function isMatch(device: ISYNode, filter: DeviceFilterRule): boolean {
 		}
 	}
 	if (filter.address) {
-		return device.address.includes(filter.address);
+		return device.address.toString().includes(filter.address);
 	}
 	return false;
 }

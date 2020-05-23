@@ -43,7 +43,7 @@ export class ISYElkAlarmPanelAccessory extends ISYAccessory<ELKAlarmPanelDevice,
 			} else if (sourceAlarmMode === AlarmMode.NIGHT || sourceAlarmMode === AlarmMode.NIGHT_INSTANT) {
 				return Characteristic.SecuritySystemCurrentState.NIGHT_ARM;
 			} else {
-				this.logger.info('ALARMSYSTEM: ' + this.device.name + ' Setting to disarmed because sourceAlarmMode is ' + sourceAlarmMode);
+				this.logger.info(`ALARMSYSTEM: ${this.device.name} Setting to disarmed because sourceAlarmMode is ${sourceAlarmMode}`);
 				return Characteristic.SecuritySystemCurrentState.DISARMED;
 			}
 		}

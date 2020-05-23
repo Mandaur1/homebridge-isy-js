@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ISYAccessory = exports.AccessoryContext = void 0;
-const plugin_1 = require("./plugin");
 const isy_nodejs_1 = require("isy-nodejs");
+const plugin_1 = require("./plugin");
 class AccessoryContext {
 }
 exports.AccessoryContext = AccessoryContext;

@@ -45,7 +45,7 @@ class ISYElkAlarmPanelAccessory extends ISYAccessory_1.ISYAccessory {
                 return plugin_1.Characteristic.SecuritySystemCurrentState.NIGHT_ARM;
             }
             else {
-                this.logger.info('ALARMSYSTEM: ' + this.device.name + ' Setting to disarmed because sourceAlarmMode is ' + sourceAlarmMode);
+                this.logger.info(`ALARMSYSTEM: ${this.device.name} Setting to disarmed because sourceAlarmMode is ${sourceAlarmMode}`);
                 return plugin_1.Characteristic.SecuritySystemCurrentState.DISARMED;
             }
         }
