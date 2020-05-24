@@ -317,7 +317,7 @@ export function wire(logger: Logging) {
 // 	t.getCharacteristic(name).updateValue(value);
 // };
 
-Promise.prototype.handleWith = async function <T extends CharacteristicValue>(callback: (error?: Error | null | undefined, value?: CharacteristicValue) => void): Promise<void> {
+Promise.prototype.handleWith = async function <T extends CharacteristicValue>(callback: CharacteristicGetCallback | CharacteristicSetCallback): Promise<void> {
 	return (this as Promise<T>).then((value) => {
 		callback(null, value);
 	}).catch((msg) => {

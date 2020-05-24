@@ -243,8 +243,8 @@ export class ISYPlatform implements DynamicPlatformPlugin {
 				for (const config of that.config.devices) {
 					if (isMatch(device, config.filter)) {
 						configs.push(config);
-						this.log.debug('Config', JSON.stringify(config, null, '\t'),
-							'added for device', `${device.name}(${device.displayName})`);
+				/* 		this.log.debug('Config', JSON.stringify(config, null, '\t'),
+							'added for device', `${device.name}(${device.displayName})`); */
 					}
 				}
 				this.deviceConfigMap.set(device.address, configs);
@@ -254,8 +254,8 @@ export class ISYPlatform implements DynamicPlatformPlugin {
 				for (const config of that.config.devices) {
 					if (isMatch(device, config.filter)) {
 						configs.push(config);
-						this.log.debug('Config', JSON.stringify(config, null, '\t'),
-							'added for scene', device.name + '(' + device.displayName + ')');
+					/* 	this.log.debug('Config', JSON.stringify(config, null, '\t'),
+							'added for scene', device.name + '(' + device.displayName + ')'); */
 					}
 				}
 				this.deviceConfigMap.set(device.address, configs);

@@ -16,7 +16,7 @@ Requires [Homebridge v1.0+](https://github.com/homebridge/homebridge). Please se
 
 - Support for ISY 5.0.16+
 
-- Installable & Configurable using [Homebridge Config-UI X](https://www.npmjs.com/package/homebridge-config-ui-x) ***WORKS as of RC3***
+- Installable & Configurable using [Homebridge Config-UI X](https://www.npmjs.com/package/homebridge-config-ui-x) **_WORKS as of RC3_**
 
 - NEW: Configurable device naming convention (See sample config below).
 
@@ -85,170 +85,166 @@ Configuration sample (please refer to the homebridge-config-ui-x readme to add a
             "elkEnabled": true,
             "useHttps": false,
             "debugLoggingEnabled": false,
-            "includeAllScenes": false,
-            "includedScenes": [
-                "27346"
-            ],
             "garageDoors": [
                 { "address": "17 79 81 1", "name": "Garage Door", "timeToOpen": 12000 }
             ],
              "deviceDefaults":
-        {
-            "exclude":false
-        },
-        "deviceNaming": {
-            "format": "${location ?? folder} ${spokenName ?? name}",
-            "remove": [
-                "Dimmer",
-                "Switch",
-                "Fan "
-            ],
-            "replace": [{
-                "replace": ".",
-                "with": " "
-            }]
-        },
-        "devices": [{
-                "filter": {
-                    "filterType": "family",
-                    "family": "Scene"
-                },
-                "exclude": true
-            },
             {
-                "filter": {
-                    "filterType": "nodeDef",
-                    "nodeDef": "KeypadButton"
-                },
-                "exclude": true
+                "exclude":false
             },
-            {
-                "filter": {
-                    "filterType": "name"
-                },
-                "exclude": true
+            "deviceNaming": {
+                "format": "${location ?? folder} ${spokenName ?? name}",
+                "remove": [
+                    "Dimmer",
+                    "Switch",
+                    "Fan "
+                ],
+                "replace": [{
+                    "replace": ".",
+                    "with": " "
+                }]
             },
-            {
-                "filter": {
-                    "name": "ApplianceLinc",
-                    "filterType": "name"
+            "devices": [{
+                    "filter": {
+                        "filterType": "family",
+                        "family": "Scene"
+                    },
+                    "exclude": true
                 },
-                "exclude": true
-            },
-            {
-                "filter": {
-                    "name": "S -",
-                    "filterType": "name"
+                {
+                    "filter": {
+                        "filterType": "nodeDef",
+                        "nodeDef": "KeypadButton"
+                    },
+                    "exclude": true
                 },
-                "exclude": true
-            },
-            {
-                "filter": {
-                    "name": "ApplianceLink",
-                    "filterType": "name"
+                {
+                    "filter": {
+                        "filterType": "name"
+                    },
+                    "exclude": true
                 },
-                "exclude": true
-            },
-            {
-                "filter": {
-                    "address": "1 24 A5 1",
-                    "filterType": "address"
+                {
+                    "filter": {
+                        "name": "ApplianceLinc",
+                        "filterType": "name"
+                    },
+                    "exclude": true
                 },
-                "exclude": true
-            },
-            {
-                "filter": {
-                    "filterType": "family"
+                {
+                    "filter": {
+                        "name": "S -",
+                        "filterType": "name"
+                    },
+                    "exclude": true
                 },
-                "exclude": true
-            },
-            {
-                "filter": {
-                    "folder": "Old Stuff",
-                    "filterType": "folder"
+                {
+                    "filter": {
+                        "name": "ApplianceLink",
+                        "filterType": "name"
+                    },
+                    "exclude": true
                 },
-                "exclude": true
-            },
-            {
-                "filter": {
-                    "nodeDef": "KeypadButton",
-                    "filterType": "nodeDef"
+                {
+                    "filter": {
+                        "address": "1 24 A5 1",
+                        "filterType": "address"
+                    },
+                    "exclude": true
                 },
-                "exclude": true
-            },
-            {
-                "filter": {
-                    "name": "Unused",
-                    "filterType": "name"
+                {
+                    "filter": {
+                        "filterType": "family"
+                    },
+                    "exclude": true
                 },
-                "exclude": true
-            },
-            {
-                "filter": {
-                    "name": "Remote",
-                    "filterType": "name"
+                {
+                    "filter": {
+                        "folder": "Old Stuff",
+                        "filterType": "folder"
+                    },
+                    "exclude": true
                 },
-                "exclude": true
-            },
-            {
-                "filter": {
-                    "name": "Keypad",
-                    "filterType": "name",
-                    "lastAddressDigit": "2"
+                {
+                    "filter": {
+                        "nodeDef": "KeypadButton",
+                        "filterType": "nodeDef"
+                    },
+                    "exclude": true
                 },
-                "exclude": true
-            },
-            {
-                "filter": {
-                    "name": "Keypad",
-                    "filterType": "name",
-                    "lastAddressDigit": "3"
+                {
+                    "filter": {
+                        "name": "Unused",
+                        "filterType": "name"
+                    },
+                    "exclude": true
                 },
-                "exclude": true
-            },
-            {
-                "filter": {
-                    "name": "Keypad",
-                    "filterType": "name",
-                    "lastAddressDigit": "4"
+                {
+                    "filter": {
+                        "name": "Remote",
+                        "filterType": "name"
+                    },
+                    "exclude": true
                 },
-                "exclude": true
-            },
-            {
-                "filter": {
-                    "name": "Keypad",
-                    "filterType": "name",
-                    "lastAddressDigit": "5"
+                {
+                    "filter": {
+                        "name": "Keypad",
+                        "filterType": "name",
+                        "lastAddressDigit": "2"
+                    },
+                    "exclude": true
                 },
-                "exclude": true
-            },
-            {
-                "filter": {
-                    "name": "Keypad",
-                    "filterType": "name",
-                    "lastAddressDigit": "6"
+                {
+                    "filter": {
+                        "name": "Keypad",
+                        "filterType": "name",
+                        "lastAddressDigit": "3"
+                    },
+                    "exclude": true
                 },
-                "exclude": true
-            },
-            {
-                "filter": {
-                    "name": "Keypad",
-                    "filterType": "name",
-                    "lastAddressDigit": "7"
+                {
+                    "filter": {
+                        "name": "Keypad",
+                        "filterType": "name",
+                        "lastAddressDigit": "4"
+                    },
+                    "exclude": true
                 },
-                "exclude": true
-            },
-            {
-                "filter": {
-                    "name": "Keypad",
-                    "filterType": "name",
-                    "lastAddressDigit": "8"
+                {
+                    "filter": {
+                        "name": "Keypad",
+                        "filterType": "name",
+                        "lastAddressDigit": "5"
+                    },
+                    "exclude": true
                 },
-                "exclude": true
-            }
-        ]
-    }
-     ]
+                {
+                    "filter": {
+                        "name": "Keypad",
+                        "filterType": "name",
+                        "lastAddressDigit": "6"
+                    },
+                    "exclude": true
+                },
+                {
+                    "filter": {
+                        "name": "Keypad",
+                        "filterType": "name",
+                        "lastAddressDigit": "7"
+                    },
+                    "exclude": true
+                },
+                {
+                    "filter": {
+                        "name": "Keypad",
+                        "filterType": "name",
+                        "lastAddressDigit": "8"
+                    },
+                    "exclude": true
+                }
+            ]
+        }
+    ]
 ```
 
 ## Implementation Notes
