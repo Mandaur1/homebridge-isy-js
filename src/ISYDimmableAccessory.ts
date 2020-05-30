@@ -12,7 +12,7 @@ export class ISYDimmableAccessory<T extends InsteonDimmableDevice> extends ISYRe
 		this.category = Categories.LIGHTBULB;
 	}
 	// Handles the identify command
-	// Handles request to set the current powerstate from homekit. Will ignore redundant commands.
+
 	public map(propertyName: keyof T, propertyValue: any) {
 		const o = super.map(propertyName, propertyValue);
 		if (o) {
@@ -24,9 +24,8 @@ export class ISYDimmableAccessory<T extends InsteonDimmableDevice> extends ISYRe
 
 	// Mirrors change in the state of the underlying isj-js device object.
 	public handleExternalChange(propertyName: string, value, formattedValue) {
+		this.primaryService.updateCharacteristic(Characteristic.On,this.device.isOn);
 		super.handleExternalChange(propertyName, value, formattedValue);
-		this.primaryService.getCharacteristic(Characteristic.On).updateValue(this.device.isOn);
-
 	}
 
 	// Returns the set of services supported by this object.

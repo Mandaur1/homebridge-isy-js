@@ -44,6 +44,7 @@ export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice, Catego
 		fanService.getCharacteristic(Characteristic.RotationSpeed).onSet(this.device.motor.updateFanSpeed.bind(this.device.motor)).onGet((() => this.device.motor.fanSpeed).bind(this)).setProps(
 			{
 				minStep: 25,
+				validValues: [0,25,75,100]
 			},
 		);
 		fanService.getCharacteristic(Characteristic.On).onSet(this.device.motor.updateIsOn.bind(this.device.motor)).onGet((() => this.device.motor.isOn).bind(this));

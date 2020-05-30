@@ -10,11 +10,12 @@ export class ISYLeakSensorAccessory extends ISYDeviceAccessory<InsteonLeakSensor
 
 	// Handles the identify command.
 	// Translates the state of the underlying device object into the corresponding homekit compatible state
-
-	public map(propertyName, propertyValue) {
-		const o = super.map(propertyName, propertyValue);
-		o.characteristic = Characteristic.LeakDetected;
-		return o;
+	public map(propertyName: any, propertyValue: any)  {
+		if (propertyName === 'ST') {
+			// tslint:disable-next-line: triple-equals
+			return { characteristicValue: propertyValue == 0 ? Characteristic.LeakDetected.LEAK_DETECTED : Characteristic.LeakDetected.LEAK_NOT_DETECTED, characteristic: Characteristic.LeakDetected, service: this.primaryService };
+		}
+		return { characteristicValue: propertyValue, service: this.primaryService };
 	}
 
 	// Mirrors change in the state of the underlying isj-js device object.
@@ -28,7 +29,7 @@ export class ISYLeakSensorAccessory extends ISYDeviceAccessory<InsteonLeakSensor
 
 		const sensorService = this.platformAccessory.getOrAddService(Service.LeakSensor);
 		this.primaryService = sensorService;
-		sensorService.getCharacteristic(Characteristic.LeakDetected).onGet(() => this.device.leakDetected);
+		sensorService.getCharacteristic(Characteristic.LeakDetected).onGet(() => !this.device.leakDetected);
 
 	}
 }

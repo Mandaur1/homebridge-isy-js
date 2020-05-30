@@ -100,7 +100,7 @@ export class ISYAccessory<T extends ISYNode, TCategory extends HB.Categories> {
 	}
 
 	public updateCharacteristicValue(value: CharacteristicValue, characteristic: WithUUID<new () => HB.Characteristic>, service: HB.Service) {
-		service.getCharacteristic(characteristic)?.updateValue(value);
+		service.updateCharacteristic(characteristic,value);
 
 	}
 

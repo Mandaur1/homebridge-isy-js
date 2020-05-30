@@ -10,7 +10,6 @@ class ISYDimmableAccessory extends ISYRelayAccessory_1.ISYRelayAccessory {
         this.category = 5 /* LIGHTBULB */;
     }
     // Handles the identify command
-    // Handles request to set the current powerstate from homekit. Will ignore redundant commands.
     map(propertyName, propertyValue) {
         const o = super.map(propertyName, propertyValue);
         if (o) {
@@ -21,8 +20,8 @@ class ISYDimmableAccessory extends ISYRelayAccessory_1.ISYRelayAccessory {
     }
     // Mirrors change in the state of the underlying isj-js device object.
     handleExternalChange(propertyName, value, formattedValue) {
+        this.primaryService.updateCharacteristic(plugin_1.Characteristic.On, this.device.isOn);
         super.handleExternalChange(propertyName, value, formattedValue);
-        this.primaryService.getCharacteristic(plugin_1.Characteristic.On).updateValue(this.device.isOn);
     }
     // Returns the set of services supported by this object.
     setupServices() {
