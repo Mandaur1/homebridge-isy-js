@@ -1,4 +1,4 @@
-# 0.5.0-rc8:
+# 0.5.0-rc9:
 
     BUGFIXES
         1. Leak sensor status inverted

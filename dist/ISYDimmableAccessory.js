@@ -19,9 +19,9 @@ class ISYDimmableAccessory extends ISYRelayAccessory_1.ISYRelayAccessory {
         return o;
     }
     // Mirrors change in the state of the underlying isj-js device object.
-    handleExternalChange(propertyName, value, formattedValue) {
+    handlePropertyChange(propertyName, value, oldValue, formattedValue) {
         this.primaryService.updateCharacteristic(plugin_1.Characteristic.On, this.device.isOn);
-        super.handleExternalChange(propertyName, value, formattedValue);
+        super.handlePropertyChange(propertyName, value, oldValue, formattedValue);
     }
     // Returns the set of services supported by this object.
     setupServices() {

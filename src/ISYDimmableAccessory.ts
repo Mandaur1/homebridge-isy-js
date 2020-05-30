@@ -23,9 +23,10 @@ export class ISYDimmableAccessory<T extends InsteonDimmableDevice> extends ISYRe
 	}
 
 	// Mirrors change in the state of the underlying isj-js device object.
-	public handleExternalChange(propertyName: string, value, formattedValue) {
+	public handlePropertyChange(propertyName: string, value: any, oldValue: any, formattedValue: string) {
+
 		this.primaryService.updateCharacteristic(Characteristic.On,this.device.isOn);
-		super.handleExternalChange(propertyName, value, formattedValue);
+		super.handlePropertyChange(propertyName, value, oldValue, formattedValue);
 	}
 
 	// Returns the set of services supported by this object.

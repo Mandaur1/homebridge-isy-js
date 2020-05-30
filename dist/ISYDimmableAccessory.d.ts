@@ -9,7 +9,7 @@ export declare class ISYDimmableAccessory<T extends InsteonDimmableDevice> exten
         characteristic?: import("hap-nodejs").WithUUID<new () => import("hap-nodejs").Characteristic>;
         service: import("hap-nodejs").Service;
     };
-    handleExternalChange(propertyName: string, value: any, formattedValue: any): void;
+    handlePropertyChange(propertyName: string, value: any, oldValue: any, formattedValue: string): void;
     setupServices(): void;
 }
 //# sourceMappingURL=ISYDimmableAccessory.d.ts.map
