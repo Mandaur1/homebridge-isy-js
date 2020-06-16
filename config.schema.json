@@ -77,8 +77,7 @@
                 "properties": {
                     "filterType": {
                         "type": "string",
-                        "enum": ["address", "family", "folder", "name", "nodeDef", "typeCode", "function"],
-                        "default": "name"
+                        "enum": ["address", "family", "folder", "name", "nodeDef", "typeCode", "function"]
                     },
                     "address": {
                         "type": "string"
