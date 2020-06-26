@@ -32,7 +32,6 @@ class ISYFanAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
         this.lightService = lightService;
         fanService.getCharacteristic(plugin_1.Characteristic.RotationSpeed).onSet(this.device.motor.updateFanSpeed.bind(this.device.motor)).onGet((() => this.device.motor.fanSpeed).bind(this)).setProps({
             minStep: 25,
-            validValues: [0, 25, 75, 100]
         });
         fanService.getCharacteristic(plugin_1.Characteristic.On).onSet(this.device.motor.updateIsOn.bind(this.device.motor)).onGet((() => this.device.motor.isOn).bind(this));
         lightService.getCharacteristic(plugin_1.Characteristic.On).onSet(this.device.light.updateIsOn.bind(this.device.light)).onGet((() => this.device.light.isOn).bind(this));

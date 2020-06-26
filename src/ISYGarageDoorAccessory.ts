@@ -6,7 +6,7 @@ import { Characteristic, Service } from './plugin';
 
 export class ISYGarageDoorAccessory extends ISYAccessory<InsteonRelayDevice, Categories.GARAGE_DOOR_OPENER> {
 	public timeToOpen: any;
-	public relayDevice: any;
+	public relayDevice: InsteonRelayDevice;
 	public alternate: any;
 	public targetGarageState: any;
 	public currentGarageState: any;
@@ -29,9 +29,9 @@ export class ISYGarageDoorAccessory extends ISYAccessory<InsteonRelayDevice, Cat
 	}
 	public getSensorState() {
 		if (this.alternate) {
-			return !this.device.getCurrentDoorWindowState();
+			return !this.device.state;
 		} else {
-			return this.device.getCurrentDoorWindowState();
+			return this.device.state;
 		}
 	}
 	// Handles an identify request

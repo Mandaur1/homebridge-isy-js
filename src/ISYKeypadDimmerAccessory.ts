@@ -14,7 +14,7 @@ export class ISYKeypadDimmerAccessory<T extends  InsteonKeypadDimmerDevice> exte
 		super(device, platform);
 		this.UUID = generate(`${device.isy.address}:${device.address}0`);
 		this.category = Categories.LIGHTBULB;
-		this.displayName =  this.device.displayName + ' (Buttons)';
+		this.displayName =  this.device.displayName;
 
 		// this.category = Categories.Pro
 	}

@@ -63,12 +63,12 @@ class ISYPlatform {
                 self.homebridge.registerPlatformAccessories(plugin_1.PluginName, plugin_1.PlatformName, this.accessoriesToRegister);
                 this.accessoriesToRegister = [];
             }
-            self.log(`Accessories to Remove: ${this.accessoriesToConfigure.size}`);
-            if (this.accessoriesToConfigure.size > 0) {
+            self.log(`Orphan Accessories: ${this.accessoriesToConfigure.size}`);
+            /*if (this.accessoriesToConfigure.size > 0) {
                 self.log('Removing Platform Accessories');
-                self.homebridge.unregisterPlatformAccessories(plugin_1.PluginName, plugin_1.PlatformName, Array.from(this.accessoriesToConfigure.values()));
+                self.homebridge.unregisterPlatformAccessories(PluginName, PlatformName, Array.from(this.accessoriesToConfigure.values()));
                 this.accessoriesToConfigure.clear();
-            }
+            }*/
             self.homebridge.updatePlatformAccessories(this.accessories);
         });
     }
@@ -115,12 +115,12 @@ class ISYPlatform {
             if (this.config.deviceNaming) {
                 if (this.config.deviceNaming.remove) {
                     for (const removeText of this.config.deviceNaming.remove) {
-                        device.displayName.replace(removeText, '');
+                        device.displayName = device.displayName.replace(removeText, '');
                     }
                 }
                 if (this.config.deviceNaming.replace) {
                     for (const replaceRule of this.config.deviceNaming.replace) {
-                        device.displayName.replace(replaceRule.replace, replaceRule.with);
+                        device.displayName = device.displayName.replace(replaceRule.replace, replaceRule.with);
                     }
                 }
             }
@@ -247,10 +247,12 @@ class ISYPlatform {
                         homeKitDevice = that.createAccessory(device);
                     }
                     if (homeKitDevice !== null) {
-                        results.push(homeKitDevice);
-                        if (homeKitDevice instanceof ISYKeypadDimmerAccessory_1.ISYKeypadDimmerAccessory) {
-                            results.push(new ISYDimmableAccessory_1.ISYDimmableAccessory(device, this));
+                        if (device.address.endsWith('1')) { //Parents only
+                            results.push(homeKitDevice);
                         }
+                        // if (homeKitDevice instanceof ISYKeypadDimmerAccessory) {
+                        // results.push(new ISYDimmableAccessory(device as InsteonDimmableDevice, this));
+                        // 	} Double device load not needed
                         // Make sure the device is address to the global map
                         // deviceMap[device.address] = homeKitDevice;
                         // results.set(id,homeKitDevice);

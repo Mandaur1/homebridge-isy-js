@@ -3,13 +3,13 @@ import { InsteonRelayDevice } from 'isy-nodejs';
 import { ISYAccessory } from './ISYAccessory';
 export declare class ISYGarageDoorAccessory extends ISYAccessory<InsteonRelayDevice, Categories.GARAGE_DOOR_OPENER> {
     timeToOpen: any;
-    relayDevice: any;
+    relayDevice: InsteonRelayDevice;
     alternate: any;
     targetGarageState: any;
     currentGarageState: any;
     garageDoorService: any;
     constructor(sensorDevice: any, relayDevice: any, name: any, timeToOpen: any, alternate: any, platform: any);
-    getSensorState(): any;
+    getSensorState(): boolean;
     sendGarageDoorCommand(callback: any): void;
     setTargetDoorState(targetState: any, callback: any): void;
     getCurrentDoorState(callback: any): void;

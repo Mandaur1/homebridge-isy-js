@@ -22,10 +22,10 @@ class ISYGarageDoorAccessory extends ISYAccessory_1.ISYAccessory {
     }
     getSensorState() {
         if (this.alternate) {
-            return !this.device.getCurrentDoorWindowState();
+            return !this.device.state;
         }
         else {
-            return this.device.getCurrentDoorWindowState();
+            return this.device.state;
         }
     }
     // Handles an identify request

@@ -10,7 +10,7 @@ class ISYKeypadDimmerAccessory extends ISYDimmableAccessory_1.ISYDimmableAccesso
         super(device, platform);
         this.UUID = plugin_1.generate(`${device.isy.address}:${device.address}0`);
         this.category = 5 /* LIGHTBULB */;
-        this.displayName = this.device.displayName + ' (Buttons)';
+        this.displayName = this.device.displayName;
         // this.category = Categories.Pro
     }
     // Handles the identify command

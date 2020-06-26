@@ -39,7 +39,6 @@ class ISYLockAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
         const lockMechanismService = this.platformAccessory.getOrAddService(plugin_1.Service.LockMechanism);
         this.lockService = lockMechanismService;
         lockMechanismService.getCharacteristic(plugin_1.Characteristic.LockTargetState).on("set" /* SET */, this.setTargetLockState.bind(this));
-        lockMechanismService.getCharacteristic(plugin_1.Characteristic.LockTargetState).on("get" /* GET */, this.getTargetLockState.bind(this));
         lockMechanismService.getCharacteristic(plugin_1.Characteristic.LockCurrentState).on("get" /* GET */, this.getLockCurrentState.bind(this));
     }
 }
