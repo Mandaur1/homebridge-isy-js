@@ -164,8 +164,10 @@ export function cleanConfig(config: PlatformConfig) {
 
 // tslint:disable-next-line: no-namespace
 
-export function onSet<T extends CharacteristicValue>(character: HB.Characteristic, func: (arg: T) => Promise<any>): HB.Characteristic {
-
+export function onSet<T extends CharacteristicValue>(character: HB.Characteristic, func: (arg: T) => Promise<any>, converter?: (char: HB.Characteristic, arg: CharacteristicValue) => any): HB.Characteristic {
+	if (converter) {
+		func = (arg: T) => func(converter(character, arg));
+	}
 	const cfunc = addSetCallback(func);
 
 	return character.on(CharacteristicEventTypes.SET, cfunc);
@@ -232,8 +234,8 @@ declare module 'homebridge/lib/logger' {
 
 declare module 'hap-nodejs/dist/lib/Characteristic' {
 	export interface Characteristic {
-		onSet<T extends CharacteristicValue>(func: (...args: any) => Promise<T>): HB.Characteristic;
-		onGet<T extends CharacteristicValue>(func: () => T): HB.Characteristic;
+		onSet<T extends CharacteristicValue>(func: (...args: any) => Promise<T>, converter?: (char: HB.Characteristic, arg: CharacteristicValue) => any): HB.Characteristic;
+		onGet<T extends CharacteristicValue>(func: () => T | Promise<T>, converter?: (char: HB.Characteristic, arg: CharacteristicValue) => any): HB.Characteristic;
 	}
 }
 
@@ -320,7 +322,7 @@ export function wire(logger: Logging) {
 Promise.prototype.handleWith = async function <T extends CharacteristicValue>(callback: CharacteristicGetCallback | CharacteristicSetCallback): Promise<void> {
 	return (this as Promise<T>).then((value) => {
 		callback(null, value);
-	}).catch((msg) => {
+	},(msg) => {
 		callback(new Error(msg), msg);
 	});
 };

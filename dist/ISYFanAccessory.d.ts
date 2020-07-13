@@ -8,11 +8,13 @@ export declare class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice
     fanService: Fan;
     lightService: Lightbulb;
     constructor(device: InsteonFanDevice, platform: ISYPlatform);
-    map(propertyName: any, propertyValue: any): {
+    map(propertyName: string, propertyValue: any): {
         characteristicValue: any;
         characteristic: typeof import("hap-nodejs/dist/lib/gen/HomeKit").RotationSpeed;
         service: Fan;
     };
+    convertTo(propertyName: any, value: any): any;
+    convertFrom(characteristic: any, value: any): any;
     handlePropertyChange(propertyName: string, value: any, oldValue: any, formattedValue: any): void;
     setupServices(): void;
 }

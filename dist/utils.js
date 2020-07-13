@@ -126,7 +126,10 @@ function cleanConfig(config) {
 exports.cleanConfig = cleanConfig;
 // tslint:disable-next-line: no-namespace
 // tslint:disable-next-line: no-namespace
-function onSet(character, func) {
+function onSet(character, func, converter) {
+    if (converter) {
+        func = (arg) => func(converter(character, arg));
+    }
     const cfunc = addSetCallback(func);
     return character.on("set" /* SET */, cfunc);
 }
@@ -210,7 +213,7 @@ exports.wire = wire;
 Promise.prototype.handleWith = async function (callback) {
     return this.then((value) => {
         callback(null, value);
-    }).catch((msg) => {
+    }, (msg) => {
         callback(new Error(msg), msg);
     });
 };

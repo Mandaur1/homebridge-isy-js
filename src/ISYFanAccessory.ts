@@ -1,7 +1,7 @@
 import './ISYPlatform';
 
 import { Categories } from 'hap-nodejs';
-import { InsteonFanDevice } from 'isy-nodejs';
+import { InsteonFanDevice, States } from 'isy-nodejs';
 
 import { Fan, Lightbulb } from 'hap-nodejs/dist/lib/gen/HomeKit';
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
@@ -17,20 +17,54 @@ export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice, Catego
 
 	}
 
-	public map(propertyName, propertyValue) {
-		
+	public map(propertyName: string, propertyValue: any) {
+
 		if (propertyName === 'motor.ST') {
-			return { characteristicValue: propertyValue, characteristic: Characteristic.RotationSpeed, service: this.fanService };
+
+			return { characteristicValue: this.convertTo(propertyName, propertyValue), characteristic: Characteristic.RotationSpeed, service: this.fanService };
 		} else if (propertyName === 'light.ST') {
 			return { characteristicValue: propertyValue, characteristic: Characteristic.Brightness, service: this.lightService };
 		}
 
 	}
 
+	public convertTo(propertyName, value) {
+		if (propertyName === 'motor.ST') {
+			if (value === States.Fan.High) {
+				return 100;
+			} else if (value === States.Fan.Medium) {
+				return 66.6;
+			} else if (value === States.Fan.Low) {
+				return 33.3;
+			}
+			return States.Off;
+
+		} else {
+			return super.convertTo(propertyName, value);
+		}
+
+	}
+
+	public convertFrom(characteristic, value) {
+		if (characteristic instanceof Characteristic.RotationSpeed) {
+			if (value > 66.6) {
+				return States.Fan.High;
+			} else if (value > 33.3) {
+				return States.Fan.Medium;
+			} else if (value > 0) {
+				return States.Fan.Low;
+			}
+			return States.Off;
+		} else {
+			return super.convertFrom(characteristic, value);
+		}
+	}
 	public handlePropertyChange(propertyName: string, value: any, oldValue: any, formattedValue: any) {
 		super.handlePropertyChange(propertyName, value, oldValue, formattedValue);
 		this.fanService.getCharacteristic(Characteristic.On).updateValue(this.device.motor.isOn);
-		this.lightService.getCharacteristic(Characteristic.On).updateValue(this.device.light.isOn);
+		if (this.lightService) {
+			this.lightService.getCharacteristic(Characteristic.On).updateValue(this.device.light.isOn);
+		}
 	}
 
 	// Mirrors change in the state of the underlying isj-js device object.
@@ -40,17 +74,21 @@ export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice, Catego
 		super.setupServices();
 		const fanService = this.platformAccessory.getOrAddService(Service.Fan);
 		this.fanService = fanService;
-		const lightService = this.platformAccessory.getOrAddService(Service.Lightbulb);
-		this.lightService = lightService;
-		fanService.getCharacteristic(Characteristic.RotationSpeed).onSet(this.device.motor.updateFanSpeed.bind(this.device.motor)).onGet((() => this.device.motor.fanSpeed).bind(this)).setProps(
+		if (this.device.light) {
+			const lightService = this.platformAccessory.getOrAddService(Service.Lightbulb);
+			lightService.getCharacteristic(Characteristic.On).onSet(this.device.light.updateIsOn.bind(this.device.light)).onGet((() => this.device.light.isOn).bind(this));
+			lightService.getCharacteristic(Characteristic.Brightness).onSet(this.device.light.updateBrightnessLevel.bind(this.device.light)).onGet((() => this.device.light.brightnessLevel).bind(this));
+			this.lightService = lightService;
+		}
+
+		fanService.getCharacteristic(Characteristic.RotationSpeed).onSet(this.device.motor.updateFanSpeed, this.convertFrom).onGet((() => this.device.motor.fanSpeed).bind(this)).setProps(
 			{
-				minStep: 25,
+				minStep: 33.3,
 
 			},
 		);
 		fanService.getCharacteristic(Characteristic.On).onSet(this.device.motor.updateIsOn.bind(this.device.motor)).onGet((() => this.device.motor.isOn).bind(this));
-		lightService.getCharacteristic(Characteristic.On).onSet(this.device.light.updateIsOn.bind(this.device.light)).onGet((() => this.device.light.isOn).bind(this));
-		lightService.getCharacteristic(Characteristic.Brightness).onSet(this.device.light.updateBrightnessLevel.bind(this.device.light)).onGet((() => this.device.light.brightnessLevel).bind(this));
+
 		fanService.isPrimaryService = true;
 		this.primaryService = fanService;
 

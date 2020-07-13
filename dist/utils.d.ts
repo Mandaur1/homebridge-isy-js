@@ -13,7 +13,7 @@ declare global {
 }
 export declare function isMatch(device: ISYNode, filter: DeviceFilterRule): boolean;
 export declare function cleanConfig(config: PlatformConfig): PlatformConfig;
-export declare function onSet<T extends CharacteristicValue>(character: HB.Characteristic, func: (arg: T) => Promise<any>): HB.Characteristic;
+export declare function onSet<T extends CharacteristicValue>(character: HB.Characteristic, func: (arg: T) => Promise<any>, converter?: (char: HB.Characteristic, arg: CharacteristicValue) => any): HB.Characteristic;
 export declare function toCelsius(temp: number): any;
 export declare function toFahrenheit(temp: number): any;
 export declare function onGet<T extends CharacteristicValue>(character: HB.Characteristic, func: () => T): HB.Characteristic;
@@ -35,8 +35,8 @@ declare module 'homebridge/lib/logger' {
 }
 declare module 'hap-nodejs/dist/lib/Characteristic' {
     interface Characteristic {
-        onSet<T extends CharacteristicValue>(func: (...args: any) => Promise<T>): HB.Characteristic;
-        onGet<T extends CharacteristicValue>(func: () => T): HB.Characteristic;
+        onSet<T extends CharacteristicValue>(func: (...args: any) => Promise<T>, converter?: (char: HB.Characteristic, arg: CharacteristicValue) => any): HB.Characteristic;
+        onGet<T extends CharacteristicValue>(func: () => T | Promise<T>, converter?: (char: HB.Characteristic, arg: CharacteristicValue) => any): HB.Characteristic;
     }
 }
 export declare function clone(logger: Logging, prefix: string): Logging;

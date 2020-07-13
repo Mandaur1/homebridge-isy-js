@@ -7,6 +7,7 @@ import { ISYPlatform } from './ISYPlatform';
 import { Characteristic, generate, PlatformAccessory, Service } from './plugin';
 import { PlatformName } from './plugin';
 
+
 export class AccessoryContext {
 	public address: string;
 }
@@ -46,9 +47,9 @@ export class ISYAccessory<T extends ISYNode, TCategory extends HB.Categories> {
 
 	public map(propertyName: keyof T, propertyValue: any): { characteristicValue: CharacteristicValue, characteristic?: WithUUID<new () => HB.Characteristic>, service: HB.Service; } {
 		if (propertyName === 'ST') {
-			return { characteristicValue: propertyValue, characteristic: Characteristic.On, service: this.primaryService };
+			return { characteristicValue: this.convertTo(propertyName,propertyValue), characteristic: Characteristic.On, service: this.primaryService };
 		}
-		return { characteristicValue: propertyValue, service: this.primaryService };
+		return { characteristicValue: this.convertTo(propertyName,propertyValue), service: this.primaryService };
 	}
 
 	public handleControlTrigger(controlName: string) {
@@ -104,7 +105,11 @@ export class ISYAccessory<T extends ISYNode, TCategory extends HB.Categories> {
 
 	}
 
-	public convertToHK(propertyName: string, value: any) {
+	public convertTo(propertyName: keyof T, value: CharacteristicValue) : any  {
+		return value;
+	}
+
+	public convertFrom(characteristic: HB.Characteristic, value: CharacteristicValue) : any {
 		return value;
 	}
 	public identify() {
