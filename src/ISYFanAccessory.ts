@@ -1,9 +1,9 @@
 import './ISYPlatform';
 
 import { Categories } from 'hap-nodejs';
-import { InsteonFanDevice, States } from 'isy-nodejs';
-
 import { Fan, Lightbulb } from 'hap-nodejs/dist/lib/gen/HomeKit';
+import * as HB from 'homebridge';
+import { InsteonFanDevice, States } from 'isy-nodejs';
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
 import { ISYPlatform } from './ISYPlatform';
 import { Characteristic, Service } from './plugin';
@@ -28,7 +28,7 @@ export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice, Catego
 
 	}
 
-	public convertTo(propertyName, value) {
+	public convertTo(propertyName, value: any) {
 		if (propertyName === 'motor.ST') {
 			if (value === States.Fan.High) {
 				return 100;
@@ -45,8 +45,9 @@ export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice, Catego
 
 	}
 
-	public convertFrom(characteristic, value) {
+	public convertFrom(characteristic: HB.Characteristic, value) {
 		if (characteristic instanceof Characteristic.RotationSpeed) {
+			this.logger.debug('Characteristic is RotationSpeed');
 			if (value > 66.6) {
 				return States.Fan.High;
 			} else if (value > 33.3) {
@@ -81,12 +82,7 @@ export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice, Catego
 			this.lightService = lightService;
 		}
 
-		fanService.getCharacteristic(Characteristic.RotationSpeed).onSet(this.device.motor.updateFanSpeed, this.convertFrom).onGet((() => this.device.motor.fanSpeed).bind(this)).setProps(
-			{
-				minStep: 33.3,
-
-			},
-		);
+		fanService.getCharacteristic(Characteristic.RotationSpeed).onSet(this.device.motor.updateFanSpeed.bind(this.device.motor), this.convertFrom).onGet((() => this.convertTo('motor.ST', this.device.motor.fanSpeed)).bind(this.device.motor)).setProps({minStep: 33.3});
 		fanService.getCharacteristic(Characteristic.On).onSet(this.device.motor.updateIsOn.bind(this.device.motor)).onGet((() => this.device.motor.isOn).bind(this));
 
 		fanService.isPrimaryService = true;

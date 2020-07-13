@@ -21,13 +21,13 @@ exports.default = (homebridge) => {
         }
         return serv;
     };
-    (exports.Characteristic.prototype).onGet = function (func) {
+    (exports.Characteristic.prototype).onGet = function (func, converter) {
         const c = this;
         return utils_1.onGet(c, func);
     };
-    (exports.Characteristic.prototype).onSet = function (func) {
+    (exports.Characteristic.prototype).onSet = function (func, converter) {
         const c = this;
-        return utils_1.onSet(c, func);
+        return utils_1.onSet(c, func, converter);
     };
     // require('./utils');
     homebridge.registerPlatform(exports.PluginName, exports.PlatformName, ISYPlatform_1.ISYPlatform);

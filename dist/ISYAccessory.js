@@ -25,10 +25,11 @@ class ISYAccessory {
         return func.bind(this.device);
     }
     map(propertyName, propertyValue) {
+        const outputVal = this.convert(propertyValue, propertyName);
         if (propertyName === 'ST') {
-            return { characteristicValue: this.convertTo(propertyName, propertyValue), characteristic: plugin_1.Characteristic.On, service: this.primaryService };
+            return { characteristicValue: outputVal, characteristic: plugin_1.Characteristic.On, service: this.primaryService };
         }
-        return { characteristicValue: this.convertTo(propertyName, propertyValue), service: this.primaryService };
+        return { characteristicValue: outputVal, service: this.primaryService };
     }
     handleControlTrigger(controlName) {
         this.logger.info(`${isy_nodejs_1.Controls[controlName].label} triggered.`);
@@ -76,6 +77,14 @@ class ISYAccessory {
     }
     updateCharacteristicValue(value, characteristic, service) {
         service.updateCharacteristic(characteristic, value);
+    }
+    convert(value, property) {
+        if (property instanceof plugin_1.Characteristic) {
+            return this.convertFrom(property, value);
+        }
+        else {
+            return this.convertTo(property, value);
+        }
     }
     convertTo(propertyName, value) {
         return value;

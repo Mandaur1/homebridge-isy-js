@@ -165,10 +165,11 @@ export function cleanConfig(config: PlatformConfig) {
 // tslint:disable-next-line: no-namespace
 
 export function onSet<T extends CharacteristicValue>(character: HB.Characteristic, func: (arg: T) => Promise<any>, converter?: (char: HB.Characteristic, arg: CharacteristicValue) => any): HB.Characteristic {
+	let tfunc = func;
 	if (converter) {
-		func = (arg: T) => func(converter(character, arg));
+		tfunc = (arg: T) => func(converter(character, arg));
 	}
-	const cfunc = addSetCallback(func);
+	const cfunc = addSetCallback(tfunc);
 
 	return character.on(CharacteristicEventTypes.SET, cfunc);
 }
@@ -322,7 +323,7 @@ export function wire(logger: Logging) {
 Promise.prototype.handleWith = async function <T extends CharacteristicValue>(callback: CharacteristicGetCallback | CharacteristicSetCallback): Promise<void> {
 	return (this as Promise<T>).then((value) => {
 		callback(null, value);
-	},(msg) => {
+	}, (msg) => {
 		callback(new Error(msg), msg);
 	});
 };

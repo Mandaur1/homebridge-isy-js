@@ -127,10 +127,11 @@ exports.cleanConfig = cleanConfig;
 // tslint:disable-next-line: no-namespace
 // tslint:disable-next-line: no-namespace
 function onSet(character, func, converter) {
+    let tfunc = func;
     if (converter) {
-        func = (arg) => func(converter(character, arg));
+        tfunc = (arg) => func(converter(character, arg));
     }
-    const cfunc = addSetCallback(func);
+    const cfunc = addSetCallback(tfunc);
     return character.on("set" /* SET */, cfunc);
 }
 exports.onSet = onSet;

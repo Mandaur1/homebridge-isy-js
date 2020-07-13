@@ -19,9 +19,9 @@ class ISYSceneAccessory extends ISYAccessory_1.ISYAccessory {
     // Handles request to set the current powerstate from homekit. Will ignore redundant commands.
     // Mirrors change in the state of the underlying isj-js device object.
     handlePropertyChange(propertyName, value, oldValue, formattedValue) {
-        this.primaryService.getCharacteristic(plugin_1.Characteristic.On).updateValue(this.scene.isOn);
+        this.primaryService.getCharacteristic(plugin_1.Characteristic.On).updateValue(this.device.isOn);
         if (this.dimmable) {
-            this.primaryService.getCharacteristic(plugin_1.Characteristic.Brightness).updateValue(this.scene.brightnessLevel);
+            this.primaryService.getCharacteristic(plugin_1.Characteristic.Brightness).updateValue(this.device.brightnessLevel);
         }
     }
     // Handles request to get the current on state

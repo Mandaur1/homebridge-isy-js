@@ -35,15 +35,15 @@ export default (homebridge: API) => {
 		return serv;
 	};
 
-	((Characteristic as any).prototype).onGet = function(func: () => CharacteristicValue): HB.Characteristic {
+	((Characteristic as any).prototype).onGet = function (func: () => CharacteristicValue, converter?: (char: HB.Characteristic, arg: CharacteristicValue) => any): HB.Characteristic {
 			const c = this as unknown as HB.Characteristic;
 			return onGet(c, func);
 
 	};
 
-	(Characteristic.prototype).onSet = function(func: (arg: CharacteristicValue) => Promise<any>): HB.Characteristic {
+	(Characteristic.prototype).onSet = function (func: (arg: CharacteristicValue) => Promise<any>, converter?: (char: HB.Characteristic, arg: CharacteristicValue) => any): HB.Characteristic {
 		const c = this as unknown as HB.Characteristic;
-		return onSet(c, func);
+		return onSet(c, func, converter);
 	};
 	// require('./utils');
 	homebridge.registerPlatform(PluginName, PlatformName, ISYPlatform);

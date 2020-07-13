@@ -28,9 +28,9 @@ export class ISYSceneAccessory extends ISYAccessory<ISYScene, Categories.LIGHTBU
 	// Mirrors change in the state of the underlying isj-js device object.
 	public handlePropertyChange(propertyName: string, value: any, oldValue: any, formattedValue: string) {
 
-		this.primaryService.getCharacteristic(Characteristic.On).updateValue(this.scene.isOn);
+		this.primaryService.getCharacteristic(Characteristic.On).updateValue(this.device.isOn);
 		if (this.dimmable) {
-			this.primaryService.getCharacteristic(Characteristic.Brightness).updateValue(this.scene.brightnessLevel);
+			this.primaryService.getCharacteristic(Characteristic.Brightness).updateValue(this.device.brightnessLevel);
 		}
 	}
 	// Handles request to get the current on state

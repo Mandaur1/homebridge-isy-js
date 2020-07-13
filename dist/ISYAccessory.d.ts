@@ -30,6 +30,8 @@ export declare class ISYAccessory<T extends ISYNode, TCategory extends HB.Catego
     setupServices(): void;
     handlePropertyChange(propertyName: string, value: any, oldValue: any, formattedValue: string): void;
     updateCharacteristicValue(value: CharacteristicValue, characteristic: WithUUID<new () => HB.Characteristic>, service: HB.Service): void;
+    convert(value: any, propertyName: keyof T): CharacteristicValue;
+    convert(value: CharacteristicValue, characteristic: HB.Characteristic): any;
     convertTo(propertyName: keyof T, value: CharacteristicValue): any;
     convertFrom(characteristic: HB.Characteristic, value: CharacteristicValue): any;
     identify(): void;

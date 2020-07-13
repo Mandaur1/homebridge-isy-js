@@ -46,10 +46,11 @@ export class ISYAccessory<T extends ISYNode, TCategory extends HB.Categories> {
 	}
 
 	public map(propertyName: keyof T, propertyValue: any): { characteristicValue: CharacteristicValue, characteristic?: WithUUID<new () => HB.Characteristic>, service: HB.Service; } {
+		const outputVal = this.convert(propertyValue, propertyName);
 		if (propertyName === 'ST') {
-			return { characteristicValue: this.convertTo(propertyName,propertyValue), characteristic: Characteristic.On, service: this.primaryService };
+			return { characteristicValue: outputVal, characteristic: Characteristic.On, service: this.primaryService };
 		}
-		return { characteristicValue: this.convertTo(propertyName,propertyValue), service: this.primaryService };
+		return { characteristicValue: outputVal, service: this.primaryService };
 	}
 
 	public handleControlTrigger(controlName: string) {
@@ -101,15 +102,27 @@ export class ISYAccessory<T extends ISYNode, TCategory extends HB.Categories> {
 	}
 
 	public updateCharacteristicValue(value: CharacteristicValue, characteristic: WithUUID<new () => HB.Characteristic>, service: HB.Service) {
-		service.updateCharacteristic(characteristic,value);
+		service.updateCharacteristic(characteristic, value);
 
 	}
 
-	public convertTo(propertyName: keyof T, value: CharacteristicValue) : any  {
+	public convert(value: any, propertyName: keyof T) : CharacteristicValue;
+
+	public convert(value: CharacteristicValue, characteristic: HB.Characteristic) : any;
+
+	public convert(value: any | CharacteristicValue, property?: keyof T | HB.Characteristic): any | CharacteristicValue {
+		if (property instanceof Characteristic) {
+			return this.convertFrom(property, value);
+		} else {
+			return this.convertTo(property, value);
+							}
+	}
+
+	public convertTo(propertyName: keyof T, value: CharacteristicValue): any  {
 		return value;
 	}
 
-	public convertFrom(characteristic: HB.Characteristic, value: CharacteristicValue) : any {
+	public convertFrom(characteristic: HB.Characteristic, value: CharacteristicValue): any {
 		return value;
 	}
 	public identify() {
