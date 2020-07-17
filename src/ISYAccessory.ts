@@ -9,7 +9,7 @@ import { PlatformName } from './plugin';
 
 
 export class AccessoryContext {
-	public address: string;
+	public address?: string;
 }
 
 export class ISYAccessory<T extends ISYNode, TCategory extends HB.Categories> {
@@ -18,12 +18,12 @@ export class ISYAccessory<T extends ISYNode, TCategory extends HB.Categories> {
 	public device: T;
 	public address: any;
 	public UUID: string;
-	public informationService: HB.Service;
+	public informationService!: HB.Service;
 	public name: string;
 	public displayName: string;
-	public platformAccessory: HB.PlatformAccessory;
-	public category: TCategory;
-	public primaryService: HB.Service;
+	public platformAccessory!: HB.PlatformAccessory;
+	public category!: TCategory;
+	public primaryService!: HB.Service;
 
 	// tslint:disable-next-line: ban-types
 	public bind<TFunction extends Function>(func: TFunction): TFunction {
@@ -94,7 +94,7 @@ export class ISYAccessory<T extends ISYNode, TCategory extends HB.Categories> {
 		this.logger.info(`Incoming update to ${name}. New Value: ${value} (${formattedValue}) Old Value: ${oldValue}`);
 		const m = this.map(propertyName, value);
 		if (m.characteristic) {
-			this.logger.debug('Property mapped to:', m.service.displayName, m.characteristic.name);
+			this.logger.debug('Property mapped to:', m.service.displayName, m.characteristic.name, `(${m.characteristicValue})`);
 			this.updateCharacteristicValue(m.characteristicValue, m.characteristic, m.service);
 		} else {
 			this.logger.info('Property not mapped.');

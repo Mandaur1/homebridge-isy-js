@@ -5,6 +5,7 @@ require("./ISYPlatform");
 const isy_nodejs_1 = require("isy-nodejs");
 const ISYDeviceAccessory_1 = require("./ISYDeviceAccessory");
 const plugin_1 = require("./plugin");
+const utils_1 = require("./utils");
 class ISYFanAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
     constructor(device, platform) {
         super(device, platform);
@@ -21,7 +22,7 @@ class ISYFanAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
     convertTo(propertyName, value) {
         if (propertyName === 'motor.ST') {
             if (value === isy_nodejs_1.States.Fan.High) {
-                return 100;
+                return 99.9;
             }
             else if (value === isy_nodejs_1.States.Fan.Medium) {
                 return 66.6;
@@ -36,7 +37,7 @@ class ISYFanAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
         }
     }
     convertFrom(characteristic, value) {
-        if (characteristic instanceof plugin_1.Characteristic.RotationSpeed) {
+        if (utils_1.isType(characteristic, plugin_1.Characteristic.RotationSpeed)) {
             this.logger.debug('Characteristic is RotationSpeed');
             if (value > 66.6) {
                 return isy_nodejs_1.States.Fan.High;
@@ -72,7 +73,7 @@ class ISYFanAccessory extends ISYDeviceAccessory_1.ISYDeviceAccessory {
             lightService.getCharacteristic(plugin_1.Characteristic.Brightness).onSet(this.device.light.updateBrightnessLevel.bind(this.device.light)).onGet((() => this.device.light.brightnessLevel).bind(this));
             this.lightService = lightService;
         }
-        fanService.getCharacteristic(plugin_1.Characteristic.RotationSpeed).onSet(this.device.motor.updateFanSpeed.bind(this.device.motor), this.convertFrom).onGet((() => this.convertTo('motor.ST', this.device.motor.fanSpeed)).bind(this.device.motor)).setProps({ minStep: 33.3 });
+        fanService.getCharacteristic(plugin_1.Characteristic.RotationSpeed).onSet(this.device.motor.updateFanSpeed.bind(this.device.motor), this.convertFrom.bind(this)).onGet((() => this.convertTo('motor.ST', this.device.motor.fanSpeed)).bind(this)).setProps({ minStep: 33.3 });
         fanService.getCharacteristic(plugin_1.Characteristic.On).onSet(this.device.motor.updateIsOn.bind(this.device.motor)).onGet((() => this.device.motor.isOn).bind(this));
         fanService.isPrimaryService = true;
         this.primaryService = fanService;

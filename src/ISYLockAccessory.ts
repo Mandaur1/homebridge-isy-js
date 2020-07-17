@@ -25,15 +25,15 @@ export class ISYLockAccessory extends ISYDeviceAccessory<InsteonLockDevice, Cate
 		return this.device.getCurrentLockState() ? 1 : 0;
 	}
 	// Handles request to get the current lock state for homekit
-	public getLockCurrentState(callback) {
+	public getLockCurrentState(callback: (arg0: null, arg1: number) => void) {
 		callback(null, this.getDeviceCurrentStateAsHK());
 	}
 	// Handles request to get the target lock state for homekit
-	public getTargetLockState(callback) {
+	public getTargetLockState(callback: any) {
 		this.getLockCurrentState(callback);
 	}
 	// Mirrors change in the state of the underlying isy-nodejs device object.
-	public handlePropertyChange(propertyName, value, oldValue, formattedValue) {
+	public handlePropertyChange(propertyName: string, value: any, oldValue: any, formattedValue: string) {
 		this.lockService.updateCharacteristic(Characteristic.LockTargetState, this.getDeviceCurrentStateAsHK());
 		this.lockService.updateCharacteristic(Characteristic.LockCurrentState, this.getDeviceCurrentStateAsHK());
 	}
@@ -43,7 +43,7 @@ export class ISYLockAccessory extends ISYDeviceAccessory<InsteonLockDevice, Cate
 		const lockMechanismService = this.platformAccessory.getOrAddService(Service.LockMechanism);
 		this.lockService = lockMechanismService;
 		lockMechanismService.getCharacteristic(Characteristic.LockTargetState).on(CharacteristicEventTypes.SET, this.setTargetLockState.bind(this));
-	
+
 		lockMechanismService.getCharacteristic(Characteristic.LockCurrentState).on(CharacteristicEventTypes.GET, this.getLockCurrentState.bind(this));
 
 	}

@@ -1,16 +1,20 @@
 import './ISYPlatform';
 
-import { Categories } from 'hap-nodejs';
+import { Categories, WithUUID } from 'hap-nodejs';
 import { Fan, Lightbulb } from 'hap-nodejs/dist/lib/gen/HomeKit';
 import * as HB from 'homebridge';
 import { InsteonFanDevice, States } from 'isy-nodejs';
 import { ISYDeviceAccessory } from './ISYDeviceAccessory';
 import { ISYPlatform } from './ISYPlatform';
 import { Characteristic, Service } from './plugin';
+import { isType } from './utils';
 
+
+
+type t = typeof Characteristic.RotationSpeed;
 export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice, Categories.FAN> {
-	public fanService: Fan;
-	public lightService: Lightbulb;
+	public fanService!: Fan;
+	public lightService?: Lightbulb;
 	constructor(device: InsteonFanDevice, platform: ISYPlatform) {
 		super(device, platform);
 		this.category = Categories.FAN;
@@ -31,23 +35,23 @@ export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice, Catego
 	public convertTo(propertyName, value: any) {
 		if (propertyName === 'motor.ST') {
 			if (value === States.Fan.High) {
-				return 100;
+				return 99.9;
 			} else if (value === States.Fan.Medium) {
 				return 66.6;
 			} else if (value === States.Fan.Low) {
 				return 33.3;
 			}
 			return States.Off;
-
 		} else {
 			return super.convertTo(propertyName, value);
 		}
 
 	}
 
-	public convertFrom(characteristic: HB.Characteristic, value) {
-		if (characteristic instanceof Characteristic.RotationSpeed) {
+	public convertFrom(characteristic: HB.Characteristic, value: HB.CharacteristicValue) {
+		if (isType(characteristic,Characteristic.RotationSpeed)) {
 			this.logger.debug('Characteristic is RotationSpeed');
+
 			if (value > 66.6) {
 				return States.Fan.High;
 			} else if (value > 33.3) {
@@ -57,7 +61,8 @@ export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice, Catego
 			}
 			return States.Off;
 		} else {
-			return super.convertFrom(characteristic, value);
+
+			return super.convertFrom(characteristic as unknown as HB.Characteristic, value);
 		}
 	}
 	public handlePropertyChange(propertyName: string, value: any, oldValue: any, formattedValue: any) {
@@ -82,7 +87,7 @@ export class ISYFanAccessory extends ISYDeviceAccessory<InsteonFanDevice, Catego
 			this.lightService = lightService;
 		}
 
-		fanService.getCharacteristic(Characteristic.RotationSpeed).onSet(this.device.motor.updateFanSpeed.bind(this.device.motor), this.convertFrom).onGet((() => this.convertTo('motor.ST', this.device.motor.fanSpeed)).bind(this.device.motor)).setProps({minStep: 33.3});
+		fanService.getCharacteristic(Characteristic.RotationSpeed).onSet(this.device.motor.updateFanSpeed.bind(this.device.motor), this.convertFrom.bind(this)).onGet((() => this.convertTo('motor.ST', this.device.motor.fanSpeed)).bind(this)).setProps({minStep: 33.3});
 		fanService.getCharacteristic(Characteristic.On).onSet(this.device.motor.updateIsOn.bind(this.device.motor)).onGet((() => this.device.motor.isOn).bind(this));
 
 		fanService.isPrimaryService = true;

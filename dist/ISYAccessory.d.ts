@@ -4,7 +4,7 @@ import { Logging } from 'homebridge/lib/logger';
 import { ISYNode } from 'isy-nodejs';
 import { ISYPlatform } from './ISYPlatform';
 export declare class AccessoryContext {
-    address: string;
+    address?: string;
 }
 export declare class ISYAccessory<T extends ISYNode, TCategory extends HB.Categories> {
     [x: string]: any;

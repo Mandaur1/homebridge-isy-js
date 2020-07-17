@@ -7,9 +7,10 @@ import './utils';
 import { ButtonEvent } from 'hap-nodejs/dist/lib/gen/HomeKit-Remote';
 
 import { Characteristic, generate, Service } from './plugin';
+import { ISYPlatform } from './ISYPlatform';
 
 export class ISYKeypadDimmerAccessory<T extends  InsteonKeypadDimmerDevice> extends ISYDimmableAccessory<T> {
-	constructor(device: T, platform) {
+	constructor(device: T, platform: ISYPlatform) {
 		``
 		super(device, platform);
 		this.UUID = generate(`${device.isy.address}:${device.address}0`);
@@ -66,7 +67,7 @@ export class ISYKeypadDimmerAccessory<T extends  InsteonKeypadDimmerDevice> exte
 		}
 		const s1 = this.platformAccessory.getServiceByUUIDAndSubType(Service.StatelessProgrammableSwitch, this.device.address) ?? this.platformAccessory.addService(new Service.StatelessProgrammableSwitch(this.device.displayName + ' (Button)', this.device.address));
 		s1.getCharacteristic(Characteristic.ServiceLabelIndex).updateValue(1);
-		this.device.on('ControlTriggered',  (controlName) => {
+		this.device.on('ControlTriggered',  (controlName: string) => {
 			switch (controlName) {
 				case 'DON':
 					s1.getCharacteristic(Characteristic.ProgrammableSwitchEvent).setValue(Characteristic.ProgrammableSwitchEvent.SINGLE_PRESS);

@@ -42,7 +42,7 @@ export class ISYMotionSensorAccessory extends ISYDeviceAccessory<InsteonMotionSe
 
 	}
 
-	public handleControlTrigger(controlName) {
+	public handleControlTrigger(controlName: string) {
 		super.handleControlTrigger(controlName);
 		if (controlName === 'DON') {
 			this.updateCharacteristicValue(true, Characteristic.MotionDetected, this.motionSensorService);

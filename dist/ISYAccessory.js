@@ -68,7 +68,7 @@ class ISYAccessory {
         this.logger.info(`Incoming update to ${name}. New Value: ${value} (${formattedValue}) Old Value: ${oldValue}`);
         const m = this.map(propertyName, value);
         if (m.characteristic) {
-            this.logger.debug('Property mapped to:', m.service.displayName, m.characteristic.name);
+            this.logger.debug('Property mapped to:', m.service.displayName, m.characteristic.name, `(${m.characteristicValue})`);
             this.updateCharacteristicValue(m.characteristicValue, m.characteristic, m.service);
         }
         else {

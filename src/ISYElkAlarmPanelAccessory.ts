@@ -11,7 +11,7 @@ export class ISYElkAlarmPanelAccessory extends ISYAccessory<ELKAlarmPanelDevice,
 	public alarmPanelService: any;
 
 	// Handles the request to set the alarm target state
-	public setAlarmTargetState(targetStateHK, callback) {
+	public setAlarmTargetState(targetStateHK: any, callback: () => void) {
 		this.logger.info(`ALARMSYSTEM: ${this.device.name} Sending command to set alarm panel state to: ${targetStateHK}`);
 		const targetState = this.translateHKToAlarmTargetState(targetStateHK);
 		this.logger.info(`ALARMSYSTEM: ${this.device.name} Would send the target state of: ${targetState}`);
@@ -62,7 +62,7 @@ export class ISYElkAlarmPanelAccessory extends ISYAccessory<ELKAlarmPanelDevice,
 		}
 	}
 	// Translates the homekit version of the alarm target state into the appropriate elk alarm panel state
-	public translateHKToAlarmTargetState(state) {
+	public translateHKToAlarmTargetState(state: number) {
 		if (state === Characteristic.SecuritySystemTargetState.STAY_ARM) {
 			return AlarmMode.STAY;
 		} else if (state === Characteristic.SecuritySystemTargetState.AWAY_ARM) {
@@ -74,11 +74,11 @@ export class ISYElkAlarmPanelAccessory extends ISYAccessory<ELKAlarmPanelDevice,
 		}
 	}
 	// Handles request to get the target alarm state
-	public getAlarmTargetState(callback) {
+	public getAlarmTargetState(callback: (arg0: null, arg1: number) => void) {
 		callback(null, this.translateAlarmTargetStateToHK());
 	}
 	// Handles request to get the current alarm state
-	public getAlarmCurrentState(callback) {
+	public getAlarmCurrentState(callback: (arg0: null, arg1: number) => void) {
 		callback(null, this.translateAlarmCurrentStateToHK());
 	}
 	// Mirrors change in the state of the underlying isj-js device object.

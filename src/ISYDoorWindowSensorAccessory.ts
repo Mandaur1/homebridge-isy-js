@@ -12,7 +12,7 @@ export class ISYDoorWindowSensorAccessory extends ISYDeviceAccessory<InsteonDoor
 	// Translates the state of the underlying device object into the corresponding homekit compatible state
 
 	// Handles the request to get he current door window state.
-	public map(propertyName, propertyValue) {
+	public map(propertyName: string, propertyValue: any) {
 		const o = super.map(propertyName, propertyValue);
 		if (propertyName === 'ST') {
 			o.characteristic = Characteristic.ContactSensorState;

@@ -5,9 +5,9 @@ export declare class ISYLockAccessory extends ISYDeviceAccessory<InsteonLockDevi
     lockService: any;
     setTargetLockState(lockState: number, callback: (...any: any[]) => void): void;
     getDeviceCurrentStateAsHK(): 0 | 1;
-    getLockCurrentState(callback: any): void;
+    getLockCurrentState(callback: (arg0: null, arg1: number) => void): void;
     getTargetLockState(callback: any): void;
-    handlePropertyChange(propertyName: any, value: any, oldValue: any, formattedValue: any): void;
+    handlePropertyChange(propertyName: string, value: any, oldValue: any, formattedValue: string): void;
     setupServices(): void;
 }
 //# sourceMappingURL=ISYLockAccessory.d.ts.map

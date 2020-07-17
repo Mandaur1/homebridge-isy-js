@@ -1,9 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addCallback = exports.addSetCallback = exports.addGetCallback = exports.wire = exports.clone = exports.onGet = exports.toFahrenheit = exports.toCelsius = exports.onSet = exports.cleanConfig = exports.isMatch = exports.Hap = exports.didFinishLaunching = void 0;
+exports.addCallback = exports.addSetCallback = exports.addGetCallback = exports.wire = exports.clone = exports.isType = exports.onGet = exports.toFahrenheit = exports.toCelsius = exports.onSet = exports.cleanConfig = exports.isMatch = exports.Hap = exports.didFinishLaunching = void 0;
 const isy_nodejs_1 = require("isy-nodejs");
 const ISYPlatform_1 = require("./ISYPlatform");
-// import * as service from 'homebridge/node_modules/homebridge/node_modules/hap-nodejs/dist/lib/Service';
 exports.didFinishLaunching = Symbol('didFinishLaunching');
 function isMatch(device, filter) {
     if (filter.lastAddressDigit) {
@@ -129,6 +128,7 @@ exports.cleanConfig = cleanConfig;
 function onSet(character, func, converter) {
     let tfunc = func;
     if (converter) {
+        console.log('Converter added');
         tfunc = (arg) => func(converter(character, arg));
     }
     const cfunc = addSetCallback(tfunc);
@@ -154,6 +154,11 @@ function onGet(character, func) {
     return character.on("get" /* GET */, cfunc);
 }
 exports.onGet = onGet;
+// tslint:disable-next-line: new-parens
+function isType(instance, characteristic) {
+    return instance instanceof characteristic || instance.UUID === characteristic.UUID;
+}
+exports.isType = isType;
 function clone(logger, prefix) {
     const copy1 = { ...logger };
     copy1.prefix = copy1.prefix = prefix !== null && prefix !== void 0 ? prefix : logger.prototype;
@@ -173,13 +178,13 @@ function clone(logger, prefix) {
     copy.warn = logger.warn.bind(copy);
     copy.trace = ((message, ...args) => {
         // onst newMsg = chalk.dim(msg);
-        if (copy.isTraceEnabled()) {
+        if (copy.isTraceEnabled) {
             copy.log.apply(this, ['trace'].concat(message).concat(args));
         }
     }).bind(copy);
     copy.fatal = ((message, ...args) => {
         // onst newMsg = chalk.dim(msg);
-        if (logger.isFatalEnabled()) {
+        if (logger === null || logger === void 0 ? void 0 : logger.isFatalEnabled) {
             logger.log.apply(this, ['fatal'].concat(message).concat(args));
         }
     }).bind(copy);
@@ -237,8 +242,8 @@ function addSetCallback(func) {
         try {
             func(arg).handleWith(cb);
         }
-        catch (_a) {
-            throw new Error('Last argument of callback is not a function.');
+        catch (e) {
+            throw e;
         }
     };
 }

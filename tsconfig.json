@@ -1,6 +1,6 @@
 {
     "compileOnSave": true,
-    
+
     "compilerOptions": {
         "target": "ES2018",
         "lib":["ESNext"],
@@ -26,7 +26,7 @@
                 "../typings/config.d.ts"
             ]
         },
-       //"strict": true,
+       "strict": false,
         "experimentalDecorators": true,
         "moduleResolution": "node",
         "declaration": true,

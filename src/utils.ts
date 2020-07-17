@@ -9,6 +9,7 @@ import { ISYPlatform } from './ISYPlatform';
 import { Characteristic, PlatformAccessory } from './plugin';
 
 // import * as service from 'homebridge/node_modules/homebridge/node_modules/hap-nodejs/dist/lib/Service';
+import { Characteristic as C } from 'homebridge';
 
 export const didFinishLaunching: symbol = Symbol('didFinishLaunching');
 
@@ -160,16 +161,19 @@ export function cleanConfig(config: PlatformConfig) {
 	return config;
 }
 
-// tslint:disable-next-line: no-namespace
+
 
 // tslint:disable-next-line: no-namespace
 
-export function onSet<T extends CharacteristicValue>(character: HB.Characteristic, func: (arg: T) => Promise<any>, converter?: (char: HB.Characteristic, arg: CharacteristicValue) => any): HB.Characteristic {
+// tslint:disable-next-line: no-namespace
+
+export function onSet<T extends CharacteristicValue>(character: HB.Characteristic, func: (arg: T) => Promise<any>, converter?: (char: WithUUID<HB.Characteristic>, arg: CharacteristicValue) => any): HB.Characteristic {
 	let tfunc = func;
 	if (converter) {
+		console.log('Converter added');
 		tfunc = (arg: T) => func(converter(character, arg));
 	}
-	const cfunc = addSetCallback(tfunc);
+	const cfunc = addSetCallback<T>(tfunc);
 
 	return character.on(CharacteristicEventTypes.SET, cfunc);
 }
@@ -188,6 +192,7 @@ export function toFahrenheit(temp: number): any {
 // 	return character.on(CharacteristicEventTypes.GET, cfunc);
 // }
 
+
 export function onGet<T extends CharacteristicValue>(character: HB.Characteristic, func: () => T): HB.Characteristic {
 
 	const cfunc = (cb: CharacteristicGetCallback) => {
@@ -195,6 +200,14 @@ export function onGet<T extends CharacteristicValue>(character: HB.Characteristi
 	};
 
 	return character.on(CharacteristicEventTypes.GET, cfunc);
+}
+
+type T = typeof Characteristic;
+
+// tslint:disable-next-line: new-parens
+export function isType<K extends WithUUID<{new ():HB.Characteristic}>>(instance: HB.Characteristic, characteristic?: K)
+{
+	return instance instanceof characteristic || instance.UUID === characteristic.UUID;
 }
 
 // declare module 'homebridge/node_modules/homebridge/node_modules/hap-nodejs/dist/lib/Service' {
@@ -237,6 +250,7 @@ declare module 'hap-nodejs/dist/lib/Characteristic' {
 	export interface Characteristic {
 		onSet<T extends CharacteristicValue>(func: (...args: any) => Promise<T>, converter?: (char: HB.Characteristic, arg: CharacteristicValue) => any): HB.Characteristic;
 		onGet<T extends CharacteristicValue>(func: () => T | Promise<T>, converter?: (char: HB.Characteristic, arg: CharacteristicValue) => any): HB.Characteristic;
+
 	}
 }
 
@@ -266,16 +280,16 @@ export function clone(logger: Logging, prefix: string): Logging {
 	copy.error = logger.error.bind(copy);
 	copy.warn = logger.warn.bind(copy);
 
-	copy.trace = ((message, ...args: any[]) => {
+	copy.trace = ((message: ConcatArray<string>, ...args: any[]) => {
 		// onst newMsg = chalk.dim(msg);
-		if (copy.isTraceEnabled()) {
+		if (copy.isTraceEnabled) {
 			copy.log.apply(this, ['trace'].concat(message).concat(args));
 		}
 	}).bind(copy);
 
-	copy.fatal = ((message, ...args: any[]) => {
+	copy.fatal = ((message: ConcatArray<string>, ...args: any[]) => {
 		// onst newMsg = chalk.dim(msg);
-		if (logger.isFatalEnabled()) {
+		if (logger?.isFatalEnabled) {
 			logger.log.apply(this, ['fatal'].concat(message).concat(args));
 		}
 	}).bind(copy);
@@ -344,9 +358,9 @@ export function addGetCallback<T extends CharacteristicValue>(func: (...args: an
 
 }
 
-export function addSetCallback<T extends CharacteristicValue>(func: (...args: any[]) => Promise<T>): (arg: any, cb: CharacteristicSetCallback) => void {
+export function addSetCallback<T extends CharacteristicValue>(func: (arg: T) => Promise<any>): (arg: T, cb: CharacteristicSetCallback) => void {
 
-	return (arg: any, cb: CharacteristicSetCallback) => {
+	return (arg: T, cb: CharacteristicSetCallback) => {
 		// assumption is function has signature of (val, callback, args..)
 
 		// const n = newArgs[1];
@@ -354,8 +368,9 @@ export function addSetCallback<T extends CharacteristicValue>(func: (...args: an
 		try {
 
 			func(arg).handleWith(cb);
-		} catch {
-			throw new Error('Last argument of callback is not a function.');
+		} catch (e)
+		{
+			throw e;
 		}
 
 	};
